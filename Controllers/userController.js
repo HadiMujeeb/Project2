@@ -124,7 +124,9 @@ const loadOtpPage = async (req, res) => {
 const verifyOtp = async (req, res) => {
   try {
     const email = req.body.email;
-    const sessions = req.session.email
+
+    req.session.email = email
+    const sessions =   req.session.email 
     console.log("email",sessions)
     console.log("email:", email);
     const otp = req.body.one + req.body.two + req.body.three + req.body.four;
@@ -178,7 +180,7 @@ const verifyOtp = async (req, res) => {
 
       if (attempt  >= 3) {
         // If the maximum number of attempts is reached, delete the email record
-        await UserOTPVerification.deleteOne({ email: emails });
+        await UserOTPVerification.deleteOne({ email: email });
       }
 
       res.render("verifyOTP", { message: "Incorrect OTP. Please try again." });
