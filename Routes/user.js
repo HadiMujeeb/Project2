@@ -22,7 +22,7 @@ user_router.use(express.urlencoded({extended:true}))
 
 user_router.get("/",auth.isLogout,userController.Homepage);
 
-user_router.get('/home',auth.isLogin,userController.Homepage) 
+user_router.get('/home',auth.isLogin,auth.isBlock,userController.Homepage) 
 
 user_router.get("/register",auth.isLogout,userController.RegisterPage);
 

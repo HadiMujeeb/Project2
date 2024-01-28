@@ -45,7 +45,7 @@ const insertUser = async (req, res) => {
           password: spassword,
           is_admin: 0,
         });
-
+       req.session.email=req.body.email
         const userData = await user.save().then((result) => {
           sendOTPVerificationEmail(result, res);
         });
@@ -125,7 +125,7 @@ const verifyOtp = async (req, res) => {
   try {
     const email = req.body.email;
 
-    req.session.email = email
+    // req.session.email = email
     const sessions =   req.session.email 
     console.log("email",sessions)
     console.log("email:", email);
@@ -173,14 +173,14 @@ const verifyOtp = async (req, res) => {
 
       // Update the attempts counter in the UserOTPVerification collection
       await UserOTPVerification.updateOne(
-        { email: email },
+        { email: sessions },
         { $set: { attempts: attempt } },
         { upsert: true }
       );
 
       if (attempt  >= 3) {
         // If the maximum number of attempts is reached, delete the email record
-        await UserOTPVerification.deleteOne({ email: email });
+        await UserOTPVerification.deleteOne({ email: sessions });
       }
 
       res.render("verifyOTP", { message: "Incorrect OTP. Please try again." });
