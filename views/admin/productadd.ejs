@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="assets/imgs/theme/logo.svg" class="logo" alt="" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/User">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">User</span>
+                    </a>
+
+                </li>
+
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/category">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/product">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Product</span>
+                    </a>
+
+                </li>
+
+            </ul>
+            <br />
+            <br />
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <!-- <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                    </div> -->
+                    <datalist id="search_terms">
+                        <option value="Products"></option>
+                        <option value="New orders"></option>
+                        <option value="Apple iphone"></option>
+                        <option value="Ahmed Hassan"></option>
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a> -->
+                    </li>
+
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+
+                    </div>
+                </div>
+                <di class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Basic</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="" enctype="multipart/form-data"
+                                onsubmit="return validateForm()">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name"
+                                        name="productName" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" rows="4"
+                                        name="description"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Price</label>
+                                            <div class="row gx-2">
+                                                <input placeholder="$" type="text" class="form-control" name="price" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Stock Quantity</label>
+                                            <input placeholder="$" type="text" class="form-control" name="Quantity" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Category</label>
+                                        <!-- <input placeholder="" type="text"  name="Category" /> -->
+                                        <select class="form-control" name="category">
+                                            <% Category.forEach(category=>{ %>
+                                                <option>
+                                                    <%= category.name %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Brand</label>
+                                    <input type="text" placeholder="" class="form-control" id="product_name"
+                                        name="brand" />
+                                </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Media</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload">
+                                            <input class="form-control" type="file" name="image" id="productImage"
+                                                multiple />
+                                        </div>
+                                        <!-- Add an element for image preview -->
+                                        <div id="imagePreview"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button
+                                        class="btn btn-light rounded font-sm mr-5 text-body hover-up">Cancel</button>
+                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- card end// -->
+            </div>
+            <div class="col-lg-3">
+
+
+            </div>
+
+            <!-- card end// -->
+            </div>
+            </div>
+        </section>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script>
+        function validateForm() {
+            var productName = document.getElementById("product_name").value;
+            var description = document.getElementsByName("description")[0].value;
+            var price = document.getElementsByName("price")[0].value;
+            var quantity = document.getElementsByName("Quantity")[0].value;
+            var category = document.getElementsByName("category")[0].value;
+            var brand = document.getElementsByName("brand")[0].value;
+            var imageInput = document.getElementById("productImage");
+
+            // Check if the image field is empty
+            if (imageInput.files.length === 0) {
+                alert("Please select an image");
+                return false;
+            }
+            if (productName === "" || description === "" || price === "" || quantity === "" || category === "" || brand === "") {
+                alert("Please fill in all fields");
+                return false; // Prevent form submission
+            }
+
+            // Additional validation logic can be added here
+
+            return true; // Allow form submission
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the file input element
+            const fileInput = document.getElementById('productImage');
+
+            // Get the image preview container
+            const imagePreviewContainer = document.getElementById('imagePreview');
+
+            // Add an event listener to the file input
+            fileInput.addEventListener('change', function () {
+                // Remove existing preview images
+                imagePreviewContainer.innerHTML = '';
+
+                // Loop through selected files and create image previews
+                for (const file of fileInput.files) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'img-sm img-thumbnail mr-2';
+                    img.alt = 'Image Preview';
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    imagePreviewContainer.appendChild(img);
+                }
+            });
+        });
+    </script>
+
+    <!-- Include your existing stylesheets -->
+    <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+    </head>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .otp-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            width: 300px; /* Adjust the width as needed */
+        }
+
+        .otp-input {
+            padding: 10px;
+            width: 40px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <h2>OTP Verification</h2>
+    <!-- <p>Please enter the OTP sent to your mobile number.</p> -->
+
+    <form action="/verifyOTP" method="post">
+        <input type="text" class="otp-input" maxlength="1" name="one" required>
+        <input type="text" class="otp-input" maxlength="1" name="two" required>
+        <input type="text" class="otp-input" maxlength="1" name="three" required>
+        <input type="text" class="otp-input" maxlength="1" name="four" required>
+        <input type="hidden" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>">
+
+
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+    <% if (typeof message !== 'undefined') { %>
+        <h5 style="color: red;"><%= message %></h5>
+    <% } %>
+</div>
+
+</body>
+</html>

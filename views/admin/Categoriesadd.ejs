@@ -1,0 +1,30 @@
+
+<link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+
+<div class="col-md-3"  style="margin-top: auto; margin-left: auto; margin-bottom: auto; margin-right:auto ;">
+     <br>
+    <h3>add Categories</h3>
+    <br>
+    <br>
+    <form action="" method="post">
+        <div class="mb-4">
+            <label for="product_name" class="form-label">Name</label>
+            <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name" />
+        </div>
+      
+        <div class="mb-4">
+            <label class="form-label">Description</label>
+            <textarea placeholder="Type here" class="form-control" id="product_description" name="product_description"></textarea>
+        </div>
+        <div class="d-grid">
+            <button class="btn btn-primary" type="submit"  value="submit">Create category</button>
+        </div>
+    <% if ( messages &&  messages.message){ %>
+        <h5 style="color: brown;"><%= messages.message %></h5>
+   <% }%>
+       
+
+    </form>
+
+    
+</div>

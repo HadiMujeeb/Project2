@@ -1,0 +1,120 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f8ea; /* Light green background color */
+  margin: 0;
+  padding: 0;
+}
+
+
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #2ecc71; /* Green text color */
+}
+
+a {
+  display: inline-block;
+  margin-bottom: 10px;
+  background-color: #2ecc71; /* Green button color */
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+a:hover {
+  background-color: #27ae60; /* Darker green on hover */
+}
+
+form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+}
+
+input[type="submit"] {
+  background-color: #4caf50; /* Green submit button color */
+  color: #fff;
+  border: 1px solid #4caf50;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #2ecc71; /* Green header background color */
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #ecf0f1; /* Light gray alternating rows */
+}
+
+tr:hover {
+  background-color: #d4e6a5; /* Light green on hover */
+}
+
+a.edit, a.delete {
+  display: inline-block;
+  margin-right: 10px;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+a.edit {
+  background-color: #2ecc71; /* Green edit button color */
+  color: #fff;
+}
+
+a.delete {
+  background-color: #e74c3c; /* Red delete button color */
+  color: #fff;
+}
+
+a.edit:hover, a.delete:hover {
+  text-decoration: underline;
+}
+
+a.home {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #2ecc71; /* Green home link color */
+}
+
+a.home:hover {
+  text-decoration: underline;
+}

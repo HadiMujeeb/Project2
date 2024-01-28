@@ -1,0 +1,26 @@
+<link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+
+<div class="col-md-3" style="margin-top: auto; margin-left: auto; margin-bottom: auto; margin-right:auto ;">
+    <br>
+    <h3>Edit Categories</h3>
+    <br>
+    <br>
+    <form  method="post">
+        <div class="mb-4">
+            <label for="category_name" class="form-label">Name</label>
+            <input type="text" placeholder="Type here" class="form-control" id="category_name" name="category_name" value="<%= Data.name  %>" />
+            <input type="hidden" name="categoryId" value="<%= Data._id%>">
+        </div>
+
+        <div class="mb-4">
+            <label for="category_description" class="form-label">Description</label>
+            <textarea placeholder="Type here" class="form-control" id="category_description" name="category_description" > <%= Data.description %></textarea>
+        </div>
+        <div class="d-grid">
+            <button class="btn btn-primary" type="submit">Update category</button>
+        </div>
+    <% if (messages && messages.message) { %>
+        <h5 style="color: brown;"><%= messages.message %></h5>
+    <% } %>
+    </form>
+</div>

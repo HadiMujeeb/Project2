@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="assets/imgs/theme/logo.svg" class="logo" alt="" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/User">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">User</span>
+                    </a>
+
+                </li>
+
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/category">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/product">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Product</span>
+                    </a>
+
+                </li>
+
+            </ul>
+            <br />
+            <br />
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <!-- <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products"></option>
+                        <option value="New orders"></option>
+                        <option value="Apple iphone"></option>
+                        <option value="Ahmed Hassan"></option>
+                    </datalist>
+                </form>
+            </div> -->
+            <!-- <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+
+
+                </ul>
+            </div> -->
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories</h2>
+                    <p>Add, edit or delete a category</p>
+                </div>
+                <!-- <div>
+                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                    </div> -->
+                <div>
+                    <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
+                        <a href="#" class="btn btn-light rounded font-md">Import</a> -->
+                    <a href="/add" class="btn btn-primary btn-sm rounded">Add Categories</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- <div class="col-md-3">
+                                <form>
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Name</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="product_name" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="product_slug" class="form-label">Slug</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Parent</label>
+                                        <select class="form-select">
+                                            <option>Fruit</option>
+                                            <option>Snack</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea placeholder="Type here" class="form-control"></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary">Create category</button>
+                                    </div>
+                                </form>
+                            </div> -->
+                        <div class="col-md">
+                            <div class="table-responsive">
+                                <table class="table table-hover ">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                            <th></th>
+                                            <!-- <th>Edit</th> -->
+                                            <!-- <th>Delete</th> -->
+                                            <!-- <th>Status</th> -->
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <% if(Data.length> 0){ %>
+
+                                            <% for( let i=0 ; i < Data.length ; i++){ %>
+
+
+
+                                                <tr>
+
+                                                    <td><b>
+                                                            <%= Data[i].name%>
+                                                        </b></td>
+                                                    <td>
+                                                        <%= Data[i].description%>
+                                                    </td>
+                                                    <td> <a href="/edit?id=<%= Data[i]._id %>"
+                                                        class="btn btn-sm font-sm rounded btn-brand"> <i
+                                                            class="material-icons md-edit"></i> Edit </a></td>
+                                                    <td class="text-end">
+                                                      
+                                                        <style>
+                                                            /* Add this style to your existing CSS or in a style block in the head of your HTML */
+                                                            .delete-button:hover {
+                                                                background-color: red;
+                                                                /* color: Your desired text color; */
+                                                            }
+                                                        </style>
+                                                        
+                                                        <button class="btn btn-sm font-sm btn-light rounded delete-button" onclick="handleDelete('<%= Data[i]._id %>')">
+                                                            <i class="material-icons md-delete_forever"></i> Delete
+                                                        </button>
+                                                    </td>
+                                                        <td class="text-end">
+                                                            <div class="dropdown">
+                                                                <% if (Data[i].isListed == false) { %>
+                                                                    <button class="btn btn-light rounded btn-sm font-sm" onclick="handleListAction('<%= Data[i]._id %>', 'List')">
+                                                                        <i>List</i>
+                                                                    </button>
+                                                                <% } else { %>
+                                                                    <button class="btn btn-light rounded btn-sm font-sm" onclick="handleListAction('<%= Data[i]._id %>', 'Unlist')">
+                                                                        <i>Unlist</i>
+                                                                    </button>
+                                                                <% } %>
+                                                            </div>
+                                                        </td>
+                                                </tr>
+
+                                                <% } }else{ %>
+
+                                                    <tr>
+                                                        <td colspan="5">Category not Found</td>
+                                                    </tr>
+
+                                                    <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- .col// -->
+                    </div>
+                    <!-- .row // -->
+                </div>
+                <!-- card body .// -->
+            </div>
+            <!-- card .// -->
+        </section>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    function handleListAction(categoryId, action) {
+        let title, text, icon, confirmButtonColor;
+
+        if (action === 'List') {
+            title = 'List Category';
+            text = 'Do you want to list this category?';
+            icon = 'info';
+            confirmButtonColor = '#3bb77e';
+        } else {
+            title = 'Unlist Category';
+            text = 'Do you want to unlist this category?';
+            icon = 'warning';
+            confirmButtonColor = 'red';
+        }
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonColor: confirmButtonColor,
+            cancelButtonColor: '#d33',
+            confirmButtonText: `Yes, ${action.toLowerCase()} it!`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/${action.toLowerCase()}?id=${categoryId}`;
+            }
+        });
+    }
+
+    function handleDelete(categoryId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to delete this category?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'red',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/delete-Categories?id=${categoryId}`;
+            }
+        });
+    }
+</script>
+</body>
+
+</html>
