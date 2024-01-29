@@ -26,14 +26,18 @@ const LoadAddProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    const Categories = await Category.find({ isListed: true });
+
     const existProduct = await Product.findOne({
       name: req.body.productName,
     });
     console.log(req.body.productName);
 
     if (existProduct) {
-      res.render()
-      res.status(404).send({ message: "product already exist" });
+      res.render("productadd", {
+        message: "product already exist",
+        Category: Categories,
+      });
     } else {
       const {
         productName,
@@ -160,7 +164,7 @@ const EditProduct = async (req, res) => {
     } = req.body;
     console.log(req.body);
 
-    const images = req.files.map(file => file.buffer.toString('base64'));
+    const images = req.files.map((file) => file.buffer.toString("base64"));
     const catego = await Category.findOne({ name: category });
     await Product.updateOne(
       { _id: id },
@@ -172,7 +176,7 @@ const EditProduct = async (req, res) => {
           category: catego._id,
           stockQuantity: Quantity,
           brand,
-          image:images
+          image: images,
         },
       }
     );
@@ -185,10 +189,10 @@ const EditProduct = async (req, res) => {
 
 const deleteIMG = async (req, res) => {
   try {
-    const { image, prdtId,index } = req.body;
+    const { image, prdtId, index } = req.body;
     console.log(req.body);
     fs.unlink(path.join(__dirname, "../public/SharpImage", image), () => {});
-    await Product.updateOne({ _id:  prdtId }, { $pull: { image: image } });
+    await Product.updateOne({ _id: prdtId }, { $pull: { image: image } });
     res.send({ success: true });
   } catch (error) {
     console.log(error.message);
