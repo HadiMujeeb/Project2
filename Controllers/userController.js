@@ -45,7 +45,7 @@ const insertUser = async (req, res) => {
           password: spassword,
           is_admin: 0,
         });
-       req.session.email=req.body.email
+        req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
           sendOTPVerificationEmail(result, res);
         });
@@ -112,7 +112,6 @@ const sendOTPVerificationEmail = async ({ email }, res) => {
 const loadOtpPage = async (req, res) => {
   try {
     const email = req.query.email;
-
     res.render("verifyOTP", { email: email });
   } catch (error) {
     console.log(error.message);
@@ -126,24 +125,23 @@ const verifyOtp = async (req, res) => {
     const email = req.body.email;
 
     // req.session.email = email
-    const sessions =   req.session.email 
-    console.log("email",sessions)
+    const sessions = req.session.email;
+    console.log("email", sessions);
     console.log("email:", email);
     const otp = req.body.one + req.body.two + req.body.three + req.body.four;
 
     console.log("otp:", otp);
-    const user = await UserOTPVerification.findOne({ email: sessions});
+    const user = await UserOTPVerification.findOne({ email: sessions });
     // console.log("user:", user);
 
-    if (!user || user.attempts >= 3) {
-      console.log("user:", user);
+    if (!user || user.expiresAt < Date.now()) {
+      // console.log("user:", user);
 
       // If no user found or maximum attempts reached, render a message and return
       res.render("verifyOTP", {
         message: "OTP expired or too many incorrect attempts.",
-        
       });
-      console.log("email",sessions);
+      // console.log("email",sessions);
       return;
     }
 
@@ -168,28 +166,26 @@ const verifyOtp = async (req, res) => {
 
       res.redirect("/home");
     } else {
-      // Increment the attempts counter or set it to 1 if it doesn't exist
-      const attempt = (user.attempts || 0) + 1;
-
-      // Update the attempts counter in the UserOTPVerification collection
-      await UserOTPVerification.updateOne(
-        { email: sessions },
-        { $set: { attempts: attempt } },
-        { upsert: true }
-      );
-
-      if (attempt  >= 3) {
-        // If the maximum number of attempts is reached, delete the email record
-        await UserOTPVerification.deleteOne({ email: sessions });
-      }
-
-      res.render("verifyOTP", { message: "Incorrect OTP. Please try again." });
-
+      res.render("verifyOTP", { message: "OTP is incorrect", sessions });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
+
+const resendOTP = async (req, res) => {
+  try {
+
+    console.log('bodyis',req.body);
+    const email = req.body.email;
+    console.log("hello", email);
+    await UserOTPVerification.deleteOne({ email: email });
+    await sendOTPVerificationEmail({ email }, res);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 
 //------------------------------------LOGIN-----------------------------------------------------------------------
 
@@ -267,6 +263,7 @@ module.exports = {
   LoginPage,
   loadOtpPage,
   verifyOtp,
+  resendOTP,
   VerifyLogin,
   userLogout,
   Loadshop,

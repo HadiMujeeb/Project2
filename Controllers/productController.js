@@ -141,6 +141,7 @@ const DeleteProduct = async (req, res) => {
 const loadEditProduct = async (req, res) => {
   try {
     const data = await Product.findOne({ _id: req.query.id });
+    // console.log("hello",data);
     const Categories = await Category.find({ isListed: true });
     res.render("EditProduct", { Category: Categories, Data: data });
   } catch (error) {
@@ -152,7 +153,7 @@ const EditProduct = async (req, res) => {
   try {
     console.log("hii");
     const id = req.body.id;
-    console.log("defe", id);
+    console.log("id", id);
 
     const {
       productName,

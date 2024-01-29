@@ -67,7 +67,7 @@ admin_router.get("/DeleteProduct", productController.DeleteProduct);
 
 admin_router.get("/EditProduct", productController.loadEditProduct);
 
-admin_router.post('/EditProduct',productController.EditProduct)
+admin_router.post('/EditProduct',upload.array("image", 4),productController.EditProduct)
 
 admin_router.patch('/deleteImage',productController.deleteIMG)
 

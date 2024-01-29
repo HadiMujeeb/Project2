@@ -103,6 +103,11 @@
 
                     </div>
                 </div>
+                <style>
+                    .input-upload {
+                        padding-right: 400px;
+                    }
+                </style>
                 <di class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-header">
@@ -114,7 +119,9 @@
                                     <label for="product_name" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="productName"
                                         name="productName" value="<%=Data.name%>" />
-                                    <input type="hidden" name="id" value="<%= Data._id%>">
+
+                                    <%console.log(Data._id)%>
+                                        <input type="hidden" name="id" value="<%=Data._id%>">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
@@ -158,39 +165,44 @@
                                 </div>
 
 
+
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <h4>Media</h4>
                                     </div>
-                                    <!-- <div class="mb-4">
-                                        <label class="form-label">Add Images</label>
-                                        <input type="file" class="form-control" name="productImages" accept="image/*"
-                                        value="<%=Data.image%>"
-                                            multiple />
-
-                                    </div> -->
-                                    <% for (let i=0; i < Data.image.length; i++) { %>
-                                        <div class="card-body">
-                                            <div class="input-upload">
-                                                <img src="/WebImages/<%= Data.image[i] %>" alt="">
-                                                <!-- Add a form with a delete button for each image -->
-
-                                                <a href="#" class="btn btn-outline-danger btn-sm"
-                                                    onclick="deleteImage(event, '<%=Data.image[i]%>', '<%=Data._id%>', '<%=i%>')">Delete</a>
-
-                                            </div>
+                                    <div class="card-body">
+                                        <div class="input-upload">
+                                            <input class="form-control" type="file" name="image" id="productImage"
+                                                multiple />
                                         </div>
-                                        <% } %>
+                                        <!-- Add an element for image preview -->
+                                        <div id="imagePreview"></div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <button
-                                        class="btn btn-light rounded font-sm mr-5 text-body hover-up">Cancel</button>
-                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
-                                </div>
-                            </form>
                         </div>
+
+                        <% for (let i=0; i < Data.image.length; i++) { %>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <img src="/WebImages/<%= Data.image[i] %>" alt="">
+                                    <!-- Add a form with a delete button for each image -->
+
+                                    <a href="#" class="btn btn-outline-danger btn-sm"
+                                        onclick="deleteImage(event, '<%=Data.image[i]%>', '<%=Data._id%>', '<%=i%>')">Delete</a>
+
+                                </div>
+                            </div>
+                            <% } %>
+
                     </div>
-                    <!-- card end// -->
+                    <div>
+                        <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Cancel</button>
+                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                    </div>
+                    </form>
+            </div>
+            </div>
+            <!-- card end// -->
             </div>
             <div class="col-lg-3">
 
@@ -268,6 +280,32 @@
                 // Handle errors if necessary
             }
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the file input element
+            const fileInput = document.getElementById('productImage');
+
+            // Get the image preview container
+            const imagePreviewContainer = document.getElementById('imagePreview');
+
+            // Add an event listener to the file input
+            fileInput.addEventListener('change', function () {
+                // Remove existing preview images
+                imagePreviewContainer.innerHTML = '';
+
+                // Loop through selected files and create image previews
+                for (const file of fileInput.files) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'img-sm img-thumbnail mr-2';
+                    img.alt = 'Image Preview';
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    imagePreviewContainer.appendChild(img);
+                }
+            });
+        });
     </script>
 
 </body>

@@ -32,6 +32,8 @@ user_router.get('/verifyOTP',auth.isLogout,userController.loadOtpPage)
 
 user_router.post('/verifyOTP',userController.verifyOtp)
 
+user_router.post('/resendOtp',userController.resendOTP)
+
 
 
 user_router.get('/login',auth.isLogout,userController.LoginPage)
