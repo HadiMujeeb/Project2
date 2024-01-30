@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema({
     },isBlocked:{
         type:Boolean,
         default:true
+    },token:{
+        type:String,
+        default:""
     }
 
 

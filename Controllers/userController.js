@@ -4,6 +4,8 @@ const nodemailer = require("nodemailer");
 const UserOTPVerification = require("../Models/userOTPVerification");
 const Product = require("../Models/productModel");
 const Categories = require("../Models/categoriesModel");
+const randomstrings = require("randomstring");
+
 // password hide
 
 const securePassword = async (password) => {
@@ -175,8 +177,7 @@ const verifyOtp = async (req, res) => {
 
 const resendOTP = async (req, res) => {
   try {
-
-    console.log('bodyis',req.body);
+    console.log("bodyis", req.body);
     const email = req.body.email;
     console.log("hello", email);
     await UserOTPVerification.deleteOne({ email: email });
@@ -185,7 +186,6 @@ const resendOTP = async (req, res) => {
     console.log(error.message);
   }
 };
-
 
 //------------------------------------LOGIN-----------------------------------------------------------------------
 
@@ -256,6 +256,106 @@ const Loadshop = async (req, res) => {
   }
 };
 
+const ForgetLoad = async (req, res) => {
+  try {
+    res.render("forgetpassword");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const forgetpasswordVerify = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const details = await User.findOne({ email: email });
+    if (details) {
+      if (details.is_Verified == 0) {
+        res.render("forgetpassword", { message: "please Verify your email" });
+      } else {
+        const randomstring = randomstrings.generate();
+        const updatedetail = await User.updateOne(
+          { email: email },
+          { $set: { token: randomstring } }
+        );
+        sendforgetemail(details.name, details.email, randomstring);
+        res.render("forgetpassword", { message: "PLease check your email" });
+      }
+    } else {
+      res.render("forgetpassword", { message: "Email is incorrect" });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const sendforgetemail = async (name, email, token) => {
+  try {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+
+      auth: {
+        user: "hadimujeeb300@gmail.com",
+        pass: "ogovpoenykqxjwqt",
+      },
+    });
+
+    const mailOptions = {
+      from: "hadimujeeb300@gmail.com",
+      to: email,
+      subject: "For Reset Password",
+      html:
+        "<p>Hii " +
+        name +
+        ', please click here to <a href="http://127.0.0.1:11000/forgetpassword?token=' +
+        token +
+        '">Reset</a> your password.</p>',
+    };
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const ResetPasswordLoad = async (req, res) => {
+  try {
+    const token = req.query.token;
+    const TOkenId = await User.findOne({ token: token });
+    if (TOkenId) {
+      res.render("resetpassword", { message: "", TOkenId: TOkenId });
+      console.log("too",TOkenId);
+    } else {
+      res.redirect("/forget");
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const resetpassword = async (req,res)=>{
+  try {
+    const password = req.body.Password
+    const confirmPassword = req.body.confirmPassword
+
+    const Token=req.body.TOkenId
+    console.log("hello",Token);
+
+    console.log("p",password);
+    console.log("sp",confirmPassword);
+
+    if(password==confirmPassword&&Token){
+      const secure  = await securePassword(password)
+      const updatepass = await User.findOneAndUpdate({_id:Token},{$set:{password:secure}})
+      res.redirect("/login")
+    }else{
+      res.render("forgetpassword",{message:"password does not match"})
+    }
+
+  } catch (error) {
+    console.log(error.message);
+    
+  }
+}
+
 module.exports = {
   Homepage,
   RegisterPage,
@@ -267,4 +367,8 @@ module.exports = {
   VerifyLogin,
   userLogout,
   Loadshop,
+  ForgetLoad,
+  forgetpasswordVerify,
+  ResetPasswordLoad,
+  resetpassword
 };

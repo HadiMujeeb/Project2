@@ -45,4 +45,16 @@ user_router.get('/logout',userController.userLogout)
 user_router.get('/shop',userController.Loadshop)
 
 
+user_router.get("/forget",userController.ForgetLoad)
+
+user_router.post("/forget",userController.forgetpasswordVerify)
+
+user_router.get("/forgetpassword",userController. ResetPasswordLoad )
+
+user_router.post("/forgetpassword",userController. resetpassword)
+
+
+
+
+
 module.exports = user_router;
