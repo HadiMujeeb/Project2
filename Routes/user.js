@@ -42,7 +42,10 @@ user_router.post('/login',userController.VerifyLogin)
 
 user_router.get('/logout',userController.userLogout)
 
-user_router.get('/shop',userController.Loadshop)
+user_router.get('/shop',userController.loadShop)
+
+
+user_router.get('/single',userController.SingleProduct)
 
 
 user_router.get("/forget",userController.ForgetLoad)
@@ -52,6 +55,24 @@ user_router.post("/forget",userController.forgetpasswordVerify)
 user_router.get("/forgetpassword",userController. ResetPasswordLoad )
 
 user_router.post("/forgetpassword",userController. resetpassword)
+
+user_router.get("/profile",auth.isLogin,userController.LoadProfile)
+
+user_router.post("/EditProfile",userController.EditProfile)
+
+user_router.get("/addaddress",userController.LOADaddaddress)
+
+
+user_router.post("/addaddress",userController.AddAddress)
+
+user_router.delete("/deleteaddress",userController.DeleteAddress)
+
+
+user_router.post("/EditAddress",userController.DeleteAddress)
+
+
+
+
 
 
 

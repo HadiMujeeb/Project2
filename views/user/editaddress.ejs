@@ -1,0 +1,72 @@
+<%- include('../user/layouts/header') %>
+
+    <style>
+        .contact_form {
+            margin-top: 120px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn_danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn_danger:hover {
+            background-color: #c82333;
+        }
+
+        /* Add more styles based on your needs */
+    </style>
+
+
+    <div class="container">
+        <form class="row contact_form" action="" method="post">
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="first" name="name" placeholder="Name" value="<%= user.name%>" required  />
+                <input type="hidden" name="id" value="<%= user._id%>">
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="state" name="state" placeholder="state" value="<%= user.state%>" required />
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" value="<%= user.mobile%>" required />
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="city" name="city" placeholder="City" value="<%= user.city%>" required />
+            </div>
+
+            <div class="col-md-12 form-group p_star">
+                <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address">"<%= user.address>"</textarea>
+            </div>
+
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Landmark" value="<%= user.landmark>" />
+            </div>
+
+            <div class="col-md-12 form-group">
+                <input type="text" class="form-control" id="pin" name="pincode" placeholder="PIN" required />
+            </div>
+
+            <div class="col-md-12 py-4 form-group text-center">
+                <button type="submit" class="btn btn_danger py-4 px-5">SUBMIT</button>
+            </div>
+        </form>
+    </div>
+    <%- include('../user/layouts/footer') %>

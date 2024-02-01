@@ -5,6 +5,7 @@ const UserOTPVerification = require("../Models/userOTPVerification");
 const Product = require("../Models/productModel");
 const Categories = require("../Models/categoriesModel");
 const randomstrings = require("randomstring");
+const { default: mongoose } = require("mongoose");
 
 // password hide
 
@@ -46,6 +47,7 @@ const insertUser = async (req, res) => {
           email: req.body.email,
           password: spassword,
           is_admin: 0,
+          mobile: req.body.mobile,
         });
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
@@ -246,14 +248,60 @@ const userLogout = async (req, res) => {
   }
 };
 
-const Loadshop = async (req, res) => {
+const loadShop = async (req, res) => {
   try {
-    const products = await Product.find({});
-    const Category = await Categories.find({});
-    res.render("shop", { products, Category });
+    const user = await User.findOne({ _id: req.session.user_id });
+    console.log("user", user);
+    const categId = req.query.categid;
+    console.log("id", categId);
+    let products = [];
+
+    if (categId) {
+      const CategoryId = new mongoose.Types.ObjectId(categId);
+      products = await Product.find({ category: CategoryId }).populate(
+        "category"
+      );
+      console.log("linkproduct", products);
+    } else {
+      products = await Product.find({}).populate("category");
+    }
+
+    const Categdata = await Categories.find({});
+    const listedCategory = Categdata.filter((categ) => categ.isListed === true);
+
+    const listProduct = products.filter((product) => {
+      const isProductListed = product.is_Listed == true;
+
+      const productCategory = listedCategory.find(
+        (category) =>
+          category.name === (product.category && product.category.name) &&
+          category.isListed == true
+      );
+
+      return isProductListed && productCategory;
+    });
+
+    res.render("shop", {
+      Categories: listedCategory,
+      products: listProduct,
+      user,
+    });
   } catch (error) {
     console.log(error.message);
   }
+};
+
+const SingleProduct = async (req, res) => {
+  try {
+    const productId = req.query.productId;
+    console.log("ProductId:", productId);
+
+    const product = await Product.findOne({ _id: productId }).populate(
+      "category"
+    );
+
+    res.render("SingleProduct", { product });
+  } catch (error) {}
 };
 
 const ForgetLoad = async (req, res) => {
@@ -322,7 +370,7 @@ const ResetPasswordLoad = async (req, res) => {
     const TOkenId = await User.findOne({ token: token });
     if (TOkenId) {
       res.render("resetpassword", { message: "", TOkenId: TOkenId });
-      console.log("too",TOkenId);
+      console.log("too", TOkenId);
     } else {
       res.redirect("/forget");
     }
@@ -331,30 +379,184 @@ const ResetPasswordLoad = async (req, res) => {
   }
 };
 
-const resetpassword = async (req,res)=>{
+const resetpassword = async (req, res) => {
   try {
-    const password = req.body.Password
-    const confirmPassword = req.body.confirmPassword
+    const password = req.body.Password;
+    const confirmPassword = req.body.confirmPassword;
 
-    const Token=req.body.TOkenId
-    console.log("hello",Token);
+    const Token = req.body.TOkenId;
+    console.log("hello", Token);
 
-    console.log("p",password);
-    console.log("sp",confirmPassword);
+    console.log("password", password);
+    console.log("confirmPassword", confirmPassword);
 
-    if(password==confirmPassword&&Token){
-      const secure  = await securePassword(password)
-      const updatepass = await User.findOneAndUpdate({_id:Token},{$set:{password:secure}})
-      res.redirect("/login")
-    }else{
-      res.render("forgetpassword",{message:"password does not match"})
+    if (password == confirmPassword && Token) {
+      const secure = await securePassword(password);
+      const updatepass = await User.findOneAndUpdate(
+        { _id: Token },
+        { $set: { password: secure } }
+      );
+      res.redirect("/login");
+    } else {
+      res.render("forgetpassword", { message: "password does not match" });
     }
-
   } catch (error) {
     console.log(error.message);
-    
   }
-}
+};
+
+const LoadProfile = async (req, res) => {
+  try {
+    let user;
+    // console.log("user", req.session.user_id);
+    if (req.session.user_id) {
+      const id = req.session.user_id;
+      user = await User.findOne({ _id: id });
+    }
+
+    res.render("profile", { user });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const EditProfile = async (req, res) => {
+  try {
+    const id = req.session.user_id;
+
+    console.log("id", id);
+    const { name, mobile } = req.body;
+    console.log("body", req.body);
+    const user = await User.findOne({ _id: id });
+    console.log("user", user);
+
+    const update = await User.findByIdAndUpdate(
+      { _id: id },
+      { $set: { name: name, mobile: mobile } },
+      { new: true }
+    );
+    console.log("upda", update);
+    if (!update) {
+      console.log("jwjndweid");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.redirect("/profile");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const LOADaddaddress = async (req, res) => {
+  try {
+    const id = req.session.user_id;
+    res.render("addaddress", { user: id });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const AddAddress = async (req, res) => {
+  try {
+    const { name, mobile, pincode, address, city, landmark, state } = req.body;
+    const id = req.session.user_id;
+    console.log("id", id);
+    const user = await User.findOne({ _id: id });
+    console.log("user", user);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const newAddress = {
+      name,
+      mobile,
+      pincode,
+      address,
+      city,
+      state,
+      landmark,
+    };
+    console.log("add", newAddress);
+    user.addresses.push(newAddress);
+    await user.save();
+    res.redirect("/profile");
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const DeleteAddress = async (req, res) => {
+  try {
+    const { id, index } = req.query;
+
+    console.log("hello", index);
+    console.log("hel", id);
+
+    const user = await User.findOne({ _id:id });
+
+    console.log("user",user);
+
+    if (index >= 0 && index < user.addresses.length) {
+      user.addresses.splice(index, 1);
+
+      await user.save();
+
+      res.redirect("/profile");
+    } else {
+      res.status(400).json({ error: "Invalid index" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+// const EditAddress = async (req,res)=>{
+
+//   try {
+    
+//     const { name, mobile, pincode, address, city, landmark, state } = req.body;
+//     const id = req.session.user_id;
+//     console.log("id", id);
+//     const user = await User.findOne({ _id: id });
+//     const adId= req.query.adId
+//     console.log("user", user);
+
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+// // Find the index of the address in the array based on its _id
+// const addressIndex = user.addresses.findIndex(address => address._id.toString() === adId);
+
+// if (addressIndex === -1) {
+//     return res.status(404).json({ error: 'Address not found' });
+// }
+
+// // Update the address fields
+// user.addresses[addressIndex].name = name;
+// user.addresses[addressIndex].state = mobile;
+// user.addresses[addressIndex].mobile = newMobile;
+// user.addresses[addressIndex].city = newCity;
+// user.addresses[addressIndex].address = newAddress;
+// user.addresses[addressIndex].landmark = newLandmark;
+// user.addresses[addressIndex].pincode = newPincode;
+
+// // Save the updated user document
+// await user.save();
+
+// res.redirect('/profile');
+// } catch (error) {
+// console.error(error);
+// res.status(500).json({ error: 'Internal Server Error' });
+// }
+// };
+
+//   } catch (error) {
+    
+//   }
+
+// }
 
 module.exports = {
   Homepage,
@@ -366,9 +568,15 @@ module.exports = {
   resendOTP,
   VerifyLogin,
   userLogout,
-  Loadshop,
+  loadShop,
+  SingleProduct,
   ForgetLoad,
   forgetpasswordVerify,
   ResetPasswordLoad,
-  resetpassword
+  resetpassword,
+  LoadProfile,
+  EditProfile,
+  LOADaddaddress,
+  AddAddress,
+  DeleteAddress,
 };

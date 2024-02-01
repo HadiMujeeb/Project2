@@ -1,0 +1,614 @@
+<%- include('../user/layouts/header') %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        a.text-decoration-none {
+            color: black;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a.text-decoration-none:hover {
+            color: #277eca;
+        }
+
+        .product_cartitem_pic img {
+            height: 50px;
+            width: 50px;
+        }
+
+        .product_cartitem_text h6,
+        .product_cartitem_text h5 {
+            font-size: 14px;
+        }
+
+        .breadcrumb-option {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        .breadcrumb__text h4 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb__links a {
+            color: #333;
+        }
+
+        .breadcrumb__links span {
+            color: #777;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .card-title::after {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 2px;
+            background-color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        .col-lg-4,
+        .col-lg-8 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .rounded-circle {
+            width: 150px;
+            height: 150px;
+        }
+
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            padding: 20px;
+            border: none;
+        }
+
+        .list-group-item:first-child {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .list-group-item:last-child {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #ff0000;
+            border-color: #ff0000;
+            transition: background-color 0.3s ease-in-out;
+            padding: 10px;
+        }
+
+        .btn-danger {
+            background-color: #081a22;
+            border-color: #3e7df1;
+            transition: background-color 0.3s ease-in-out;
+            padding: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff0000;
+            border-color: #ff0000;
+
+        }
+
+        .card-body p {
+            color: black;
+        }
+
+        .card-body p.mb-0 {
+            color: #777;
+        }
+
+        .btn-primary.btn-sm {
+            background-color: #ff0000;
+            border-color: #ff0000;
+            transition: background-color 0.3s ease-in-out;
+            padding: 11px;
+        }
+
+        .btn-primary.btn-sm:hover {
+            background-color: #ff0000;
+            border-color: #ff0000;
+
+        }
+
+        .table-sm td,
+        .table-sm th {
+            font-size: 14px;
+            color: #000;
+        }
+
+        .invoice-btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #1c7215;
+            border-radius: 30px;
+            padding: 15px;
+            color: #ffffff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Style for Edit and Delete buttons */
+        .genric-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .genric-btn:hover {
+            background-color: #ff6347;
+            /* Change the background color on hover */
+            color: #fff;
+            /* Change the text color on hover */
+        }
+
+        /* Style for circle arrow */
+        .circle.arrow {
+            border-radius: 50%;
+        }
+
+        /* Additional styles for danger-border */
+        .danger-border {
+            border: 2px solid #ff6347;
+            /* Set a border color for the button */
+            color: #ff6347;
+            /* Set the text color to match the border color */
+        }
+
+        .danger-border:hover {
+            background-color: #ff6347;
+            color: #fff;
+        }
+
+        .deleted-address {
+            display: none;
+        }
+    </style>
+    <section style="background-color: white">
+        <div class="container py-5">
+            <div class="row pt-5">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text pt-5">
+                        <h4><i class="fas fa-user-circle"></i> Profile</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: white">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <a href="#" class="text-decoration-none" onclick="toggleProfileForm()"><i
+                                            class="fas fa-edit"></i> Edit Profile</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#" class="text-decoration-none" onclick="toggleOrders()"><i
+                                            class="fas fa-file-alt"></i> Orders</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#" class="text-decoration-none" onclick="toggleAddress()">
+                                        <i class="fas fa-map-marked-alt"></i>Manage Address
+                                    </a>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <a href="/walletHistory" class="text-decoration-none"><i class="fas fa-wallet"></i>
+                                        Wallet History</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="/logout" class="btn btn-primary ml-3"><i class="fas fa-sign-out-alt"></i>
+                                        Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card mb-4" id="userDetails">
+                        <div class="card-body">
+                            <h3 class="card-title">User Profile</h3>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <p class="mb-0">Full Name:<%= user.name %>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="mb-0">
+
+                                    </p>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <p class="mb-0">Email:<%= user.email %>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="mb-0">
+
+                                    </p>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Mobile:<%= user.mobile %>
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="mb-0">
+
+                                    </p>
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0 mt-2">Actions:</p>
+                                </div>
+                                <div class="col-sm-9">
+
+                                    <a href="/addaddress" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i> Add Address
+                                    </a>
+                                </div>
+                                <div class="wallet my-4" style="padding: 1.7rem; border-radius:
+                                0.25rem; color: #ffffff;">
+                                    <h2><i class="fas fa-wallet" style="color: #fd0404;"></i> My Wallet</h2>
+                                    <p class="" style="font-weight: 900; font-weight: 500;font-size: larger;"><i
+                                            class="fas fa-rupee-sign"></i> Balance: <b
+                                            style="font-weight: 900; font-weight: 500;font-size: larger; color: #ff0000;">
+
+                                        </b>
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4" id="profileForm" style="display: none">
+                        <div class="card-body">
+                            <h5 class="card-title">Update Profile</h5>
+                            <hr />name
+                            <form action="/EditProfile" method="post">
+                                <div class="form-group">
+                                    <label for="firstName"><i class="fas fa-user"></i> First Name</label>
+                                    <input type="text" class="form-control" name="name" id="firstName"
+                                        value="<%= user.name%> " placeholder="Enter your first name" required>
+                                    <input type="hidden" name="id" value="<%=user._id%>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" readonly
+                                        value="<%= user.email%> " required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mobile"><i class="fas fa-mobile-alt"></i> Mobile</label>
+                                    <input type="text" class="form-control" id="mobile" name="mobile"
+                                        value="<%= user.mobile%> " placeholder="Enter your mobile number" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save
+                                    Changes</button>
+                            </form>
+
+                            <% if (typeof message !=="undefined" ) { %>
+                                <div>
+                                    <%= message %>
+                                </div>
+                                <% } %>
+                        </div>
+                    </div>
+
+                    <!-- ... address... -->
+                    <div class="card mb-4" id="addressDetails" style="display: none">
+                        <div class="card-body" id="addressdiv">
+                            <h5 class="card-title">Address Details</h5>
+                            <div class="d-flex justify-content-end">
+                                <a href="/addAddress" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New
+                                    Address</a>
+                            </div>
+
+                            <hr />
+                            <% if (user.addresses.length> 0) { %>
+                                <% user.addresses.forEach((address, index)=> { %>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <p class="mb-0">Name :</p>
+                                            <p class="mb-0">Mobile :</p>
+                                            <p class="mb-0">Pin Code :</p>
+                                            <p class="mb-0">Address :</p>
+                                            <p class="mb-0">City:</p>
+                                            <p class="mb-0">State :</p>
+                                            <p class="mb-0">Landmark :</p>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <h4>
+                                                <%= address.name %>
+                                            </h4>
+                                            <p>
+                                                <%= address.mobile %>
+                                            </p>
+                                            <p>
+                                                <%= address.pincode %>
+                                            </p>
+                                            <p>
+                                                <%= address.address %>
+                                            </p>
+                                            <p>
+                                                <%= address.city %>
+                                            </p>
+                                            <p>
+                                                <%= address.state%>
+                                            </p>
+                                            <p>
+                                                <%= address.landmark %>
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-9 offset-sm-3">
+                                            <a class="genric-btn danger-border circle arrow"
+                                                href="/EditAddress?adId=<%= user.address%>&userId=<%=address._id%> ">Edit</a>
+                                            <a class="genric-btn danger-border circle arrow" href=""
+                                                onclick="deleteAddress( '<%= user._id %>', <%= index %>)">Delete</a>
+
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div>
+                                                <p>Addresses not found</p>
+                                            </div>
+                                            <% } %>
+
+                                                <div class="row mt-3">
+
+                                                </div>
+                                                <hr />
+
+                        </div>
+                    </div>
+                    <div class="card mb-4" id="orderDetails" style="display: none">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Details</h5>
+                            <hr />
+                            <div class="shopping_cart_table">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Order ID</th>
+                                                <th>Payment method</th>
+                                                <th>Total</th>
+                                                <th>Order Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr class="cart-item">
+                                                <td>
+
+                                                    <br>
+                                                    <br>
+
+                                                    <a href="/invoice?orderId=" class="invoice-btn">
+                                                        <span
+                                                            style="font-weight: bold; text-decoration: underline;">Download
+                                                            Invoice</span>
+                                                    </a>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>₹</td>
+
+                                                <td class="text-success">Order Placed</td>
+
+                                                <td class="text-warning">Order Pending</td>
+
+                                                <td class="text-info">Order Delivered</td>
+
+                                                <td class="text-secondary">Order Returned</td>
+
+                                                <td class="text-dark">Order Waiting for Approval</td>
+
+                                                <td class="text-danger">Order Cancelled</td>
+
+                                                <td>
+
+                                                    <a class="genric-btn info-border circle arrow"
+                                                        href="/ordershow?id=">View Order</a>
+                                                    <br>
+                                                    <br>
+
+                                                    <a onclick="" type="button"
+                                                        class="genric-btn danger-border circle arrow">Cancel</a>
+
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="5" class="text-danger">No products found</td>
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pagination links/buttons -->
+                        <nav aria-label="Order List Pagination">
+                            <ul class="pagination justify-content-center">
+
+                                <li class="page-item">
+                                    <a class="page-link" id="orderDetails" href="" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <li class="page-item">
+                                    <a class="page-link" href="">
+
+                                    </a>
+                                </li>
+
+                                <li class="page-item">
+                                    <a class="page-link" href="" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+
+
+    <script>
+        function toggleProfileForm() {
+            var orderDetails = document.getElementById('orderDetails');
+            var profileForm = document.getElementById("profileForm");
+            var userDetails = document.getElementById("userDetails");
+            var addressDetails = document.getElementById("addressDetails");
+
+            if (profileForm.style.display === "none") {
+                profileForm.style.display = "block";
+                userDetails.style.display = "none";
+                addressDetails.style.display = "none";
+                orderDetails.style.display = "none";
+            } else {
+                profileForm.style.display = "none";
+                userDetails.style.display = "block";
+            }
+        }
+
+        function toggleAddress() {
+            var orderDetails = document.getElementById('orderDetails');
+            var userDetails = document.getElementById("userDetails");
+            var addressDetails = document.getElementById("addressDetails");
+            var profileForm = document.getElementById("profileForm");
+            if (addressDetails.style.display === "none") {
+                addressDetails.style.display = "block";
+                userDetails.style.display = "none";
+                profileForm.style.display = "none";
+                orderDetails.style.display = "none";
+            } else {
+                addressDetails.style.display = "none";
+                userDetails.style.display = "block";
+            }
+        }
+    </script>
+    <script>
+        async function deleteAddress(addressId, index) {
+            const confirmation = confirm("Are you sure you want to delete this address?");
+            if (confirmation) {
+                try {
+                    const response = await fetch(`/deleteaddress?id=${addressId}&index=${index}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    })
+                        .then(response => response.json())
+                        .then((response) => {
+                            if (response.success) {
+                                console.log(response)
+                                // window.location.reload()
+                                $('#addressdiv').load('/myaccount #addressdiv');
+                                const addressElement = document.getElementById(`address-${index}`);
+                                if (addressElement) {
+                                    // Add a CSS class to hide the deleted address
+
+                                    addressElement.classList.add("deleted-address");
+
+                                }
+                            } else {
+                                // Handle error cases if needed
+                                console.error("Error:", response.statusText);
+                            }
+                        })
+
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+        }
+
+    </script>
+
+
+    <!-- </body>
+
+</html> -->
+
+
+    <%- include('../user/layouts/footer') %>

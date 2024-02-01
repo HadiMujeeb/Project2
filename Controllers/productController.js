@@ -149,9 +149,9 @@ const loadEditProduct = async (req, res) => {
   }
 };
 
+
 const EditProduct = async (req, res) => {
   try {
-    console.log("hii");
     const id = req.body.id;
     console.log("id", id);
 
@@ -165,28 +165,66 @@ const EditProduct = async (req, res) => {
     } = req.body;
     console.log(req.body);
 
-    const images = req.files.map((file) => file.buffer.toString("base64"));
-    const catego = await Category.findOne({ name: category });
-    await Product.updateOne(
+    const data = await Product.findOne({ _id: id }).populate("category");
+    const categories = await Category.find({ is_listed: true });
+
+    let imageData = [];
+
+
+    if (req.files) {
+      const existingImageCount = (await Product.findById(id)).image.length;
+
+      // Ensure that the total number of existing and new images does not exceed 4
+      if (existingImageCount + req.files.length !== 4) {
+        req.flash("message", "only 4 images allowed");
+        res.redirect(`/EditProduct?productId=${id}`);
+      } else {
+        for (let i = 0; i < req.files.length; i++) {
+          // Resized path
+          const resizedPath = path.join(
+            __dirname,
+            "../public/SharpImage",
+            req.files[i].filename
+          );
+
+          // Resize image using sharp
+          await sharp(req.files[i].path)
+            .resize(800, 1200, { fit: "fill" })
+            .toFile(resizedPath);
+
+          // Push the resized filename to the array
+          imageData.push(req.files[i].filename);
+        }
+      }
+    }
+    console.log(imageData);
+
+    // Find the category by name
+    const selectedCategory = await Category.findOne({
+      name: category,
+      isListed: true
+    });
+
+    const updatedProduct = await Product.findByIdAndUpdate(
       { _id: id },
       {
-        $set: {
-          name: productName,
-          description,
-          price,
-          category: catego._id,
-          stockQuantity: Quantity,
-          brand,
-          image: images,
-        },
-      }
+        name: productName,
+        description:description,
+        price:price,
+        category: selectedCategory._id, // Use the ObjectId of the category
+        stockQuantity: Quantity,
+        brand:brand,
+        $push: { image: { $each: imageData } }, // Append new images to the existing array
+      },
+      { new: true } // Return the updated document
     );
-
+    // Redirect back to the product page
     res.redirect("/product");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
+
 
 const deleteIMG = async (req, res) => {
   try {
