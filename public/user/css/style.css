@@ -5328,7 +5328,6 @@ ul {
 .login_part .login_part_text .login_part_text_iner, .login_part .login_part_text .login_part_form_iner, .login_part .login_part_form .login_part_text_iner, .login_part .login_part_form .login_part_form_iner {
   display: table-cell;
   vertical-align: middle;
-  margin-left: 100px;
 }
 
 /* line 1901, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product.scss */
@@ -5372,8 +5371,6 @@ ul {
   /* line 1928, ../../01 cl html template/03_jun 2019/188_Aranoz shop_html/sass/_product.scss */
   .login_part .login_part_form {
     padding: 0;
-    margin-left: auto;
-    
   }
 }
 

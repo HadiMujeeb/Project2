@@ -18,7 +18,11 @@ inputs.forEach((input, index1) => {
     }
     // if the next input is disabled and the current value is not empty
     //  enable the next input and focus on it
-    if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
+    if (
+      nextInput &&
+      nextInput.hasAttribute("disabled") &&
+      currentInput.value !== ""
+    ) {
       nextInput.removeAttribute("disabled");
       nextInput.focus();
     }
@@ -49,34 +53,33 @@ inputs.forEach((input, index1) => {
 //focus the first input which index is 0 on window load
 window.addEventListener("load", () => inputs[0].focus());
 
-
-// window.addEventListener("load",resendOTP() );
+// window.addEventListener("load",resendOTP()
 
 function resendOTP() {
-
   const email = document.querySelector('input[name="email"]').value;
-  console.log("email",email);
-  const resendLink = document.getElementById('resendLink');
-  console.log("resend",resendLink);
-  const countdownElement = document.getElementById('countdown');
-  const expirationMessageElement = document.getElementById('expirationMessage');
+  console.log("email", email);
+  const resendLink = document.getElementById("resendLink");
+  console.log("resend", resendLink);
+  const countdownElement = document.getElementById("countdown");
+  console.log("count", countdownElement);
+  const expirationMessageElement = document.getElementById("expirationMessage");
+  console.log("expration", expirationMessageElement);
+  resendLink.style.pointerEvents = "none";
 
-  resendLink.style.pointerEvents = 'none';
-
-  fetch('/resendOtp', {
-    method: 'POST',
+  fetch("/resendOtp", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email }),  
+    body: JSON.stringify({ email }),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       console.log(data.message);
       // You can update the UI here if needed
     })
-    .catch(error => {
-      console.error('Error:', error);
+    .catch((error) => {
+      console.error("Error:", error);
       // Handle error if needed
     });
 
@@ -92,12 +95,72 @@ function resendOTP() {
     // Check if the countdown has reached 0
     if (seconds <= 0) {
       // Enable the resend link and clear the interval
-      resendLink.style.pointerEvents = 'auto';
-      countdownElement.textContent = '';
-      expirationMessageElement.textContent = '';
+      resendLink.style.pointerEvents = "auto";
+      countdownElement.textContent = "";
+      expirationMessageElement.textContent = "";
       clearInterval(countdownInterval);
+
+      fetch("/deleteExpiredOtps", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.message);
+          // You can handle the server response here if needed
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle error if needed
+        });
     }
   }, 1000);
+}
 
+// Initial countdown time
+function startTimer() {
+  const email = document.querySelector('input[name="email"]').value;
+  let seconds = 60;
+  const countdown = document.getElementById("count");
+
+  setTimeout(function () {
+    document.getElementById("timer").textContent = "OTP Expired";
+  }, seconds * 1000);
+
+  // Update the countdown every second
+  const countdownInterval = setInterval(function () {
+    seconds--;
+    document.getElementById("count").textContent = seconds;
+
+    if (seconds <= 0) {
+      clearInterval(countdownInterval);
+
+      // Use fetch to delete expired OTPs
+      fetch("/deleteExpiredOtps", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.message);
+        
+        })
+        .catch((error) => {
+          console.error("Fetch error:", error.message);
+       
+        });
+    }
+  }, 1000);
 }
 

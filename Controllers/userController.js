@@ -6,6 +6,7 @@ const Product = require("../Models/productModel");
 const Categories = require("../Models/categoriesModel");
 const randomstrings = require("randomstring");
 const { default: mongoose } = require("mongoose");
+require("dotenv").config();
 
 // password hide
 
@@ -52,6 +53,7 @@ const insertUser = async (req, res) => {
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
           sendOTPVerificationEmail(result, res);
+          // const timer = setTimeout(() => {});
         });
 
         if (userData) {
@@ -74,14 +76,14 @@ const sendOTPVerificationEmail = async ({ email }, res) => {
       // port: 587,
       // secure: true,
       auth: {
-        user: "hadimujeeb300@gmail.com",
+        user: process.env.AUTH_MAIL,
         pass: "ogovpoenykqxjwqt",
       },
     });
 
     const otp = ` ${Math.floor(1000 + Math.random() * 9000)}`;
     console.log("email:", email);
-    console.log("from:", "hadimujeeb300@gmail.com");
+    console.log("from:", process.env.AUTH_MAIL);
 
     // mail options
     const mailOptions = {
@@ -136,20 +138,16 @@ const verifyOtp = async (req, res) => {
 
     console.log("otp:", otp);
     const user = await UserOTPVerification.findOne({ email: sessions });
-    // console.log("user:", user);
 
     if (!user || user.expiresAt < Date.now()) {
       // console.log("user:", user);
 
-      // If no user found or maximum attempts reached, render a message and return
       res.render("verifyOTP", {
         message: "OTP expired or too many incorrect attempts.",
       });
-      // console.log("email",sessions);
+
       return;
     }
-
-    // user.otp mean serOTPVerification here have  that is user otp
 
     const hashedOTP = user.otp;
     console.log("uj6uj7uju", otp, "yhyhhyyhyh", hashedOTP);
@@ -181,12 +179,16 @@ const resendOTP = async (req, res) => {
   try {
     console.log("bodyis", req.body);
     const email = req.body.email;
-    console.log("hello", email);
-    await UserOTPVerification.deleteOne({ email: email });
     await sendOTPVerificationEmail({ email }, res);
   } catch (error) {
     console.log(error.message);
   }
+};
+
+const deleteExpiredOtps = async (req, res) => {
+  const email = req.body.email;
+  console.log("hello", email);
+  await UserOTPVerification.deleteOne({ email: email });
 };
 
 //------------------------------------LOGIN-----------------------------------------------------------------------
@@ -219,7 +221,7 @@ const VerifyLogin = async (req, res) => {
 
     const userData = await User.findOne({ email: email });
 
-    if (userData) {
+    if (userData && userData.is_Verified==1) {
       console.log("pass", userData.password);
 
       const passwordMatch = await bcrypt.compare(password, userData.password);
@@ -234,7 +236,7 @@ const VerifyLogin = async (req, res) => {
     } else {
       res.render("login", { message: "Email and password is incorrect" });
     }
-  } catch (error) {
+  } catch (error) {-
     console.log(error.message);
   }
 };
@@ -251,10 +253,11 @@ const userLogout = async (req, res) => {
 const loadShop = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.session.user_id });
-    console.log("user", user);
+    
     const categId = req.query.categid;
-    console.log("id", categId);
+ 
     let products = [];
+
 
     if (categId) {
       const CategoryId = new mongoose.Types.ObjectId(categId);
@@ -326,7 +329,7 @@ const forgetpasswordVerify = async (req, res) => {
           { $set: { token: randomstring } }
         );
         sendforgetemail(details.name, details.email, randomstring);
-        res.render("forgetpassword", { message: "PLease check your email" });
+        res.render("forgetpassword", { message: "Please check your email" });
       }
     } else {
       res.render("forgetpassword", { message: "Email is incorrect" });
@@ -342,13 +345,13 @@ const sendforgetemail = async (name, email, token) => {
       service: "gmail",
 
       auth: {
-        user: "hadimujeeb300@gmail.com",
+        user:  process.env.AUTH_MAIL,
         pass: "ogovpoenykqxjwqt",
       },
     });
 
     const mailOptions = {
-      from: "hadimujeeb300@gmail.com",
+      from:process.env.AUTH_MAIL,
       to: email,
       subject: "For Reset Password",
       html:
@@ -492,9 +495,9 @@ const DeleteAddress = async (req, res) => {
     console.log("hello", index);
     console.log("hel", id);
 
-    const user = await User.findOne({ _id:id });
+    const user = await User.findOne({ _id: id });
 
-    console.log("user",user);
+    console.log("user", user);
 
     if (index >= 0 && index < user.addresses.length) {
       user.addresses.splice(index, 1);
@@ -511,52 +514,72 @@ const DeleteAddress = async (req, res) => {
   }
 };
 
+const LoadEditAddress = async (req, res) => {
+  try {
+    const user = req.session.user_id;
 
-// const EditAddress = async (req,res)=>{
+    const address = req.query.userId;
 
-//   try {
-    
-//     const { name, mobile, pincode, address, city, landmark, state } = req.body;
-//     const id = req.session.user_id;
-//     console.log("id", id);
-//     const user = await User.findOne({ _id: id });
-//     const adId= req.query.adId
-//     console.log("user", user);
+    console.log("ds", address);
 
-//     if (!user) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-// // Find the index of the address in the array based on its _id
-// const addressIndex = user.addresses.findIndex(address => address._id.toString() === adId);
+    const data = await User.findOne({ _id: user });
+    let newData = data.addresses.find((value) => value.id == address);
+    console.log(newData, "hhhhhhh");
+    res.render("editaddress", { newData });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-// if (addressIndex === -1) {
-//     return res.status(404).json({ error: 'Address not found' });
-// }
+const EditAddress = async (req, res) => {
+  try {
+    const {
+      name,
+      mobile,
+      pincode,
+      address,
+      city,
+      landmark,
+      state,
+      AddressId,
+    } = req.body;
+    const id = req.session.user_id;
+    console.log("idss", AddressId);
 
-// // Update the address fields
-// user.addresses[addressIndex].name = name;
-// user.addresses[addressIndex].state = mobile;
-// user.addresses[addressIndex].mobile = newMobile;
-// user.addresses[addressIndex].city = newCity;
-// user.addresses[addressIndex].address = newAddress;
-// user.addresses[addressIndex].landmark = newLandmark;
-// user.addresses[addressIndex].pincode = newPincode;
+    // Find the user by id
+    const user = await User.findOne({ _id: id });
 
-// // Save the updated user document
-// await user.save();
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log("sdj", id);
+    // Update the address fields using findOneAndUpdate with arrayFilters
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id, "addresses._id": AddressId },
+      {
+        $set: {
+          "addresses.$.name": name,
+          "addresses.$.mobile": mobile,
+          "addresses.$.pincode": pincode,
+          "addresses.$.address": address,
+          "addresses.$.city": city,
+          "addresses.$.landmark": landmark,
+          "addresses.$.state": state,
+        },
+      },
+      { new: true }
+    );
 
-// res.redirect('/profile');
-// } catch (error) {
-// console.error(error);
-// res.status(500).json({ error: 'Internal Server Error' });
-// }
-// };
+    if (!updatedUser) {
+      return res.status(404).json({ error: "Address not found" });
+    }
 
-//   } catch (error) {
-    
-//   }
-
-// }
+    res.redirect("/profile");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   Homepage,
@@ -565,6 +588,7 @@ module.exports = {
   LoginPage,
   loadOtpPage,
   verifyOtp,
+  deleteExpiredOtps,
   resendOTP,
   VerifyLogin,
   userLogout,
@@ -579,4 +603,6 @@ module.exports = {
   LOADaddaddress,
   AddAddress,
   DeleteAddress,
+  LoadEditAddress,
+  EditAddress,
 };

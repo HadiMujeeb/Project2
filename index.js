@@ -1,5 +1,12 @@
+
 const mongoose =require("mongoose");
-mongoose.connect("mongodb://localhost:27017/Project");
+
+require("dotenv").config();
+mongoose.connect(process.env.MONGO_URL );
+
+
+
+
 const path=require("path")
 const nocache =  require("nocache")
 const express =require("express");

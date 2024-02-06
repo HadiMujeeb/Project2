@@ -2,6 +2,8 @@ const express =require("express");
 // const app=express()
 const user_router =express()
 const userController=require("../Controllers/userController")
+const cartController= require("../Controllers/cartController")
+
 const auth = require('../Middlewire/Auth')
 
 
@@ -10,14 +12,6 @@ const auth = require('../Middlewire/Auth')
 
 user_router.set('view engine','ejs');
 user_router.set('views','./views/user');
-
-user_router.use(express.json());
-user_router.use(express.urlencoded({extended:true}))
-// const session = require("express-session");
-// user_route.use(session({secret:config.sessionSecret,saveUninitialized:false,resave:false}))
-
-
-
 
 
 user_router.get("/",auth.isLogout,userController.Homepage);
@@ -33,6 +27,10 @@ user_router.get('/verifyOTP',auth.isLogout,userController.loadOtpPage)
 user_router.post('/verifyOTP',userController.verifyOtp)
 
 user_router.post('/resendOtp',userController.resendOTP)
+
+user_router.delete("/deleteExpiredOtps",userController.deleteExpiredOtps)
+
+user_router.delete("/firstDelete",userController.deleteExpiredOtps)
 
 
 
@@ -68,10 +66,16 @@ user_router.post("/addaddress",userController.AddAddress)
 user_router.delete("/deleteaddress",userController.DeleteAddress)
 
 
-user_router.post("/EditAddress",userController.DeleteAddress)
+// user_router.post("/EditAddress",userController.DeleteAddress)
+
+user_router.get("/editaddress",userController.LoadEditAddress)
+
+user_router.post("/editaddress",userController.EditAddress)
 
 
+user_router.get("/cart",cartController.loadCart)
 
+user_router.post("/add-to-cart",cartController.AddToCart)
 
 
 

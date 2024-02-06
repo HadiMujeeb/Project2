@@ -410,9 +410,9 @@
                                         </div>
                                         <div class="col-sm-9 offset-sm-3">
                                             <a class="genric-btn danger-border circle arrow"
-                                                href="/EditAddress?adId=<%= user.address%>&userId=<%=address._id%> ">Edit</a>
+                                                href="/EditAddress?userId=<%=address._id%>">Edit</a>
                                             <a class="genric-btn danger-border circle arrow" href=""
-                                                onclick="deleteAddress( '<%= user._id %>', <%= index %>)">Delete</a>
+                                                onclick="deleteAddress( '<%= user._id %>', '<%= index %>')">Delete</a>
 
                                         </div>
                                     </div>

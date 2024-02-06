@@ -1,4 +1,102 @@
-<link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="assets/imgs/theme/logo.svg" class="logo" alt="" />
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/user">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">User</span>
+                    </a>
+
+                </li>
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/category">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Catogoies</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/product">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Products</span>
+                    </a>
+
+                </li>
+
+                <br />
+                <br />
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <!-- <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
+                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
+                    </div> -->
+                    <datalist id="search_terms">
+                        <option value="Products"></option>
+                        <option value="New orders"></option>
+                        <option value="Apple iphone"></option>
+                        <option value="Ahmed Hassan"></option>
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a> -->
+                    </li>
+
+                </ul>
+            </div>
+        </header>
+        <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
 
 <div class="col-md-3" style="margin-top: auto; margin-left: auto; margin-bottom: auto; margin-right:auto ;">
     <br>
@@ -24,3 +122,101 @@
     <% } %>
     </form>
 </div>
+        <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <!-- <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    &copy; Nest - HTML Ecommerce Template .
+                </div>
+                < <div class="col-sm-6">
+                    <div class="text-sm-end">All rights reserved</div>
+                </div> -->
+            <!-- </div>  -->
+        </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const deleteImage = async (event, image, prdtId, index) => {
+            try {
+                event.preventDefault();
+
+                // Use standard browser confirmation dialog
+                const userConfirmed = window.confirm('Are you sure you want to delete this image?');
+
+                if (userConfirmed) {
+                    await confirmDeleteImage(image, prdtId, index);
+                }
+            } catch (error) {
+                console.error("Error showing confirmation dialog:", error.message);
+                // Handle errors if necessary
+            }
+        }
+
+        async function confirmDeleteImage(image, prdtId, index) {
+            try {
+                console.log(image);
+                console.log(prdtId);
+                console.log(index);
+                const deleted = await axios.patch("/deleteImage", {
+                    image,
+                    prdtId,
+                    index
+                });
+
+                if (deleted.data.success) {
+                    window.location.reload();
+                    console.log("Item has been removed.");
+                    const imageContainer = document.getElementById(`pdtImage_${index}`);
+                    imageContainer.style.display = "none";
+                    window.location.reload();
+                } else {
+                    console.log("Failed to remove item. Check console for details.");
+                    // Handle failure if necessary
+                }
+            } catch (error) {
+                console.error("Error deleting image:", error.message);
+                // Handle errors if necessary
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the file input element
+            const fileInput = document.getElementById('productImage');
+
+            // Get the image preview container
+            const imagePreviewContainer = document.getElementById('imagePreview');
+
+            // Add an event listener to the file input
+            fileInput.addEventListener('change', function () {
+                // Remove existing preview images
+                imagePreviewContainer.innerHTML = '';
+
+                // Loop through selected files and create image previews
+                for (const file of fileInput.files) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'img-sm img-thumbnail mr-2';
+                    img.alt = 'Image Preview';
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    imagePreviewContainer.appendChild(img);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
