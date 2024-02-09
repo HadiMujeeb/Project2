@@ -71,6 +71,10 @@ admin_router.post('/EditProduct',upload.array("image", 4),productController.Edit
 
 admin_router.patch('/deleteImage',productController.deleteIMG)
 
+
+admin_router.get("/orderList", adminController.LoadOrderList);
+
+
 // admin_router.post('/EditProduct',upload.array("productImage"),productController.deleteIMG)
 
 

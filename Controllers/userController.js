@@ -6,6 +6,7 @@ const Product = require("../Models/productModel");
 const Categories = require("../Models/categoriesModel");
 const randomstrings = require("randomstring");
 const { default: mongoose } = require("mongoose");
+const Order = require("../Models/OrderModel");
 require("dotenv").config();
 
 // password hide
@@ -221,7 +222,7 @@ const VerifyLogin = async (req, res) => {
 
     const userData = await User.findOne({ email: email });
 
-    if (userData && userData.is_Verified==1) {
+    if (userData && userData.is_Verified == 1) {
       console.log("pass", userData.password);
 
       const passwordMatch = await bcrypt.compare(password, userData.password);
@@ -236,8 +237,8 @@ const VerifyLogin = async (req, res) => {
     } else {
       res.render("login", { message: "Email and password is incorrect" });
     }
-  } catch (error) {-
-    console.log(error.message);
+  } catch (error) {
+    -console.log(error.message);
   }
 };
 
@@ -253,11 +254,10 @@ const userLogout = async (req, res) => {
 const loadShop = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.session.user_id });
-    
-    const categId = req.query.categid;
- 
-    let products = [];
 
+    const categId = req.query.categid;
+
+    let products = [];
 
     if (categId) {
       const CategoryId = new mongoose.Types.ObjectId(categId);
@@ -303,7 +303,6 @@ const SingleProduct = async (req, res) => {
       "category"
     );
 
-    
     res.render("SingleProduct", { product });
   } catch (error) {
     console.log(error.message);
@@ -348,13 +347,13 @@ const sendforgetemail = async (name, email, token) => {
       service: "gmail",
 
       auth: {
-        user:  process.env.AUTH_MAIL,
+        user: process.env.AUTH_MAIL,
         pass: "ogovpoenykqxjwqt",
       },
     });
 
     const mailOptions = {
-      from:process.env.AUTH_MAIL,
+      from: process.env.AUTH_MAIL,
       to: email,
       subject: "For Reset Password",
       html:
@@ -414,13 +413,14 @@ const resetpassword = async (req, res) => {
 const LoadProfile = async (req, res) => {
   try {
     let user;
-    // console.log("user", req.session.user_id);
+
     if (req.session.user_id) {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
     }
+    const order = await Order.find({ user_id: user._id });
 
-    res.render("profile", { user });
+    res.render("profile", { user, order });
   } catch (error) {
     console.log(error.message);
   }
@@ -584,6 +584,8 @@ const EditAddress = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   Homepage,
   RegisterPage,
@@ -608,4 +610,5 @@ module.exports = {
   DeleteAddress,
   LoadEditAddress,
   EditAddress,
+ 
 };

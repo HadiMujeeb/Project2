@@ -41,7 +41,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public/user")));
 app.use(express.static(path.join(__dirname,"public/admin")));
+// app.use(express.static(path.join(__dirname, 'public/order')));
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 const user_router = require("./Routes/user");
 app.use("/",user_router);

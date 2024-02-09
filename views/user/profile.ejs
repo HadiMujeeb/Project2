@@ -241,7 +241,7 @@
                                             class="fas fa-edit"></i> Edit Profile</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <a href="/order" class="text-decoration-none" ><i
+                                    <a href="#" class="text-decoration-none" onclick="toggleOrder()"><i
                                             class="fas fa-file-alt"></i> Orders</a>
                                 </li>
                                 <li class="list-group-item">
@@ -445,95 +445,106 @@
                                                 <th>Order Status</th>
                                                 <th>Actions</th>
                                             </tr>
+
                                         </thead>
-                                        <tbody>
+                                        <% for (let i=0 ;i< order.length ;i++){%>
 
-                                            <tr class="cart-item">
-                                                <td>
-
-                                                    <br>
-                                                    <br>
-
-                                                    <a href="/invoice?orderId=" class="invoice-btn">
-                                                        <span
-                                                            style="font-weight: bold; text-decoration: underline;">Download
-                                                            Invoice</span>
-                                                    </a>
-
+                                            <tbody>
+                                                <td onclick="redirectToOrderDetails('<%= order[i]._id %>')">
+                                                    <%=order[i]._id%>
                                                 </td>
-                                                <td>
-
-                                                </td>
-                                                <td>₹</td>
-
-                                                <td class="text-success">Order Placed</td>
-
-                                                <td class="text-warning">Order Pending</td>
-
-                                                <td class="text-info">Order Delivered</td>
-
-                                                <td class="text-secondary">Order Returned</td>
-
-                                                <td class="text-dark">Order Waiting for Approval</td>
-
-                                                <td class="text-danger">Order Cancelled</td>
 
                                                 <td>
+                                                    <%=order[i].payment%>
+                                                </td>
 
-                                                    <a class="genric-btn info-border circle arrow"
-                                                        href="/ordershow?id=">View Order</a>
-                                                    <br>
-                                                    <br>
+                                                <td>$<%=order[i].total_amount%>
+                                                </td>
 
-                                                    <a onclick="" type="button"
-                                                        class="genric-btn danger-border circle arrow">Cancel</a>
+                                                <td>
+                                                    <%=order[i].status%>
+                                                </td>
+                                                <td>
+                                                    <a class="genric-btn danger-border circle " href="#"
+                                                        onclick="CancelOrder('<%= order[i]._id %>')">CANCEL</a>
 
                                                 </td>
-                                            </tr>
 
-                                            <tr>
-                                                <td colspan="5" class="text-danger">No products found</td>
-                                            </tr>
+                                            </tbody>
 
-                                        </tbody>
-
+                                            <% }%>
                                     </table>
-
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination links/buttons -->
-                        <nav aria-label="Order List Pagination">
-                            <ul class="pagination justify-content-center">
-
-                                <li class="page-item">
-                                    <a class="page-link" id="orderDetails" href="" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-
-                                <li class="page-item">
-                                    <a class="page-link" href="">
-
-                                    </a>
-                                </li>
-
-                                <li class="page-item">
-                                    <a class="page-link" href="" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </nav>
                     </div>
+                    <!-- Pagination links/buttons -->
+                    <nav aria-label="Order List Pagination">
+                        <ul class="pagination justify-content-center">
+
+                            <li class="page-item">
+                                <a class="page-link" id="orderDetails" href="" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <li class="page-item">
+                                <a class="page-link" href="">
+
+                                </a>
+                            </li>
+
+                            <li class="page-item">
+                                <a class="page-link" href="" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
                 </div>
             </div>
+        </div>
     </section>
 
 
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+        function redirectToOrderDetails(orderId) {
+
+            //   var url = "/orderview?" + orderId;
+            window.location.href = '/orderview?orderId=' + encodeURIComponent(orderId);
+            //   window.location.href = url;
+        }
+
+
+
+
+        function CancelOrder(cancelId) {
+            // Display a confirmation dialog using SweetAlert
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to cancel this order!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                // If user confirms the cancellation
+                if (result.isConfirmed) {
+                    // Perform the cancellation action
+                    // You can replace this with your actual cancellation logic
+                    window.location.href = "/OrderCancel?CancelId=" + encodeURIComponent(cancelId);
+                    
+                }
+                setTimeout(function () {
+                    location.reload();
+                    
+                }, 1000);
+            });
+        }
+
         function toggleProfileForm() {
             var orderDetails = document.getElementById('orderDetails');
             var profileForm = document.getElementById("profileForm");
@@ -567,7 +578,22 @@
             }
         }
 
-        
+
+        function toggleOrder() {
+            var orderDetails = document.getElementById('orderDetails');
+            var userDetails = document.getElementById("userDetails");
+            var addressDetails = document.getElementById("addressDetails");
+            var profileForm = document.getElementById("profileForm");
+            if (orderDetails.style.display = "none") {
+                addressDetails.style.display = "none";
+                userDetails.style.display = "none";
+                profileForm.style.display = "none";
+                orderDetails.style.display = "block";
+            } else {
+                orderDetails.style.display = "none";
+                userDetails.style.display = "block";
+            }
+        }
 
 
     </script>

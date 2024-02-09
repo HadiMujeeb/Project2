@@ -109,7 +109,7 @@ const AddToCart = async (req, res) => {
               $push: {
                 items: {
                   product_id: productId,
-                  productName:productName,
+                  productName: productName,
                   quantity: quantity,
                   price: productPrice,
                   total_price: quantity * productPrice,
@@ -128,8 +128,8 @@ const AddToCart = async (req, res) => {
           user_id: id,
           items: [
             {
-              product_id:productId,
-              productName:productName,
+              product_id: productId,
+              productName: productName,
               quantity: quantity,
               price: product.price,
               total_price: quantity * product.price,
@@ -138,7 +138,6 @@ const AddToCart = async (req, res) => {
         });
 
         await newCart.save();
-       
       }
       res.json({ success: true });
     }
@@ -303,7 +302,6 @@ const Checkout = async (req, res) => {
         "items.product_id"
       );
       if (ProDetails) {
-        
         const orderItems = ProDetails.items.map((item) => ({
           product_id: item.product_id,
           productName: item.productName,
@@ -313,7 +311,7 @@ const Checkout = async (req, res) => {
           ordered_status: "none",
           cancellationReason: "none",
         }));
-    console.log("product",orderItems.ProductName)
+        console.log("product", orderItems.ProductName);
         const order = new Order({
           user_id: user._id,
           payment: paymentMethod,
@@ -330,8 +328,10 @@ const Checkout = async (req, res) => {
         if (order) {
           await Cart.deleteMany({});
           console.log("Items deleted from the cart");
-          const order = await Order.findOne({ user_id: user._id }).sort({ _id: -1 });
-          console.log("orderid",order._id);
+          const order = await Order.findOne({ user_id: user._id }).sort({
+            _id: -1,
+          });
+          console.log("orderid", order._id);
           res.json({ success: true, order: order._id });
         }
       }
@@ -348,7 +348,7 @@ const LoadConfirm = async (req, res) => {
     } else {
       const { orderId } = req.query;
       const order = await Order.findOne({ _id: orderId });
-      console.log("hii",order);
+      console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
 
       const address = user.addresses.find(
@@ -364,32 +364,68 @@ const LoadConfirm = async (req, res) => {
   }
 };
 
-
-const LoadOrder = async (req,res)=>{
+const LoadOrder = async (req, res) => {
   try {
+    if (!req.session.user_id) {
+      res.redirect("/login");
+    } else {
+      const id = req.session.user_id;
 
-    if(!req.session.user_id){
-      res.redirect("/login")
-    }else{
-    const id=req.session.user_id
+      const user = await User.findOne({ _id: id });
 
-    const user = await User.findOne({_id:id})
-     
-   const order = await Order.findOne({user_id:user._id})
+      const order = await Order.findOne({ user_id: user._id });
 
-//    const proIds = order.items.filter((item) => {
-//     return item.user_id.toString() === user._id.toString(); 
-// });
-console.log("hh",order);
-  //  console.log("proID",proId);
-      res.render("order",{order})
+      //    const proIds = order.items.filter((item) => {
+      //     return item.user_id.toString() === user._id.toString();
+      // });
+      console.log("hh", order);
+      //  console.log("proID",proId);
+      res.render("order", { order });
     }
-   
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const OrderView = async (req, res) => {
+  try {
+    if (!req.session.user_id) {
+      res.redirect("/login");
+    } else {
+      const { orderId } = req.query;
+      const order = await Order.findOne({ _id: orderId });
+      console.log("hii", order);
+      const user = await User.findOne({ _id: req.session.user_id });
+
+      const address = user.addresses.find(
+        (address) =>
+          address._id.toString() === order.delivery_address.toString()
+      );
+
+      res.render("orderview", { order, address});
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const OrderCancel = async(req,res)=>{
+  try {
+    const id = req.query.CancelId;
+    console.log("fi",id);
+    const order = await Order.findOne({_id:id})
+    if(order){
+      await Order.updateOne({_id:id},{$set:{status:"cancelled"}})
+      console.log("cancelled successfully");
+    }
+
   } catch (error) {
     console.log(error.message);
   }
 }
-module.exports = {  
+
+
+module.exports = {
   loadCart,
   AddToCart,
   UpdateQuantity,
@@ -397,5 +433,7 @@ module.exports = {
   LoadCheckout,
   Checkout,
   LoadConfirm,
-  LoadOrder
+  LoadOrder,
+  OrderView,
+  OrderCancel
 };

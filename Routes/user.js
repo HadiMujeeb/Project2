@@ -82,6 +82,13 @@ user_router.get("/confirm", cartController.LoadConfirm);
 
 user_router.get("/order", cartController.LoadOrder);
 
+user_router.get("/orderview", cartController.OrderView);
+
+user_router.get("/OrderCancel", cartController.OrderCancel);
+
+
+
+
 
 
 
