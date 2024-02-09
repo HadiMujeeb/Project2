@@ -121,8 +121,7 @@
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
                             <a href=""><i class="ti-heart"></i></a>
                             <div class="dropdown cart">
-                                <a class="dropdown-toggle" href="#" id="navbarDropdown3" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="dropdown-toggle" href="/cart" id="navbarDropdown3" role="button">
                                     <i class="fas fa-cart-plus"></i>
                                 </a>
                                 <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -333,7 +332,7 @@
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="single_product_item">
                                         <a href="/single/?productId=<%= products[i].id %>">
-                                            <img src="/SharpImage/<%= products[i].image[1] %>" alt="img">
+                                            <img src="SharpImage/<%= products[i].image[1] %>" alt="img">
                                         </a>
                                         <div class="single_product_text">
                                             <h4>
@@ -520,7 +519,7 @@
 
     <script>
         // Define your addToCart function
-        function addToCart(productId, productName , productPrice) {
+        function addToCart(productId, productName, productPrice) {
             // Show SweetAlert confirmation dialog
             Swal.fire({
                 icon: 'question',
@@ -531,6 +530,7 @@
                 cancelButtonText: 'No',
             }).then((result) => {
                 if (result.isConfirmed) {
+
                     // User clicked "Yes," add the item to the cart
                     const quantity = 1; // You may get this from a form input
                     fetch('/add-to-cart', {
@@ -538,23 +538,33 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ productId, productName, productPrice ,quantity
-                         }),
+                        body: JSON.stringify({
+                            productId, productName, productPrice, quantity
+                        }),
                     })
                         .then(response => response.json())
                         .then(data => {
-                            // Handle the response, update UI, etc.
-                            console.log(data.message);
-
-                            // Show success message
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Added to cart!',
-                                text: `${productName} has been added to your cart.`,
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+                            if (data.success === false) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Info',
+                                    text: data.message,
+                                });
+                            } else {
+                                // Handle success response
+                                console.log(data.message);
+                                // Show success message
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added to cart!',
+                                    text: `${productName} has been added to your cart.`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
                         })
+
+
                         .catch(error => {
                             console.error('Error adding to cart:', error);
                             // Show error message

@@ -303,8 +303,11 @@ const SingleProduct = async (req, res) => {
       "category"
     );
 
+    
     res.render("SingleProduct", { product });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 const ForgetLoad = async (req, res) => {

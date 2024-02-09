@@ -1,7 +1,51 @@
 <%- include('../user/layouts/header') %>
   <!--================Cart Area =================-->
+  <style>
+    .product_count {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-decrement,
+    .quantity-increment {
+      display: inline-block;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+    }
+
+    .quantity-decrement i,
+    .quantity-increment i {
+      font-size: 16px;
+    }
+
+    .input-number {
+      width: 50px;
+      text-align: center;
+      margin: 0 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      font-size: 14px;
+    }
+
+    /* Styling for hover and active states */
+    .quantity-decrement:hover,
+    .quantity-increment:hover {
+      background-color: #e0e0e0;
+    }
+
+    .quantity-decrement:active,
+    .quantity-increment:active {
+      background-color: #d0d0d0;
+    }
+  </style>
+
   <section class="cart_area padding_top">
-    <div class="container">
+    <div class="container" id="reloadDiv">
       <div class="cart_inner">
         <div class="table-responsive">
           <table class="table">
@@ -10,68 +54,174 @@
                 <th scope="col">Product</th>
                 <th scope="col">Price</th>
                 <th scope="col">Quantity</th>
+                <!-- <th scope="col">Remove</th> -->
+                <th></th>
                 <th scope="col">Total</th>
+
               </tr>
             </thead>
             <tbody>
-            
+              <%if(cartDetails && cartDetails.items){ %>
 
-              <tr>
-                <td>
-                  <div class="media">
-                    <div class="d-flex">
-                      <img src="img/product/single-product/cart-1.jpg" alt="" />
-                    </div>
-                    <div class="media-body">
-                      <p>Minimalistic shop for multipurpose use</p>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <h5>$360.00</h5>
-                </td>
-                <td>
-                  <div class="product_count">
-                    <span class="input-number-decrement"> <i class="ti-angle-down"></i></span>
-                    <input class="input-number" type="text" value="1" min="0" max="10">
-                    <span class="input-number-increment"> <i class="ti-angle-up"></i></span>
-                  </div>
-                </td>
-                <td>
-                  <h5>$720.00</h5>
-                </td>
-              </tr>
-              <tr class="bottom_button">
-                <td>
-                  <a class="btn_1" href="#">Update Cart</a>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div class="cupon_text float-right">
-                    <!-- <a class="btn_1" href="#">Close Coupon</a> -->
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td>
-                  <h5>Subtotal</h5>
-                </td>
-                <td>
-                  <h5>$2160.00</h5>
-                </td>
-              </tr>
+                <% let totalQuantity=0; let totalProductPrice=0; cartDetails.items.forEach((cartItem)=> {
+                  const itemTotalPrice = cartItem.product_id.price * cartItem.quantity;
+                  totalQuantity += cartItem.quantity;
+                  totalProductPrice += itemTotalPrice;
+                  %>
+                  <tr>
+                    <td>
+                      <div class="media">
+                        <div class="d-flex">
+                          <img src="/SharpImage/<%= cartItem.product_id.image[0] %>" alt="img" width="100px"
+                            height="100px">
+                        </div>
+                        <div class="media-body">
+                          <p>
+                            <%= cartItem.product_id.name%>
+                          </p>
+
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h5 id="price">
+                        <%= cartItem.product_id.price%>
+                      </h5>
+                    </td>
+                    <td>
+                      <div class="product_count">
+                        <span class="quantity-decrement"
+                          onclick="updateQuantity('<%= cartDetails._id %>','<%= cartItem.product_id._id %>',-1)">
+                          <i class="ti-minus"></i>
+                        </span>
+
+                        <input class="input-number" type="text" value="<%= cartItem.quantity %>" min="1"
+                          max="<%= cartItem.product_id.quantity %>" name="quantity" readonly>
+
+                        <span class="quantity-increment"
+                          onclick="updateQuantity('<%= cartDetails._id %>', '<%= cartItem.product_id._id %>',1)">
+                          <i class="ti-plus"></i>
+                        </span>
+                      </div>
+                    </td>
+                    <% if (cartItem._id) { %>
+                      <form action="/deleteItems" method="post">
+                        <td>
+                          <button type="submit" class="btn btn-primary height-auto btn-sm" name="productId">X</button>
+                          <input type="hidden" name="productId" value="<%= cartItem._id %>">
+                        </td>
+                      </form>
+                      <% } %>
+
+                        <td>
+                          <h5 style="display: inline;">$<span id="totalEachPice">
+                              <%= cartItem.product_id.price * cartItem.quantity%>
+                            </span>
+                          </h5>
+                        </td>
+
+                  </tr>
+                  <% }) %>
+
+
+
+                    <tr class="bottom_button">
+                      <td>
+                        <a class="btn_1" href="/cart">Update Cart</a>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <div class="cupon_text float-right">
+                          <!-- <a class="btn_1" href="#">Close Coupon</a> -->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h5>Subtotal</h5>
+                      </td>
+                      <% if(totalProductPrice !==undefined) { %>
+                        <td>
+                          <h3>₹<%= totalProductPrice %>
+                          </h3>
+                        </td>
+                        <% } %>
+
+                    </tr>
+
 
             </tbody>
           </table>
           <div class="checkout_btn_inner float-right">
-            <a class="btn_1" href="#">Continue Shopping</a>
-            <a class="btn_1 checkout_btn_1" href="#">Proceed to checkout</a>
+            <a class="btn_1" href="/shop">Continue Shopping</a>
+            <a class="btn_1 checkout_btn_1" href="/checkout?TotalPrice=<%= totalProductPrice %>">Proceed to checkout</a>
           </div>
         </div>
       </div>
+      <% } else { %>
+        <div style="  height: 200px;">
+          <h3>CART IS EMPTY</h3>
+        </div>
+        <% } %>
+
+    </div>
+
   </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!--================End Cart Area =================-->
+
+  <script>
+
+    function updateQuantity(cartId, productId, count) {
+
+      let dataTotal = document.getElementById('totalEachPice').innerHTML;
+      let price = document.getElementById("price").innerHTML
+      console.log(dataTotal);
+      console.log(price)
+      console.log("cart:")
+      $.ajax({
+        url: "/quantityUpdate",
+        method: "post",
+        data: {
+          cartId: cartId,
+          productId: productId,
+          count: count
+        },
+
+        success: (response) => {
+          console.log("Response from server:", response);
+          if (response.success) {
+            console.log("Response from server:", response);
+            $('#reloadDiv').load('/cart #reloadDiv')
+            dataTotal = parseInt(dataTotal) + parseInt(price)
+
+            document.getElementById('totalEachPice').innerText = parseInt(dataTotal);
+          } else {
+            Swal.fire({
+              title: 'Error',
+              icon: 'error',
+              text: response.message,
+              timer: 2000
+            })
+          }
+        },
+        error: (error) => {
+          Swal.fire({
+            title: 'Error',
+            icon: 'error',
+            text: error.message,
+            timer: 1500
+          })
+        }
+      });
+    }
+
+  </script>
+
+
+
   <%- include('../user/layouts/footer') %>

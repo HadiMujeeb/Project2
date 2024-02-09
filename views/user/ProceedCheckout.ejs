@@ -1,0 +1,282 @@
+<%- include("../user/layouts/header") %>
+
+    <section class="breadcrumb breadcrumb_bg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="breadcrumb_iner">
+                        <div class="breadcrumb_iner_item">
+                            <h2>Producta Checkout</h2>
+                            <p>Home <span>-</span> Shop Single</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumb start-->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area padding_top">
+        <div class="container">
+            <!-- <div class="returning_customer">
+        <div class="check_title">
+          <h2>
+            Returning Customer?
+            <a href="#">Click here to login</a>
+          </h2>
+        </div>
+        <p>
+          If you have shopped with us before, please enter your details in the
+          boxes below. If you are a new customer, please proceed to the
+          Billing & Shipping section.
+        </p>
+        <form class="row contact_form" action="#" method="post" novalidate="novalidate">
+          <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="name" name="name" value=" " />
+            <span class="placeholder" data-placeholder="Username or Email"></span>
+          </div>
+          <div class="col-md-6 form-group p_star">
+            <input type="password" class="form-control" id="password" name="password" value="" />
+            <span class="placeholder" data-placeholder="Password"></span>
+          </div>
+          <div class="col-md-12 form-group">
+            <button type="submit" value="submit" class="btn_3">
+              log in
+            </button>
+            <div class="creat_account">
+              <input type="checkbox" id="f-option" name="selector" />
+              <label for="f-option">Remember me</label>
+            </div>
+            <a class="lost_pass" href="#">Lost your password?</a>
+          </div>
+        </form>
+      </div> -->
+            <!-- <div class="cupon_area">
+        <div class="check_title">
+          <h2>
+            Have a coupon?
+            <a href="#">Click here to enter your code</a>
+          </h2>
+        </div>
+        <input type="text" placeholder="Enter coupon code" />
+        <a class="tp_btn" href="#">Apply Coupon</a>
+      </div> -->
+            <div class="billing_details">
+                <div class="row">
+                    <div class="col-lg-8">
+
+                        <h3 for="sameAddress">Billing Details</h3>
+                        <div class="card-body" id="addressdiv">
+                            <h5 class="card-title">Address Details</h5>
+                            <div class="d-flex justify-content-end">
+                                <a href="/addAddress" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New
+                                    Address</a>
+                            </div>
+
+                            <hr />
+                            <% if (user.addresses.length> 0) { %>
+                                <% user.addresses.forEach((address, index)=> { %>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <p class="mb-0">Name :</p>
+                                            <p class="mb-0">Mobile :</p>
+                                            <p class="mb-0">Pin Code :</p>
+                                            <p class="mb-0">Address :</p>
+                                            <p class="mb-0">City:</p>
+                                            <p class="mb-0">State :</p>
+                                            <p class="mb-0">Landmark :</p>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <h4>
+                                                <%= address.name %>
+                                            </h4>
+                                            <p>
+                                                <%= address.mobile %>
+                                            </p>
+                                            <p>
+                                                <%= address.pincode %>
+                                            </p>
+                                            <p>
+                                                <%= address.address %>
+                                            </p>
+                                            <p>
+                                                <%= address.city %>
+                                            </p>
+                                            <p>
+                                                <%= address.state%>
+                                            </p>
+                                            <p>
+                                                <%= address.landmark %>
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-9 offset-sm-3">
+                                            <a class="genric-btn danger-border circle arrow"
+                                                href="/EditAddress?userId=<%=address._id%>">Edit</a>
+                                            <a class="genric-btn danger-border circle arrow" href=""
+                                                onclick="deleteAddress( '<%= user._id %>', '<%= index %>')">Delete</a>
+
+                                            <button class="genric-btn danger-border circle arrow"
+                                                onclick="selectAddress('<%= address._id%>')">Select</Select></button>
+
+                                            <span id="selectedIcon_<%= address._id %>"></span>
+
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div>
+                                                <p>Addresses not found</p>
+                                            </div>
+                                            <% } %>
+
+                                                <div class="row mt-3">
+
+                                                </div>
+                                                <hr />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="order_box">
+                            <h2>Your Order</h2>
+                            <ul class="list">
+                                <li>
+                                    <a href="#">Product
+                                        <span>Total</span>
+                                    </a>
+                                </li>
+
+                                <ul>
+                                    <% product.items.forEach(item=> { %>
+                                        <li>
+                                            <a href="#">
+                                                <%= item.product_id.name %>
+                                                    <span class="middle">x <%= item.quantity %></span>
+                                                    <span class="last">
+                                                        <%= item.price %>
+                                                    </span>
+                                            </a>
+                                        </li>
+                                        <% }); %>
+                                </ul>
+                                <ul class="list list_2">
+                                    <li>
+                                        <a href="#">Subtotal
+                                            <span>$<%=TotalPrice %></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Shipping
+                                            <span>Flat rate: $50.00</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Total
+                                            <span>$<%=TotalPrice %></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="payment_item">
+                                    <div class="radion_btn">
+                                        <input type="radio" id="cash-on-delivery" name="payment-selector"
+                                            value="Cash on Delivery" onclick="handlePaymentSelection(this)" />
+                                        <label for="cash-on-delivery">Cash on Delivery</label>
+                                        <div class="check"></div>
+                                    </div>
+                                    <a class="btn_3" href="#">Proceed to Paypal</a>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+            <script>
+
+                // Declare addressId variable in a higher scope accessible to both functions
+                let addressId = null;
+
+                // Function to handle selecting an address
+                function selectAddress(selectedId) {
+                    // Remove tick mark from previously selected address
+                    const previousSelectedIcon = document.querySelector('.selected');
+                    if (previousSelectedIcon) {
+                        previousSelectedIcon.innerHTML = ""
+                        previousSelectedIcon.classList.remove('selected');
+                    }
+
+                    // Add tick mark to the currently selected address
+                    const selectedIcon = document.getElementById('selectedIcon_' + selectedId);
+                    selectedIcon.innerHTML = '&#10004;'; // Unicode for tick mark
+                    selectedIcon.classList.add('selected');
+
+                    // Set the addressId variable to the selectedId
+                    addressId = selectedId;
+                }
+
+                let paymentMethod = null; // Declare paymentMethod variable in a higher scope accessible to both functions
+
+                // Function to handle selecting a payment method
+                function handlePaymentSelection(radioButton) {
+                    paymentMethod = radioButton.value; // Set the paymentMethod variable to the selected payment method
+                }
+                // Function to handle the click event on the "Proceed to Paypal" button
+                $(document).ready(function () {
+                    $('.btn_3').click(function (event) {
+                        event.preventDefault(); // Prevent the default action of the button
+
+                        // Check if addressId is not null
+                        if (addressId !== null && paymentMethod !== null) {
+                            // Fetch the total price
+                            const totalPrice = '<%= TotalPrice %>';
+
+                            // Make AJAX request with addressId and total price
+                            $.ajax({
+                                url: "/CompleteCheckout",
+                                method: "post",
+                                data: {
+                                    addressId: addressId, // Use the addressId variable here
+                                    totalPrice: totalPrice,
+                                    paymentMethod: paymentMethod// Include the total price in the data object
+                                },
+                                success: function (response) {
+                                    // Handle success respons
+                                    console.log(response);
+                                    if (response.success && response.order) {
+                                        // Access order data
+                                        var order = response.order;
+                                        console.log("Order:", order);
+
+                                        // Redirect to the '/confirm' page or perform any other action
+                                        window.location.href = '/confirm?orderId='+ encodeURIComponent(order);
+                                    } else {
+                                        console.error("Checkout failed:", response.error);
+                                        // Handle the failure scenario here
+                                    }
+
+                                },
+                                error: function (xhr, status, error) {
+                                    // Handle error response
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        } else {
+                            // Handle the case where no address is selected
+                            console.error("No address selected");
+                        }
+                    });
+                });
+            </script>
+
+
+            <!-- CSS for styling the selected tick mark -->
+            <style>
+                .selected {
+                    color: green;
+                    /* Change color as needed */
+                }
+            </style>
+    </section>
+    <%- include('../user/layouts/footer') %>
