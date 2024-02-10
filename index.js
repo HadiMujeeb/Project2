@@ -30,7 +30,7 @@ app.use(
 );
 
 
-
+app.use(express.json());
 app.use(nocache());
 app.use(flash());
 

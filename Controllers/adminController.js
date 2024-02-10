@@ -1,7 +1,7 @@
 const User = require("../Models/userModel");
 const { ObjectId } = require('mongodb');
 const Categories = require("../Models/categoriesModel");
-// const ProductList = require("../Models/productModel")
+const Order = require("../Models/OrderModel")
 const bcrypt = require("bcrypt");
 
 // const { LoginPage } = require("./userController");
@@ -244,11 +244,39 @@ const UnList = async (req,res)=>{
 
 const LoadOrderList = async(req,res)=>{
   try {
-    res.render("orderList")
+
+    if(!req.session.admin){
+     res.redirect("/admin")
+    }else{
+
+   
+      const order = await Order.find({})
+      res.render("orderList",{order})
+    }
+   
   } catch (error) {
     console.log(error.message);
   }
 }
+
+const OrderStatus = async (req, res) => {
+  try {
+    const { status ,orderId } = req.body;
+
+      console.log("Status:", status,'jjdf',orderId);
+      if( status && orderId ){
+ 
+        const order = await Order.updateOne({_id:orderId},{$set:{status:status}})
+      }
+  } catch (error) {
+      // Handle errors, if any
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
 
   
 
@@ -270,5 +298,6 @@ module.exports = {
   List,
   UnList,
   LoadOrderList ,
+  OrderStatus
   
 };

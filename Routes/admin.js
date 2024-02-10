@@ -74,6 +74,13 @@ admin_router.patch('/deleteImage',productController.deleteIMG)
 
 admin_router.get("/orderList", adminController.LoadOrderList);
 
+admin_router.post("/orderList", adminController.OrderStatus);
+
+
+
+// admin_router.patch("/orderStatus",adminController.OrderStatus);
+
+
 
 // admin_router.post('/EditProduct',upload.array("productImage"),productController.deleteIMG)
 
