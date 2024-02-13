@@ -51,6 +51,10 @@ user_router.get("/profile", auth.isLogin, userController.LoadProfile);
 
 user_router.post("/EditProfile", userController.EditProfile);
 
+// user_router.get("/resetProfile", userController.rest_pass_profile);
+
+
+
 user_router.get("/addaddress", userController.LOADaddaddress);
 
 user_router.post("/addaddress", userController.AddAddress);
@@ -76,6 +80,11 @@ user_router.post("/deleteItems", cartController.deleteItems);
 user_router.get("/checkout", cartController.LoadCheckout);
 
 user_router.post("/CompleteCheckout", cartController.Checkout);
+
+user_router.get("/addressCheckout", cartController. LoadCheckADDaddress);
+
+user_router.post("/addressCheckout", cartController. CheckADDaddress);
+
 
 user_router.get("/confirm", cartController.LoadConfirm);
 

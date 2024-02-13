@@ -45,8 +45,7 @@ const addProduct = async (req, res) => {
         Quantity,
         price,
         category,
-        brand,
-        date,
+        
       } = req.body;
       console.log(req.body);
       console.log(category);
@@ -85,7 +84,6 @@ const addProduct = async (req, res) => {
         price,
         image: filenames,
         category: selectedCategory._id,
-        brand,
         date: new Date(),
       });
 
@@ -174,10 +172,10 @@ const EditProduct = async (req, res) => {
     if (req.files) {
       const existingImageCount = (await Product.findById(id)).image.length;
 
-      // Ensure that the total number of existing and new images does not exceed 4
+  
       if (existingImageCount + req.files.length !== 4) {
         req.flash("message", "only 4 images allowed");
-        res.redirect(`/EditProduct?productId=${id}`);
+        // res.redirect(`/EditProduct?productId=${id}`);
       } else {
         for (let i = 0; i < req.files.length; i++) {
           // Resized path
@@ -211,14 +209,14 @@ const EditProduct = async (req, res) => {
         name: productName,
         description:description,
         price:price,
-        category: selectedCategory._id, // Use the ObjectId of the category
+        category: selectedCategory._id, 
         stockQuantity: Quantity,
         brand:brand,
-        $push: { image: { $each: imageData } }, // Append new images to the existing array
+        $push: { image: { $each: imageData } }, 
       },
-      { new: true } // Return the updated document
+      { new: true } 
     );
-    // Redirect back to the product page
+   
     res.redirect("/product");
   } catch (error) {
     console.log(error);

@@ -50,7 +50,7 @@ const orderModel = new mongoose.Schema(
       {
         product_id: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: "product",
           required: true,
         },
         productName: {

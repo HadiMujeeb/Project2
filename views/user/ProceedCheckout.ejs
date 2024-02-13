@@ -66,11 +66,15 @@
                 <div class="row">
                     <div class="col-lg-8">
 
-                        <h3 for="sameAddress">Billing Details</h3>
+
+
+                        <a class="btn_1" href="/shop">Continue Shopping</a>
+
                         <div class="card-body" id="addressdiv">
                             <h5 class="card-title">Address Details</h5>
                             <div class="d-flex justify-content-end">
-                                <a href="/addAddress" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New
+                                <a href="/addressCheckout" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i>
+                                    Add New
                                     Address</a>
                             </div>
 
@@ -185,85 +189,101 @@
                                         <label for="cash-on-delivery">Cash on Delivery</label>
                                         <div class="check"></div>
                                     </div>
-                                    <a class="btn_3" href="#">Proceed to Paypal</a>
+                                    <a class="btn_3" href="#" onclick="validatePaymentSelection(event)"
+                                        id="checkoutButton">Proceed to
+                                        Pay</a>
+
+
+                                    <p id="payment-error" style="display: none; color: red;">Please select Cash on
+                                        Delivery option</p>
+
                                 </div>
+                                <!-- <div class="checkout_btn_inner float-right"> -->
+
+                                <!-- </div> -->
                         </div>
                     </div>
                 </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+
             <script>
 
-                // Declare addressId variable in a higher scope accessible to both functions
                 let addressId = null;
 
-                // Function to handle selecting an address
+
                 function selectAddress(selectedId) {
-                    // Remove tick mark from previously selected address
+
                     const previousSelectedIcon = document.querySelector('.selected');
                     if (previousSelectedIcon) {
                         previousSelectedIcon.innerHTML = ""
                         previousSelectedIcon.classList.remove('selected');
                     }
 
-                    // Add tick mark to the currently selected address
                     const selectedIcon = document.getElementById('selectedIcon_' + selectedId);
-                    selectedIcon.innerHTML = '&#10004;'; // Unicode for tick mark
+                    selectedIcon.innerHTML = '&#10004;';
                     selectedIcon.classList.add('selected');
 
-                    // Set the addressId variable to the selectedId
+
                     addressId = selectedId;
                 }
 
-                let paymentMethod = null; // Declare paymentMethod variable in a higher scope accessible to both functions
+                let paymentMethod = null;
 
-                // Function to handle selecting a payment method
+
                 function handlePaymentSelection(radioButton) {
-                    paymentMethod = radioButton.value; // Set the paymentMethod variable to the selected payment method
+                    paymentMethod = radioButton.value;
                 }
-                // Function to handle the click event on the "Proceed to Paypal" button
+
                 $(document).ready(function () {
                     $('.btn_3').click(function (event) {
-                        event.preventDefault(); // Prevent the default action of the button
+                        event.preventDefault();
 
-                        // Check if addressId is not null
                         if (addressId !== null && paymentMethod !== null) {
-                            // Fetch the total price
+
                             const totalPrice = '<%= TotalPrice %>';
 
-                            // Make AJAX request with addressId and total price
+
                             $.ajax({
                                 url: "/CompleteCheckout",
                                 method: "post",
                                 data: {
-                                    addressId: addressId, // Use the addressId variable here
+                                    addressId: addressId,
                                     totalPrice: totalPrice,
-                                    paymentMethod: paymentMethod// Include the total price in the data object
+                                    paymentMethod: paymentMethod
                                 },
                                 success: function (response) {
-                                    // Handle success respons
+
                                     console.log(response);
                                     if (response.success && response.order) {
-                                        // Access order data
+
                                         var order = response.order;
                                         console.log("Order:", order);
 
-                                        // Redirect to the '/confirm' page or perform any other action
-                                        window.location.href = '/confirm?orderId='+ encodeURIComponent(order);
-                                    } else {
-                                        console.error("Checkout failed:", response.error);
-                                        // Handle the failure scenario here
+
+                                        window.location.href = '/confirm?orderId=' + encodeURIComponent(order);
+                                    } else if (response.success == false) {
+
+
+                                        alert('quantinyt aunaiadjidjajdj')
+
                                     }
 
                                 },
                                 error: function (xhr, status, error) {
-                                    // Handle error response
-                                    console.error(xhr.responseText);
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'The quantity you entered is not available. Please try again with a different quantity.'
+                                    });
+
+
                                 }
                             });
                         } else {
-                            // Handle the case where no address is selected
+
                             console.error("No address selected");
                         }
                     });
@@ -271,12 +291,14 @@
             </script>
 
 
-            <!-- CSS for styling the selected tick mark -->
+
             <style>
                 .selected {
                     color: green;
-                    /* Change color as needed */
+
                 }
             </style>
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     </section>
     <%- include('../user/layouts/footer') %>

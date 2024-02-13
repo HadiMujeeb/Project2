@@ -114,11 +114,12 @@
                             <h4>Basic</h4>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="/EditProduct" enctype="multipart/form-data">
+                            <form method="post" action="/EditProduct" enctype="multipart/form-data" onsubmit="return validateForm()">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="productName"
                                         name="productName" value="<%=Data.name%>" />
+                                        <span id="nameError" class="error"></span>
 
                                     <%console.log(Data._id)%>
                                         <input type="hidden" name="id" value="<%=Data._id%>">
@@ -134,7 +135,8 @@
                                             <label class="form-label">Price</label>
                                             <div class="row gx-2">
                                                 <input placeholder="$" type="text" class="form-control" name="price"
-                                                    value="<%= Data.price%>" />
+                                                    value="<%= Data.price%>"  id="price" />
+                                                    <span id="priceError" class="error"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -142,7 +144,8 @@
                                         <div class="mb-4">
                                             <label class="form-label">Stock Quantity</label>
                                             <input placeholder="$" type="text" class="form-control" name="Quantity"
-                                                value="<%= Data.stockQuantity%>" />
+                                                value="<%= Data.stockQuantity%>" id="quantity" />
+                                                <span id="quantityError" class="error"></span>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -158,11 +161,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Brand</label>
-                                    <input type="text" placeholder="" class="form-control" id="product_name"
-                                        name="brand" value="<%= Data.brand%>" />
-                                </div>
+                                
 
 
 
@@ -178,6 +177,15 @@
                                         <!-- Add an element for image preview -->
                                         <div id="imagePreview"></div>
                                     </div>
+                                    <% if (typeof message !=='undefined' ) { %>
+
+                                        <h4 style="color: darkred;">
+                                            <%= message %>
+                                        </h4>
+
+
+
+                                        <% } %>
                                 </div>
                         </div>
 
@@ -306,6 +314,52 @@
                 }
             });
         });
+
+
+        function validateForm() {
+            var productName = document.getElementById("productName").value;
+            var price = document.getElementsByName("price")[0].value;
+            var quantity = document.getElementById("quantity").value;
+            var imageInput = document.getElementById("productImage");
+
+            
+            // if (imageInput.files.length < 4) {
+            //     alert(`image must be  4 it only ${imageInput.files.length}`);
+            //     return false;
+            // }
+            if (productName === "" || price === "" || quantity === "" ) {
+                alert("Please fill in all fields");
+                return false;
+            }
+            if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(productName)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById("nameError").innerHTML = '';
+            }
+
+            if (!/^\d+(\.\d+)?$/.test(price)) {
+                document.getElementById("priceError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('priceError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("priceError").innerHTML = '';
+            }
+
+            if (!/^\d+(\.\d+)?$/.test(quantity)|| quantity<="0") {
+                document.getElementById("quantityError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('quantityError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("quantityError").innerHTML = '';
+            }
+            return true;
+        }
+
+
     </script>
 
 </body>

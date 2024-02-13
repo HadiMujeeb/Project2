@@ -72,7 +72,7 @@
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
-            <div class="col-search">
+            <!-- <div class="col-search">
                 <form class="searchform">
                     <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
@@ -85,8 +85,8 @@
                         <option value="Ahmed Hassan"></option>
                     </datalist>
                 </form>
-            </div>
-            <div class="col-nav">
+            </div> -->
+            <!-- <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
                         class="material-icons md-apps"></i></button>
                 <ul class="nav">
@@ -138,7 +138,7 @@
                         </div>
                     </li>
                 </ul>
-            </div>
+            </div> -->
         </header>
         <section class="content-main">
             <div class="content-header">
@@ -146,9 +146,9 @@
                     <h2 class="content-title card-title">Order List</h2>
                     <p>Lorem ipsum dolor sit amet.</p>
                 </div>
-                <div>
+                <!-- <div>
                     <input type="text" placeholder="Search order ID" class="form-control bg-white" />
-                </div>
+                </div> -->
             </div>
             <div class="card mb-4">
                 <!-- <header class="card-header">
@@ -212,9 +212,10 @@
                                             <%= new Date(order[i].date).toLocaleDateString()%>
                                         </td>
                                         <td class="text-end">
-                                            <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                            <a href="/orderDetails?ORid=<%= order[i]._id%>" class="btn btn-md rounded font-sm">Detail</a>
                                             <div class="dropdown">
-                                                <select class="form-select" onchange="setStatus(this.value,'<%= order[i]._id%>')">
+                                                <select class="form-select"
+                                                    onchange="setStatus(this.value,'<%= order[i]._id%>')">
                                                     <option value="">Option</option>
                                                     <option value="Pending">Pending</option>
                                                     <option value="Processing">Processing</option>
@@ -226,13 +227,13 @@
                                             </div>
 
                                             <script>
-                                                function setStatus(status,orderId) {
+                                                function setStatus(status, orderId) {
                                                     console.log("Selected status:", status);
 
                                                     // Construct the complete URL with the selected status
-                                                    
 
-                                                    // Use fetch to make a GET request to the constructed URL
+
+                                                    // Use fetch to make a POST request to the constructed URL
                                                     fetch('/orderList', {
                                                         method: 'POST',
                                                         headers: {
@@ -245,39 +246,27 @@
                                                     })
                                                         .then(response => response.json())
                                                         .then(data => {
-                                                            if (data.success === false) {
-                                                                Swal.fire({
-                                                                    icon: 'info',
-                                                                    title: 'Info',
-                                                                    text: data.message,
-                                                                });
-                                                            } else {
-                                                                // Handle success response
-                                                                console.log(data.message);
-                                                                // Show success message
-                                                                Swal.fire({
-                                                                    icon: 'success',
-                                                                    title: 'Added to cart!',
-                                                                    text: `${productName} has been added to your cart.`,
-                                                                    showConfirmButton: false,
-                                                                    timer: 1500
-                                                                });
-                                                            }
+                                                            console.log("jshdud")
+                                                          window.location.reload()
+
+                                                            Swal.fire({
+                                                                icon: data.success ? 'success' : 'info',
+                                                                title: data.success ? 'Success' : 'Info',
+                                                                text: data.message
+                                                            });
                                                         })
-
-
                                                         .catch(error => {
-                                                            console.error('Error adding to cart:', error);
+                                                            console.error('Error:', error);
                                                             // Show error message
                                                             Swal.fire({
                                                                 icon: 'error',
                                                                 title: 'Error',
-                                                                text: 'Failed to add the item to the cart. Please try again.',
+                                                                text: 'Failed to fetch order details. Please try again.',
                                                             });
                                                         });
-                                               
-                                                                    }
-                                                                                    </script>
+                                                }
+
+                                            </script>
 
 
 

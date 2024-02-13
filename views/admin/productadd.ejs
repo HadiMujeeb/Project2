@@ -120,6 +120,7 @@
                                     <label for="product_name" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name"
                                         name="productName" />
+                                        <span id="nameError" class="error"></span>
                                     <% if (typeof message !=='undefined' ) { %>
 
                                         <h4 style="color: darkred;">
@@ -140,15 +141,19 @@
                                         <div class="mb-4">
                                             <label class="form-label">Price</label>
                                             <div class="row gx-2">
-                                                <input placeholder="$" type="text" class="form-control dol"
-                                                    name="price" />
+                                                <input placeholder="$" type="text" class="form-control dol" name="price"
+                                                    id="price" />
+                                                <span id="priceError" class="error"></span>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Stock Quantity</label>
-                                            <input placeholder="$" type="text" class="form-control" name="Quantity" />
+                                            <input placeholder="$" type="text" class="form-control" name="Quantity"
+                                                id="quantity" />
+                                            <span id="quantityError" class="error"></span>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -163,11 +168,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Brand</label>
-                                    <input type="text" placeholder="" class="form-control" id="product_name"
-                                        name="brand" />
-                                </div>
+
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <h4>Media</h4>
@@ -180,6 +181,7 @@
                                         <!-- Add an element for image preview -->
                                         <div id="imagePreview"></div>
                                     </div>
+
                                 </div>
                                 <div>
                                     <button
@@ -223,29 +225,51 @@
     <!-- Main Script -->
     <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
     <script>
+
         function validateForm() {
             var productName = document.getElementById("product_name").value;
-            var description = document.getElementsByName("description")[0].value;
             var price = document.getElementsByName("price")[0].value;
             var quantity = document.getElementsByName("Quantity")[0].value;
-            var category = document.getElementsByName("category")[0].value;
-            var brand = document.getElementsByName("brand")[0].value;
+
             var imageInput = document.getElementById("productImage");
 
             // Check if the image field is empty
-            if (imageInput.files.length === 0) {
-                alert("Please select an image");
+            if (imageInput.files.length < 4) {
+                alert(`image must be  4 it only ${imageInput.files.length}`);
                 return false;
             }
-            if (productName === "" || description === "" || price === "" || quantity === "" || category === "" || brand === "") {
+            if (productName === "" || price === "" || quantity === "") {
                 alert("Please fill in all fields");
-                return false; // Prevent form submission
+                return false;
+            }
+            if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(productName)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById("nameError").innerHTML = '';
+            }
+            if (!/^\d+(\.\d+)?$/.test(price)) {
+                document.getElementById("priceError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('priceError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("priceError").innerHTML = '';
             }
 
-            // Additional validation logic can be added here
-
-            return true; // Allow form submission
+            if (!/^\d+(\.\d+)?$/.test(quantity)) {
+                document.getElementById("quantityError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('quantityError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("priceError").innerHTML = '';
+            }
+            return true;
         }
+
+
     </script>
 
     <script>

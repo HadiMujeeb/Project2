@@ -25,18 +25,20 @@
                 </tr>
               </thead>
               <tbody>
-                <% for (let i = 0; i < order.length; i++) { %>
-                  <tr>
-                    <td><%= order[i]._id %></td>
-                    <td><%= order[i].productName %></td>
-                    <td><%= order[i].date %></td>
-                    <td><%= order[i].ordered_status %></td>
-                    <td>$<%= order[i].total_price %></td>
+                <% let num = 1 %>
+                <% order.sort((a, b) => b._id - a._id).forEach((orderItem) => { %>
+                <tr>
+                    <td>#<%= num %></td>
+                    <td><%= orderItem.productName %></td>
+                    <td><%= orderItem.date %></td>
+                    <td><%= orderItem.ordered_status %></td>
+                    <td>$<%= orderItem.total_price %></td>
                     <td><button class="btn btn-primary" style="color: #ff8080;">CANCEL</button></td>
                     <td><button class="btn btn-primary"><a href="/co" style="color: white;">VIEW</a></button></td>
-                  </tr>
-                <% } %>
-              </tbody>
+                </tr>
+                <% num++ %>
+                <% }); %>
+            </tbody>
               
               
             </table>

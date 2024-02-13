@@ -1,0 +1,163 @@
+<%- include('../user/layouts/header') %>
+
+    <style>
+        .contact_form {
+            margin-top: 120px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn_danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn_danger:hover {
+            background-color: #c82333;
+        }
+
+        /* Add more styles based on your needs */
+    </style>
+
+
+    <div class="container">
+        <form class="row contact_form" action="/addressCheckout" method="post" onsubmit=" return  validateForm()">
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="firstName" name="name" placeholder="Name" required />
+                <input type="hidden" name="id">
+                <span id="nameError" class="error"></span>
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="state" name="state" placeholder="state" required />
+                <span id="stateError" class="error"></span>
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" required />
+                <span id="mobileError" class="error"></span>
+            </div>
+
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="city" name="city" placeholder="City" required />
+                <span id="cityError" class="error"></span>
+            </div>
+
+            <div class="col-md-12 form-group p_star">
+                <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address"></textarea>
+                <span id="addressError" class="error"></span>
+            </div>
+
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Landmark" />
+                <span id="landmarkError" class="error"></span>
+            </div>
+
+            <div class="col-md-12 form-group">
+                <input type="text" class="form-control" id="pin" name="pincode" placeholder="PIN" required />
+                <span id="pincodeError" class="error"></span>
+            </div>
+
+            <div class="col-md-12 py-4 form-group text-center">
+                <button type="submit" class="btn btn_danger py-4 px-5">SUBMIT</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+
+            // event.preventDefault();
+            var name = document.getElementById("firstName").value;
+            // var email = document.getElementById("email").value;
+            var mobile = document.getElementById("mobile").value;
+            var landmark = document.getElementById("landmark").value;
+            var state = document.getElementById("state").value;
+            var pincode = document.getElementById("pin").value;
+            var city = document.getElementById("city").value;
+    
+            // Name validation (only text allowed)
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers (no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('nameError').innerHTML = '';
+            }
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(landmark)){
+                document.getElementById('landmarkError').innerHTML = 'remove the Spaces';
+                document.getElementById('landmarkError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('landmarkError').innerHTML = '';
+            }
+           
+            // Mobile number validation: check for numeric characters and 10-digit length
+            if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById("mobileError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+                document.getElementById('mobileError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('mobileError').innerHTML = " ";
+            }
+    
+            // Additional validation to check for alphabetic characters or special characters in mobile number
+            if (!/^\d+$/.test(mobile)) {
+                document.getElementById("mobileError").innerHTML = 'Mobile number should contain only numeric characters';
+                document.getElementById('mobileError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('mobileError').innerHTML = " ";
+            }
+    
+            // // Address validation: check if the address is not empty and does not contain special characters
+            // if (!address || /[^a-zA-Z0-9\s]/.test(address)) {
+            //     document.getElementById("addressError").innerHTML = 'Please enter a valid address';
+            //     document.getElementById('addressError').style.color = "red";
+            //     return false;
+            // }
+    
+            // State validation: check if a state is selected
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(state)){
+                document.getElementById('stateError').innerHTML = 'remove the Spaces';
+                document.getElementById('stateError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('stateError').innerHTML = '';
+            }
+    
+            // Pincode validation: check if the pincode is exactly 6 digits long and contains only numeric characters
+            if (!/^\d{6}$/.test(pincode)) {
+                document.getElementById("pincodeError").innerHTML = 'Please enter a valid 6-digit pincode';
+                document.getElementById('pincodeError').style.color = "red";
+                return false;
+            }
+    
+            // City validation: check if the city field is not empty and does not contain special characters
+               if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(city)){
+                document.getElementById('cityError').innerHTML = 'remove the Spaces';
+                document.getElementById('cityError').style.color = "red";
+                return false;
+            }else{
+                document.getElementById('cityError').innerHTML = '';
+            }
+    
+            return true;
+        }
+    
+    
+    </script>
+    <%- include('../user/layouts/footer') %>

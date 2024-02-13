@@ -39,7 +39,7 @@ admin_router.get("/add", adminController.add_category);
 
 admin_router.get("/delete-Categories", adminController.deleteCategories);
 
-admin_router.post("/add", adminController.newCategories);
+admin_router.post("/addCategory", adminController.newCategories);
 
 admin_router.get("/edit", adminController.LoadEditCategory);
 
@@ -74,7 +74,9 @@ admin_router.patch('/deleteImage',productController.deleteIMG)
 
 admin_router.get("/orderList", adminController.LoadOrderList);
 
-admin_router.post("/orderList", adminController.OrderStatus);
+admin_router.post("/orderList", adminController.OrderStatus); 
+
+admin_router.get("/orderDetails", adminController.LoadOrderDetails);
 
 
 

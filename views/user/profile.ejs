@@ -334,25 +334,30 @@
                         <div class="card-body">
                             <h5 class="card-title">Update Profile</h5>
                             <hr />name
-                            <form action="/EditProfile" method="post">
+                            <form action="/EditProfile" method="post" onsubmit="return validateForm()">
                                 <div class="form-group">
                                     <label for="firstName"><i class="fas fa-user"></i> First Name</label>
                                     <input type="text" class="form-control" name="name" id="firstName"
                                         value="<%= user.name%> " placeholder="Enter your first name" required>
+                                        <span id="nameError" class="error"></span>
+
                                     <input type="hidden" name="id" value="<%=user._id%>">
                                 </div>
                                 <div class="form-group">
                                     <label for="email"><i class="fas fa-envelope"></i> Email</label>
                                     <input type="email" class="form-control" id="email" name="email" readonly
                                         value="<%= user.email%> " required>
+                                        <span id="emailError"class="error"></span>
                                 </div>
                                 <div class="form-group">
                                     <label for="mobile"><i class="fas fa-mobile-alt"></i> Mobile</label>
                                     <input type="text" class="form-control" id="mobile" name="mobile"
                                         value="<%= user.mobile%> " placeholder="Enter your mobile number" required>
+                                        <span id="phoneError"class="error"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save
                                     Changes</button>
+                                    <button type="button" class="btn btn-primary"><i class="fas fa-save">reset</i></button>
                             </form>
 
                             <% if (typeof message !=="undefined" ) { %>
@@ -447,32 +452,38 @@
                                             </tr>
 
                                         </thead>
-                                        <% for (let i=0 ;i< order.length ;i++){%>
+                                        <% let num = 1 %>
+                                        <% order.forEach((orderItem, i) => { %>
 
                                             <tbody>
-                                                <td onclick="redirectToOrderDetails('<%= order[i]._id %>')">
-                                                    <%=order[i]._id%>
-                                                </td>
-
-                                                <td>
-                                                    <%=order[i].payment%>
-                                                </td>
-
-                                                <td>$<%=order[i].total_amount%>
-                                                </td>
-
-                                                <td>
-                                                    <%=order[i].status%>
-                                                </td>
-                                                <td>
-                                                    <a class="genric-btn danger-border circle " href="#"
-                                                        onclick="CancelOrder('<%= order[i]._id %>')">CANCEL</a>
-
-                                                </td>
+                                                <tr>
+                                                    <td onclick="redirectToOrderDetails('<%= orderItem._id %>')">
+                                                        #<%= num %>
+                                                    </td>
+                                                    <td>
+                                                        <%= orderItem.payment %>
+                                                    </td>
+                                                    <td>
+                                                        $<%= orderItem.total_amount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= orderItem.status %>
+                                                    </td>
+                                                <% if (order[i].status !== "Cancelled" ) { %>
+                                                    <td>
+                                                        <a class="genric-btn danger-border circle" href="#" onclick="CancelOrder('<%= order[i]._id %>')">CANCEL</a>
+                                                    </td>
+                                                <% } else { %>
+                                                    <td>
+                                                        <a class="genric-btn danger-border circle" style="background-color: #fd0404;" ></a>
+                                                    </td>
+                                                    
+                                                <% } %>
+                                                <% num++ %>
 
                                             </tbody>
-
-                                            <% }%>
+                                            <% }); %>
+                                          
                                     </table>
                                 </div>
                             </div>
@@ -541,7 +552,7 @@
                 setTimeout(function () {
                     location.reload();
                     
-                }, 1000);
+                }, 50);
             });
         }
 
@@ -633,8 +644,51 @@
             }
         }
 
-    </script>
 
+
+        
+    </script>
+ <script>
+    function validateForm() {
+        var name = document.getElementById("firstName").value;
+        var email = document.getElementById("email").value;
+        var mobile = document.getElementById("mobile").value;
+    
+
+
+
+        // Name validation (only text allowed)
+        if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
+            document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers(no Spaces)';
+            document.getElementById('nameError').style.color = "red";
+            return false;
+        }
+
+        // Email validation using regular expression
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.[a-zA-Z]{2,4}$/;
+        if (!emailRegex.test(email)) {
+            document.getElementById("emailError").innerHTML = "Please enter a valid Gmail address";
+            document.getElementById('emailError').style.color = "red";
+            return false;
+        }
+
+        if (!/^\d{10}$/.test(mobile)) {
+            document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+            document.getElementById('phoneError').style.color = "red";
+            return false;
+        }
+
+        // Additional validation to check for alphabetic characters or special characters in mobile number
+        if (!/^\d+$/.test(mobile)) {
+            document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
+            document.getElementById('phoneError').style.color = "red";
+            return false;
+        }
+        return true;
+
+    }
+</script>
 
     <!-- </body>
 

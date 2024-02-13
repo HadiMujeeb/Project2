@@ -34,34 +34,41 @@
 
 
     <div class="container">
-        <form class="row contact_form" action="" method="post">
+        <form class="row contact_form" action="/addaddress" method="post" onsubmit=" return  validateForm()">
             <div class="col-md-6 form-group p_star">
-                <input type="text" class="form-control" id="first" name="name" placeholder="Name" required />
-                <input type="hidden" name="id" value="<%= user._id%>">
+                <input type="text" class="form-control" id="firstName" name="name" placeholder="Name" required />
+                <input type="hidden" name="id">
+                <span id="nameError" class="error"></span>
             </div>
 
             <div class="col-md-6 form-group p_star">
                 <input type="text" class="form-control" id="state" name="state" placeholder="state" required />
+                <span id="stateError" class="error"></span>
             </div>
 
             <div class="col-md-6 form-group p_star">
                 <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" required />
+                <span id="mobileError" class="error"></span>
             </div>
 
             <div class="col-md-6 form-group p_star">
                 <input type="text" class="form-control" id="city" name="city" placeholder="City" required />
+                <span id="cityError" class="error"></span>
             </div>
 
             <div class="col-md-12 form-group p_star">
                 <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address"></textarea>
+                <span id="addressError" class="error"></span>
             </div>
 
             <div class="col-md-12 form-group p_star">
                 <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Landmark" />
+                <span id="landmarkError" class="error"></span>
             </div>
 
             <div class="col-md-12 form-group">
                 <input type="text" class="form-control" id="pin" name="pincode" placeholder="PIN" required />
+                <span id="pincodeError" class="error"></span>
             </div>
 
             <div class="col-md-12 py-4 form-group text-center">
@@ -69,4 +76,71 @@
             </div>
         </form>
     </div>
+
+
+    <script>
+        function validateForm() {
+            var name = document.getElementById("firstName").value;
+           
+            var mobile = document.getElementById("mobile").value;
+            var address = document.getElementById("address").value;
+            var state = document.getElementById("state").value;
+            var pincode = document.getElementById("pin").value;
+            var city = document.getElementById("city").value;
+
+            // Name validation (only text allowed)
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers (no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            }
+
+           
+
+            // Mobile number validation: check for numeric characters and 10-digit length
+            if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+                document.getElementById('phoneError').style.color = "red";
+                return false;
+            }
+
+            // Additional validation to check for alphabetic characters or special characters in mobile number
+            if (!/^\d+$/.test(mobile)) {
+                document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
+                document.getElementById('phoneError').style.color = "red";
+                return false;
+            }
+
+            // Address validation: check if the address is not empty and does not contain special characters
+            // if (!address || /[^a-zA-Z0-9\s]/.test(address)) {
+            //     document.getElementById("addressError").innerHTML = 'Please enter a valid address';
+            //     document.getElementById('addressError').style.color = "red";
+            //     return false;
+            // }
+
+            // State validation: check if a state is selected
+            if (state === "Select State") {
+                document.getElementById("stateError").innerHTML = 'Please select a state';
+                document.getElementById('stateError').style.color = "red";
+                return false;
+            }
+
+            // Pincode validation: check if the pincode is exactly 6 digits long and contains only numeric characters
+            if (!/^\d{6}$/.test(pincode)) {
+                document.getElementById("pincodeError").innerHTML = 'Please enter a valid 6-digit pincode without alphabets';
+                document.getElementById('pincodeError').style.color = "red";
+                return false;
+            }
+
+
+            // City validation: check if the city field is not empty and does not contain special characters
+            if (!city || /[^a-zA-Z\s]/.test(city)) {
+                document.getElementById("cityError").innerHTML = 'Please enter a valid city';
+                document.getElementById('cityError').style.color = "red";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
     <%- include('../user/layouts/footer') %>

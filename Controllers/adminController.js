@@ -1,8 +1,10 @@
 const User = require("../Models/userModel");
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 const Categories = require("../Models/categoriesModel");
-const Order = require("../Models/OrderModel")
+const Order = require("../Models/OrderModel");
 const bcrypt = require("bcrypt");
+const { response } = require("../Routes/user");
+const Product = require("../Models/productModel");
 
 // const { LoginPage } = require("./userController");
 
@@ -35,18 +37,22 @@ const verifyLogin = async (req, res) => {
 
       if (passwordMatch) {
         if (userData.is_admin == 0) {
-          res.render("adminLogin", {messages:{ message:"email and password is incorrect" }});
+          res.render("adminLogin", {
+            messages: { message: "email and password is incorrect" },
+          });
         } else {
           req.session.admin = userData._id;
           res.redirect("/dashboard");
         }
       } else {
         res.render("adminLogin", {
-          messages:{ message:"email and password is incorrect" }
+          messages: { message: "email and password is incorrect" },
         });
       }
     } else {
-      res.render("adminLogin", { messages:{ message:"email and password is incorrect" } });
+      res.render("adminLogin", {
+        messages: { message: "email and password is incorrect" },
+      });
     }
   } catch (error) {
     console.log(error.message);
@@ -62,7 +68,6 @@ const loadDashboard = async (req, res) => {
     console.log(error.message);
   }
 };
-
 
 const logout = async (req, res) => {
   try {
@@ -121,7 +126,7 @@ const unblockUser = async (req, res) => {
 
 const LoadCategory = async (req, res) => {
   try {
-    const Data = await Categories.find({})
+    const Data = await Categories.find({});
     res.render("Categories", { Data: Data });
   } catch (error) {
     console.log(error.message);
@@ -178,36 +183,35 @@ const deleteCategories = async (req, res) => {
 // Cetegory edit
 
 const LoadEditCategory = async (req, res) => {
-  try { 
-    const data = await Categories.findOne({ _id:req.query.id});
-    // console.log(data);
-   res.render("Categoriesedit",{Data:data})
-    
-  }catch(error){
+  try {
+    const data = await Categories.findOne({ _id: req.query.id });
+
+    res.render("Categoriesedit", { Data: data });
+  } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 const EditCategories = async (req, res) => {
   try {
-    const id = req.body.categoryId
+    const id = req.body.categoryId;
     console.log(id);
     const name = req.body.category_name.toUpperCase();
     const description = req.body.category_description.toUpperCase();
- 
-    console.log('iam body',req.body);
-    // const objectId = new ObjectId(id);
 
-    const Data = await Categories.findOne({ name: name});
+    console.log("iam body", req.body);
 
-    console.log('darta',Data);
+    const Data = await Categories.findOne({ name: name });
+
+    console.log("darta", Data);
     if (Data) {
       return res.render("Categoriesedit", {
-        messages: { message: "Categories already exist" },Data:Data
+        messages: { message: "Categories already exist" },
+        Data: Data,
       });
     } else {
       const UpdateCategories = await Categories.updateOne(
-        { _id:id },
+        { _id: id },
         { $set: { name: name, description: description } }
       );
 
@@ -218,67 +222,101 @@ const EditCategories = async (req, res) => {
   }
 };
 
-
-const List = async (req,res)=>{
-try{
-  console.log(req.query.id);
-  await Categories.updateOne({_id:req.query.id},{$set:{isListed:true}});
-  res.redirect("/category")
-}catch(error){
-  console.log(error.message);
-}
-};
-
-
-const UnList = async (req,res)=>{
-  try{
-    console.log(req.query.id);
-    await Categories.updateOne({_id:req.query.id},{$set:{isListed:false}})
-    console.log("set",req.query.id);
-    res.redirect("/category")
-  }catch(error){
-    console.log(error.message);
-  }
-  };
-
-
-const LoadOrderList = async(req,res)=>{
+const List = async (req, res) => {
   try {
-
-    if(!req.session.admin){
-     res.redirect("/admin")
-    }else{
-
-   
-      const order = await Order.find({})
-      res.render("orderList",{order})
-    }
-   
+    console.log(req.query.id);
+    await Categories.updateOne(
+      { _id: req.query.id },
+      { $set: { isListed: true } }
+    );
+    res.redirect("/category");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
+
+const UnList = async (req, res) => {
+  try {
+    console.log(req.query.id);
+    await Categories.updateOne(
+      { _id: req.query.id },
+      { $set: { isListed: false } }
+    );
+    console.log("set", req.query.id);
+    res.redirect("/category");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const LoadOrderList = async (req, res) => {
+  try {
+    if (!req.session.admin) {
+      res.redirect("/admin");
+    } else {
+      const order = await Order.find({});
+      res.render("orderList", { order });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 const OrderStatus = async (req, res) => {
   try {
-    const { status ,orderId } = req.body;
+    const { status, orderId } = req.body;
 
-      console.log("Status:", status,'jjdf',orderId);
-      if( status && orderId ){
- 
-        const order = await Order.updateOne({_id:orderId},{$set:{status:status}})
-      }
+    console.log("Status:", status, "jjdf", orderId);
+    if (status && orderId) {
+      const order = await Order.updateOne(
+        { _id: orderId },
+        { $set: { status: status } }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Order status updated successfully",
+        order: order,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Missing status or orderId in the request",
+      });
+    }
   } catch (error) {
-      // Handle errors, if any
-      console.error("Error:", error);
-      res.status(500).json({ error: "Internal server error" });
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
+const LoadOrderDetails = async (req, res) => {
+  try {
+    if (!req.session.admin) {
+      res.redirect("/admin");
+    } else {
+      const orderId = req.query.ORid;
+      console.log("qq", orderId);
+      const order = await Order.findOne({ _id: orderId }).populate("items.product_id")
+      // const OR_PDT_id = order.items.map((PRD_id) => {
+      //   return PRD_id.product_id;
+      // });
+      // console.log("IIDID", OR_PDT_id);
+      const user = await User.findOne({ _id: order.user_id });
+      const address = user.addresses.find(
+        (address) =>
+          address._id.toString() === order.delivery_address.toString()
+      );
 
+      // const ImageID = await Product.find({ _id: OR_PDT_id });
+      // console.log("dsa",ImageID)
 
-
-  
+      res.render("orderDetails", { user, order, address, });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 module.exports = {
   loadLogin,
@@ -297,7 +335,7 @@ module.exports = {
   EditCategories,
   List,
   UnList,
-  LoadOrderList ,
-  OrderStatus
-  
+  LoadOrderList,
+  OrderStatus,
+  LoadOrderDetails,
 };

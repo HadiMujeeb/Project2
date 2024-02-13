@@ -196,12 +196,14 @@ const deleteExpiredOtps = async (req, res) => {
 
 const Homepage = async (req, res) => {
   try {
+    const product = await Product.find({})
     const { user_id } = req?.session;
-    const user = await User.findOne({ _id: user_id });
-    res.render("home", { user });
+    const user = await User.findOne({ _id: user_id});
+    console.log("hii",product)
+    res.render("home", { user ,product});
   } catch (error) {
     console.log(error.message);
-  }
+  } 
 };
 
 // -----------------------------
@@ -418,7 +420,7 @@ const LoadProfile = async (req, res) => {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
     }
-    const order = await Order.find({ user_id: user._id });
+    const order = await Order.find({ user_id: user._id }).sort({createdAt:-1})
 
     res.render("profile", { user, order });
   } catch (error) {
@@ -549,14 +551,12 @@ const EditAddress = async (req, res) => {
     const id = req.session.user_id;
     console.log("idss", AddressId);
 
-    // Find the user by id
     const user = await User.findOne({ _id: id });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log("sdj", id);
-    // Update the address fields using findOneAndUpdate with arrayFilters
+
     const updatedUser = await User.findOneAndUpdate(
       { _id: id, "addresses._id": AddressId },
       {
@@ -584,8 +584,13 @@ const EditAddress = async (req, res) => {
   }
 };
 
-
-
+// const rest_pass_profile = async (req,res)=>{
+// try {
+//   re.render("resetProfile")
+// } catch (error) {
+//   console.log(error.messages);
+// }
+// }
 module.exports = {
   Homepage,
   RegisterPage,
@@ -610,5 +615,5 @@ module.exports = {
   DeleteAddress,
   LoadEditAddress,
   EditAddress,
- 
+  // rest_pass_profile
 };

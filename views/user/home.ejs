@@ -47,79 +47,52 @@
 
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link" href="" id="navbarDropdown_1" role="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="nav-link" href="/" id="navbarDropdown_1" role="button">
                                         Home
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
 
-                                        <a class="dropdown-item" href="/home">Home</a>
-
-
-
-
-                                    </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link" href="blog.html" id="navbarDropdown_1" role="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="nav-link" href="/shop" id="navbarDropdown_1" role="button">
                                         Shop
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
 
-                                        <a class="dropdown-item" href="/shop"> shop category</a>
-
-
-
-
-                                    </div>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link " href="blog.html" id="navbarDropdown_3" role="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <% if(locals.user) { %>
+                                <!-- data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" -->
+                                <% if(locals.user) { %>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link " href="/logout" id="navbarDropdown_3" role="button">
                                             logout
-                                            <% }else { %>
+                                        </a>
+
+                                    </li>
+
+                                    <% }else { %>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link " href="/login" id="navbarDropdown_3" role="button">
                                                 login
-                                                <% } %>
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                        <% if(locals.user) { %>
-                                            <a class="dropdown-item" href="/logout"> logout</a>
-                                            <% }else { %>
-                                                <a class="dropdown-item" href="/login"> login</a>
-                                                <% } %>
+                                            </a>
 
+                                        </li>
 
-                                                    <!-- 
-                                        <a class="dropdown-item" href="tracking.html">tracking</a>
-                                        <a class="dropdown-item" href="checkout.html">product checkout</a>
-                                        <a class="dropdown-item" href="cart.html">shopping cart</a>
-                                        <a class="dropdown-item" href="confirmation.html">confirmation</a>
-                                        <a class="dropdown-item" href="elements.html">elements</a> -->
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link " href="" id="navbarDropdown_2" role="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Profile
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                        <a class="dropdown-item" href="/profile"> Profile</a>
-                                        <!-- <a class="dropdown-item" href="single-blog.html">Single blog</a> -->
-                                    </div>
-                                </li>
+                                        <% } %>
 
-                                <li class="nav-item">
-                                    <!-- <a class="nav-link" href="">Logout</a> -->
-                                </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link " href="/profile" id="navbarDropdown_2"
+                                                    role="button">
+                                                    Profile
+                                                </a>
+
+                                            </li>
+
+                                          
                             </ul>
                         </div>
                         <div class="hearer_icon d-flex">
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
                             <a href=""><i class="ti-heart"></i></a>
-                            <div class="dropdown cart">
-                                <a class="dropdown-toggle" href="/cart" id="navbarDropdown3" role="button">
+                            <div class="dropdown ">
+                                <a class="dropdown" href="/cart" id="navbarDropdown3" role="button">
                                     <i class="fas fa-cart-plus"></i>
                                 </a>
                                 <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -166,7 +139,7 @@
                                     </div>
                                 </div>
                                 <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img.png" alt="">
+                                    <img src="" alt="">
                                 </div>
                             </div>
                         </div>
@@ -184,7 +157,7 @@
                                     </div>
                                 </div>
                                 <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img.png" alt="">
+                                    <img src="" alt="">
                                 </div>
                             </div>
                         </div>
@@ -202,7 +175,7 @@
                                     </div>
                                 </div>
                                 <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img.png" alt="">
+                                    <img src="" alt="">
                                 </div>
                             </div>
                         </div>
@@ -233,7 +206,7 @@
 
     <!-- feature_part start-->
     <section class="feature_part padding_top">
-        <div class="container">
+        <!-- <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="section_tittle text-center">
@@ -275,7 +248,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </section>
     <!-- upcoming_event part start-->
 
@@ -294,91 +267,25 @@
                     <div class="product_list_slider owl-carousel">
                         <div class="single_product_list_slider">
                             <div class="row align-items-center justify-content-between">
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_1.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
+                                <% product.forEach((item) => { %>
+                                    <div class="col-lg-3 col-sm-6">
+                                        <div class="single_product_item">
+                                            <img src="/SharpImage/<%= item.image[1] %>" alt="">
+                                            <div class="single_product_text">
+                                                <h4><%= item.name %></h4>   
+                                                <h3>$<%= item.price %></h3>
+                                                <!-- <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a> -->
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_2.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_3.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_4.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_5.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_6.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_7.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
-                                    <div class="single_product_item">
-                                        <img src="img/product/product_8.png" alt="">
-                                        <div class="single_product_text">
-                                            <h4>Quartz Belt Watch</h4>
-                                            <h3>$150.00</h3>
-                                            <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <% }); %>
+
+                                
                             </div>
                         </div>
                         <div class="single_product_list_slider">
                             <div class="row align-items-center justify-content-between">
-                                <div class="col-lg-3 col-sm-6">
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_1.png" alt="">
                                         <div class="single_product_text">
@@ -387,8 +294,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_2.png" alt="">
                                         <div class="single_product_text">
@@ -397,8 +304,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_3.png" alt="">
                                         <div class="single_product_text">
@@ -407,8 +314,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_4.png" alt="">
                                         <div class="single_product_text">
@@ -417,8 +324,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_5.png" alt="">
                                         <div class="single_product_text">
@@ -427,8 +334,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_6.png" alt="">
                                         <div class="single_product_text">
@@ -437,8 +344,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_7.png" alt="">
                                         <div class="single_product_text">
@@ -447,8 +354,8 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_8.png" alt="">
                                         <div class="single_product_text">
@@ -457,7 +364,7 @@
                                             <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -503,7 +410,7 @@
     <!-- awesome_shop part start-->
 
     <!-- product_list part start-->
-    <section class="product_list best_seller section_padding">
+    <!-- <section class="product_list best_seller section_padding">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-12">
@@ -554,7 +461,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- product_list part end-->
 
     <!-- subscribe_area part start-->

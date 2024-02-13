@@ -10,10 +10,8 @@ const loadCart = async (req, res) => {
   try {
     let user;
     if (req.session.user_id) {
-      // console.log("userddf", req.session.user_id);
       id = req.session.user_id;
       user = await User.findOne({ _id: id });
-      // console.log("ue", user);
     }
 
     if (!user) {
@@ -22,7 +20,7 @@ const loadCart = async (req, res) => {
     const cartDetails = await Cart.findOne({ user_id: id }).populate({
       path: "items.product_id",
     });
-    // console.log("df", cartDetails);
+
     const userData = await User.findOne({ _id: user._id });
 
     let originalAmount = 0;
@@ -33,8 +31,6 @@ const loadCart = async (req, res) => {
       });
     }
 
-    // console.log("iamdatails", cartDetails);
-    // console.log("cart", cartDetails);
     res.render("cart", { user: userData, cartDetails, originalAmount });
   } catch (error) {
     console.log(error.message);
@@ -53,7 +49,6 @@ const AddToCart = async (req, res) => {
       console.log("if", id);
 
       user = await User.findOne({ _id: id });
-      // console.log("ds", user);
     }
 
     if (!user) {
@@ -61,7 +56,7 @@ const AddToCart = async (req, res) => {
       return;
     } else {
       const product = await Product.findOne({ _id: productId });
-      // console.log("Product:", product);
+
       const id = user._id;
       console.log("id", id);
 
@@ -97,9 +92,16 @@ const AddToCart = async (req, res) => {
               },
             }
           );
+          // const result = await Product.updateOne(
+          //   { _id: productId },
+          //   {
+          //     $inc: {
+          //       stockQuantity: -quantity,
+          //     },
+          //   }
+          // );
         } else {
           if (parseInt(quantity, 10) > product.stockQuantity) {
-            // console.log(product.stockQuantity,"hello");
             res.json({ success: false, message: "Exceeds available quantity" });
             return;
           }
@@ -117,7 +119,16 @@ const AddToCart = async (req, res) => {
               },
             }
           );
+
           console.log("hiii");
+          // await Product.updateOne(
+          //   { _id: productId },
+          //   {
+          //     $inc: {
+          //       stockQuantity: -quantity,
+          //     },
+          //   }
+          // );
         }
       } else {
         if (parseInt(quantity, 10) > product.stockQuantity) {
@@ -138,6 +149,14 @@ const AddToCart = async (req, res) => {
         });
 
         await newCart.save();
+        // await Product.updateOne(
+        //   { _id: productId },
+        //   {
+        //     $inc: {
+        //       stockQuantity: -quantity,
+        //     },
+        //   }
+        // );
       }
       res.json({ success: true });
     }
@@ -161,10 +180,8 @@ const UpdateQuantity = async (req, res) => {
     const productId = req.body.productId;
     console.log(productId);
     const count = req.body.count;
-    // console.log(count);
 
     const cart = await Cart.findOne({ user_id: req.session.user_id });
-    // console.log('cart:',cart);
 
     if (!cart) {
       return res.json({ success: false, message: "Cart not found." });
@@ -191,31 +208,39 @@ const UpdateQuantity = async (req, res) => {
         message: "Product not found in the database.",
       });
     }
-
     if (count == 1) {
-      if (
-        cartProduct.quantity < 3 &&
-        cartProduct.quantity < product.stockQuantity
-      ) {
-        await Cart.updateOne(
-          { user_id: req.session.user_id, "items.product_id": productId },
-          {
-            $inc: {
-              "items.$.quantity": 1,
-              "items.$.total_price": product.price,
-            },
-          }
-        );
-        return res.json({ success: true });
+      if (cartProduct.quantity < 3) {
+        if (cartProduct.quantity < product.stockQuantity) {
+          await Cart.updateOne(
+            { user_id: req.session.user_id, "items.product_id": productId },
+            {
+              $inc: {
+                "items.$.quantity": 1,
+                "items.$.total_price": product.price,
+              },
+            }
+          );
+          // await Product.findByIdAndUpdate(
+          //   { _id: productId },
+          //   { $inc: { stockQuantity: -1 } }
+          // );
+          return res.json({ success: true });
+        } else {
+          return res.json({
+            success: false,
+            message: "no more quantity.",
+          });
+         
+        }
       } else {
-        // const maxAllowedQuantity = Math.min(product.stockQuantity);
-        // console.log("maxqty:", maxAllowedQuantity);
         return res.json({
           success: false,
-          message: "Were are sorry! Only 3 unit(s) allowed in each order.",
+          message: "We're sorry! Only 3 unit(s) allowed in each order.",
         });
       }
-    } else if (count == -1) {
+    }
+    
+     if (count == -1) {
       if (cartProduct.quantity > 1) {
         await Cart.updateOne(
           { user_id: req.session.user_id, "items.product_id": productId },
@@ -226,6 +251,10 @@ const UpdateQuantity = async (req, res) => {
             },
           }
         );
+        // await Product.findByIdAndUpdate(
+        //   { _id: productId },
+        //   { $inc: { stockQuantity: 1 } }
+        // );
         return res.json({ success: true });
       } else {
         return res.json({
@@ -247,17 +276,34 @@ const deleteItems = async (req, res) => {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
     }
+
     const productId = req.body.productId;
     console.log(req.body.productId[1]);
     const cartUser = await Cart.findOne({ user_id: user });
+
+    let quantity;
+    let PRDid;
+    const CartQuantity = cartUser.items.find((item) => {
+      quantity = item.quantity;
+      PRDid = item.product_id;
+    });
+
+    console.log(quantity, "ddd");
     if (cartUser.items.length == 1) {
       await Cart.deleteOne({ user_id: user });
+
+      console.log(CartQuantity, "ddd");
     } else {
       await Cart.updateOne(
         { user_id: user },
         { $pull: { items: { _id: productId[1] } } }
       );
     }
+
+    // await Product.findByIdAndUpdate(
+    //   { _id: PRDid },
+    //   { $inc: { stockQuantity: quantity } }
+    // );
 
     res.redirect("/cart");
   } catch (error) {
@@ -271,7 +317,7 @@ const LoadCheckout = async (req, res) => {
       res.redirect("/login");
     } else {
       const { TotalPrice } = req.query;
-      // console.log("total", TotalPrice);
+
       const id = req.session.user_id;
 
       const user = await User.findOne({ _id: id });
@@ -290,19 +336,32 @@ const LoadCheckout = async (req, res) => {
 
 const Checkout = async (req, res) => {
   try {
-    // console.log("hiii", req.body);
     const { addressId, totalPrice, paymentMethod } = req.body;
 
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
+      console.log("hii")
+      
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
-      const ProDetails = await Cart.findOne({ user_id: user }).populate(
-        "items.product_id"
-      );
-      if (ProDetails) {
-        const orderItems = ProDetails.items.map((item) => ({
+      const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
+    const productsInCart = cart.items;
+
+    for (const cartItem of cart.items) {
+    
+      const product = cartItem.product_id;
+      const requestedQuantity = cartItem.quantity;
+      if (product.stockQuantity < requestedQuantity) {
+          return res.status(400).json({
+              success: false,
+              message: `Not enough quantity available for product ${product.name}`,
+          });
+      }
+        }
+
+      if (cart) {
+        const orderItems = cart.items.map((item) => ({
           product_id: item.product_id,
           productName: item.productName,
           quantity: item.quantity,
@@ -328,9 +387,7 @@ const Checkout = async (req, res) => {
         if (order) {
           await Cart.deleteMany({});
           console.log("Items deleted from the cart");
-          const order = await Order.findOne({ user_id: user._id }).sort({
-            _id: -1,
-          });
+          const order = await Order.findOne({ user_id: user._id })
           console.log("orderid", order._id);
           res.json({ success: true, order: order._id });
         }
@@ -341,6 +398,43 @@ const Checkout = async (req, res) => {
   }
 };
 
+const LoadCheckADDaddress = async (req,res) => {
+  try {
+    res.render("checkaddress");
+  } catch (error) {
+    console.log(error, message);
+  }
+};
+
+
+const  CheckADDaddress = async (req, res) => {
+  try {
+    const { name, mobile, pincode, address, city, landmark, state } = req.body;
+    const id = req.session.user_id;
+    console.log("id", id);
+    const user = await User.findOne({ _id: id });
+    console.log("user", user);
+
+    if (!user) {
+      res.redirect("/login")
+    }
+    const newAddress = {
+      name,
+      mobile,
+      pincode,
+      address,
+      city,
+      state,
+      landmark,
+    };
+    console.log("add", newAddress);
+    user.addresses.push(newAddress);
+    await user.save();
+    res.redirect("/checkout");
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const LoadConfirm = async (req, res) => {
   try {
     if (!req.session.user_id) {
@@ -373,13 +467,12 @@ const LoadOrder = async (req, res) => {
 
       const user = await User.findOne({ _id: id });
 
-      const order = await Order.findOne({ user_id: user._id });
+      const order = await Order.find({})
+console.log("FGR",order);
 
-      //    const proIds = order.items.filter((item) => {
-      //     return item.user_id.toString() === user._id.toString();
-      // });
-      console.log("hh", order);
-      //  console.log("proID",proId);
+
+      // console.log("hh", order);.
+
       res.render("order", { order });
     }
   } catch (error) {
@@ -393,37 +486,38 @@ const OrderView = async (req, res) => {
       res.redirect("/login");
     } else {
       const { orderId } = req.query;
-      const order = await Order.findOne({ _id: orderId });
+      const order = await Order.findOne({ _id: orderId }).populate("items.product_id")
+   
+
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
+      console.log("user:", user);
 
       const address = user.addresses.find(
         (address) =>
           address._id.toString() === order.delivery_address.toString()
       );
-
-      res.render("orderview", { order, address});
+      console.log(address);
+      res.render("orderview", { order, address });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const OrderCancel = async(req,res)=>{
+const OrderCancel = async (req, res) => {
   try {
     const id = req.query.CancelId;
-    console.log("fi",id);
-    const order = await Order.findOne({_id:id})
-    if(order){
-      await Order.updateOne({_id:id},{$set:{status:"cancelled"}})
+    console.log("fi", id);
+    const order = await Order.findOne({ _id: id });
+    if (order) {
+      await Order.updateOne({ _id: id }, { $set: { status: "Cancelled" } });
       console.log("cancelled successfully");
     }
-
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 module.exports = {
   loadCart,
@@ -432,8 +526,10 @@ module.exports = {
   deleteItems,
   LoadCheckout,
   Checkout,
+  LoadCheckADDaddress,
   LoadConfirm,
   LoadOrder,
   OrderView,
-  OrderCancel
+  OrderCancel,
+  CheckADDaddress 
 };

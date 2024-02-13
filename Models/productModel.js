@@ -31,10 +31,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: Date.now(),
     },
-    brand:{
-        type:String,
-        required:true,
-    },
+    // brand:{
+    //     type:String,
+    //     required:true,
+    // },
     is_Listed:{
         type:Boolean,
        default:true         
