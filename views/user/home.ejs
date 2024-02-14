@@ -85,7 +85,7 @@
 
                                             </li>
 
-                                          
+
                             </ul>
                         </div>
                         <div class="hearer_icon d-flex">
@@ -267,20 +267,25 @@
                     <div class="product_list_slider owl-carousel">
                         <div class="single_product_list_slider">
                             <div class="row align-items-center justify-content-between">
-                                <% product.forEach((item) => { %>
+                                <% product.forEach((item)=> { %>
                                     <div class="col-lg-3 col-sm-6">
                                         <div class="single_product_item">
-                                            <img src="/SharpImage/<%= item.image[1] %>" alt="">
+                                            <img src="/SharpImage/<%= item.image[1] %>" alt="" width="1000"
+                                                height="300px">
                                             <div class="single_product_text">
-                                                <h4><%= item.name %></h4>   
-                                                <h3>$<%= item.price %></h3>
-                                                <!-- <a href="#" class="add_cart">+ add to cart<i class="ti-heart"></i></a> -->
+                                                <h4>
+                                                    <%= item.name %>
+                                                </h4>
+                                                <h3>$<%= item.price %>
+                                                </h3>
+                                              
+                                               
                                             </div>
                                         </div>
                                     </div>
-                                <% }); %>
+                                    <% }); %>
 
-                                
+
                             </div>
                         </div>
                         <div class="single_product_list_slider">
@@ -654,6 +659,93 @@
     <script src="js/mail-script.js"></script>
     <!-- custom js -->
     <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Define your addToCart function
+        function addToCart(productId, productName, productPrice) {
+            let user = document.getElementById("user").value;
+
+            if (!user) {
+
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Login Required',
+                    text: 'Please login to add items to your cart.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Login',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect user to login page or show login form
+                        window.location.href = '/login'; // Replace '/login' with your actual login page URL
+                    }
+                });
+                return; // Exit function to prevent further execution
+
+
+
+            }
+
+            Swal.fire({
+                icon: 'question',
+                title: 'Add to Cart',
+                text: `Do you want to add ${productName} to your cart?`,
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    // User clicked "Yes," add the item to the cart
+                    const quantity = 1; // You may get this from a form input
+                    fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            productId, productName, productPrice, quantity
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success === false) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Info',
+                                    text: data.message,
+                                });
+                            } else {
+                                // Handle success response
+                                console.log(data.message);
+                                // Show success message
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added to cart!',
+                                    text: `${productName} has been added to your cart.`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        })
+
+
+                        .catch(error => {
+                            console.error('Error adding to cart:', error);
+                            // Show error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to add the item to the cart. Please try again.',
+                            });
+                        });
+                } else {
+                    // User clicked "No," do nothing or show a different message
+                }
+            });
+        }
+
+    </script>
 </body>
 
 </html>

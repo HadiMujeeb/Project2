@@ -20,7 +20,8 @@ const loadCart = async (req, res) => {
     const cartDetails = await Cart.findOne({ user_id: id }).populate({
       path: "items.product_id",
     });
-
+    const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
+    
     const userData = await User.findOne({ _id: user._id });
 
     let originalAmount = 0;
@@ -31,7 +32,7 @@ const loadCart = async (req, res) => {
       });
     }
 
-    res.render("cart", { user: userData, cartDetails, originalAmount });
+    res.render("cart", { user: userData, cartDetails, originalAmount ,cart});
   } catch (error) {
     console.log(error.message);
   }
@@ -327,7 +328,13 @@ const LoadCheckout = async (req, res) => {
         "name"
       );
 
-      res.render("ProceedCheckout", { user, TotalPrice, product });
+      if(product){
+        res.render("ProceedCheckout", { user, TotalPrice, product });
+      }else{
+        res.redirect('/shop')
+      }
+
+     
     }
   } catch (error) {
     console.log(error.message);
@@ -346,7 +353,7 @@ const Checkout = async (req, res) => {
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
       const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
-    const productsInCart = cart.items;
+    
 
     for (const cartItem of cart.items) {
     

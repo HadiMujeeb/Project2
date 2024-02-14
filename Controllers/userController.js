@@ -189,7 +189,7 @@ const resendOTP = async (req, res) => {
 const deleteExpiredOtps = async (req, res) => {
   const email = req.body.email;
   console.log("hello", email);
-  await UserOTPVerification.deleteOne({ email: email });
+  await UserOTPVerification.deleteMany({ });
 };
 
 //------------------------------------LOGIN-----------------------------------------------------------------------

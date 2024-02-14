@@ -116,10 +116,10 @@
                                             </p>
                                         </div>
                                         <div class="col-sm-9 offset-sm-3">
-                                            <a class="genric-btn danger-border circle arrow"
-                                                href="/EditAddress?userId=<%=address._id%>">Edit</a>
-                                            <a class="genric-btn danger-border circle arrow" href=""
-                                                onclick="deleteAddress( '<%= user._id %>', '<%= index %>')">Delete</a>
+                                            <!-- <a class="genric-btn danger-border circle arrow"
+                                                href="/EditAddress?userId=<%=address._id%>">Edit</a> -->
+                                            <!-- <a class="genric-btn danger-border circle arrow" href=""
+                                                onclick="deleteAddress( '<%= user._id %>', '<%= index %>')">Delete</a> -->
 
                                             <button class="genric-btn danger-border circle arrow"
                                                 onclick="selectAddress('<%= address._id%>')">Select</Select></button>
@@ -206,6 +206,8 @@
                 </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 
             <script>
@@ -240,54 +242,68 @@
                     $('.btn_3').click(function (event) {
                         event.preventDefault();
 
-                        if (addressId !== null && paymentMethod !== null) {
-
-                            const totalPrice = '<%= TotalPrice %>';
-
-
-                            $.ajax({
-                                url: "/CompleteCheckout",
-                                method: "post",
-                                data: {
-                                    addressId: addressId,
-                                    totalPrice: totalPrice,
-                                    paymentMethod: paymentMethod
-                                },
-                                success: function (response) {
-
-                                    console.log(response);
-                                    if (response.success && response.order) {
-
-                                        var order = response.order;
-                                        console.log("Order:", order);
-
-
-                                        window.location.href = '/confirm?orderId=' + encodeURIComponent(order);
-                                    } else if (response.success == false) {
-
-
-                                        alert('quantinyt aunaiadjidjajdj')
-
-                                    }
-
-                                },
-                                error: function (xhr, status, error) {
-
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'The quantity you entered is not available. Please try again with a different quantity.'
-                                    });
-
-
-                                }
+                        // if (addressId !== null && paymentMethod !== null) {
+                        if (!addressId || !paymentMethod) {
+                            // If addressId or paymentMethod is empty, show an error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Please select both an address and a payment method before proceeding with the checkout.'
                             });
-                        } else {
-
-                            console.error("No address selected");
+                            return; // Exit the function to prevent further execution
                         }
+                        const totalPrice = '<%= TotalPrice %>';
+
+                        // Display a confirmation dialog
+                        Swal.fire({
+                            title: 'Proceed with Checkout?',
+                            text: 'Are you sure you want to proceed with the checkout?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, proceed',
+                            cancelButtonText: 'No, cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the user confirms, make the AJAX request
+                                $.ajax({
+                                    url: "/CompleteCheckout",
+                                    method: "post",
+                                    data: {
+                                        addressId: addressId,
+                                        totalPrice: totalPrice,
+                                        paymentMethod: paymentMethod
+                                    },
+                                    success: function (response) {
+                                        console.log(response);
+                                        if (response.success && response.order) {
+                                            var order = response.order;
+                                            console.log("Order:", order);
+                                            window.location.href = '/confirm?orderId=' + encodeURIComponent(order);
+                                        } else if (response.success == false) {
+                                            alert('Quantity is not available.');
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: 'The quantity you entered is not available. Please try again with a different quantity.'
+                                        });
+                                    }
+                                });
+                            } else {
+                                // If the user cancels the checkout
+                                // Handle this case as needed
+                            }
+                        });
+                        // } else {
+                        //     console.error("No address selected");
+                        // }
                     });
                 });
+
+
+
             </script>
 
 

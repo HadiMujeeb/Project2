@@ -11,7 +11,7 @@
     <title>OTP Verification Page</title>
 </head>
 
-<body >
+<body>
     <div class="container">
         <header>
             <img src="/img/shield.png" alt="icon">
@@ -26,16 +26,17 @@
                 <input type="number" name="four" disabled>
             </div>
 
-           
-            <button class="btn">VERIFY OTP</button>
-           
-            
 
-            
+            <button class="btn">VERIFY OTP</button>
+
+
+
+
             <div id="expirationMessage"></div>
             <span id="countdown"></span>
-            
-            <button class="genric-btn success-border radius" type="button" onclick="resendOTP()" id="resendLink" style="margin-top: 3px;">RESEND OTP</button>
+
+            <button class="genric-btn success-border radius" type="button" onclick="resendOTP()" id="resendLink"
+                style="margin-top: 3px;">RESEND OTP</button>
         </form>
 
         <% if (typeof message !=='undefined' ) { %>
@@ -44,7 +45,18 @@
             </h5>
             <% } %>
     </div>
-    
+    <script>
+        let resendOTPCalled = false;
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     if (!resendOTPCalled) {
+        //         resendOTP();
+        //         resendOTPCalled = true;
+        //     }
+        // });
+
+    </script>
+
 </body>
 
 

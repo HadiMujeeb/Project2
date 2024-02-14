@@ -144,6 +144,13 @@
                 </div>
             </div>
         </div>
+        <script>
+            window.addEventListener('popstate', function (event) {
+            // Redirect to the shop page
+            window.location.href = '/shop';
+        });
+        </script>
+        
     </section>
     <!--================ confirmation part end =================-->
     <%- include('../user/layouts/footer') %>

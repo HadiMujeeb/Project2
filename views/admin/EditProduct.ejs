@@ -348,7 +348,7 @@
                 document.getElementById("priceError").innerHTML = '';
             }
 
-            if (!/^\d+(\.\d+)?$/.test(quantity)|| quantity<="0") {
+            if (!/^\d+(\.\d+)?$/.test(quantity)|| quantity<"0") {
                 document.getElementById("quantityError").innerHTML = 'Please enter a valid numeric price';
                 document.getElementById('quantityError').style.color = "red";
                 return false;

@@ -112,6 +112,8 @@
                 document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
                 document.getElementById('phoneError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('phoneError').innerHTML = '';
             }
     
             // Additional validation to check for alphabetic characters or special characters in mobile number
@@ -119,6 +121,8 @@
                 document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
                 document.getElementById('phoneError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('phoneError').innerHTML = '';
             }
     
             // // Address validation: check if the address is not empty and does not contain special characters

@@ -93,6 +93,8 @@
                 document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers (no Spaces)';
                 document.getElementById('nameError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('nameError').innerHTML = '';
             }
 
            
@@ -102,6 +104,8 @@
                 document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
                 document.getElementById('phoneError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('phoneError').innerHTML = '';
             }
 
             // Additional validation to check for alphabetic characters or special characters in mobile number
@@ -109,6 +113,8 @@
                 document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
                 document.getElementById('phoneError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('phoneError').innerHTML = '';
             }
 
             // Address validation: check if the address is not empty and does not contain special characters
@@ -119,10 +125,12 @@
             // }
 
             // State validation: check if a state is selected
-            if (state === "Select State") {
-                document.getElementById("stateError").innerHTML = 'Please select a state';
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(state)) {
+                document.getElementById('stateError').innerHTML = ' (remove the Spaces)';
                 document.getElementById('stateError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('stateError').innerHTML = '';
             }
 
             // Pincode validation: check if the pincode is exactly 6 digits long and contains only numeric characters
@@ -134,10 +142,12 @@
 
 
             // City validation: check if the city field is not empty and does not contain special characters
-            if (!city || /[^a-zA-Z\s]/.test(city)) {
-                document.getElementById("cityError").innerHTML = 'Please enter a valid city';
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(city)) {
+                document.getElementById('cityError').innerHTML =  ' (remove the Spaces)';
                 document.getElementById('cityError').style.color = "red";
                 return false;
+            }else{
+                document.getElementById('cityError').innerHTML = '';
             }
 
             return true;

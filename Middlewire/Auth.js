@@ -1,4 +1,5 @@
 const User = require("../Models/userModel");
+const Cart = require("../Models/cartModel");
 
 const isLogin = async (req, res, next) => {
   try {
@@ -42,8 +43,24 @@ const isLogout = async (req, res, next) => {
   }
 };
 
+
+const stop = async (req, res, next) => {
+  try {
+    const cart = await Cart.find({});
+    if (!cart || cart.length === 0) {
+      return res.redirect("/shop");
+    }
+    next();
+  } catch (error) {
+    console.log(error.message);
+
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   isLogin,
   isLogout,
   isBlock,
+  stop,
 };

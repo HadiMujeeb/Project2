@@ -79,7 +79,7 @@ user_router.post("/deleteItems", cartController.deleteItems);
 
 user_router.get("/checkout", cartController.LoadCheckout);
 
-user_router.post("/CompleteCheckout", cartController.Checkout);
+user_router.post("/CompleteCheckout",auth.stop, cartController.Checkout);
 
 user_router.get("/addressCheckout", cartController. LoadCheckADDaddress);
 

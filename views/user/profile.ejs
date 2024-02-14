@@ -357,7 +357,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save
                                     Changes</button>
-                                    <button type="button" class="btn btn-primary"><i class="fas fa-save">reset</i></button>
+                                    <!-- <button type="button" class="btn btn-primary"><i class="fas fa-save">reset</i></button> -->
                             </form>
 
                             <% if (typeof message !=="undefined" ) { %>
@@ -662,6 +662,8 @@
             document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers(no Spaces)';
             document.getElementById('nameError').style.color = "red";
             return false;
+        }else{
+            document.getElementById('nameError').innerHTML ="";
         }
 
         // Email validation using regular expression
@@ -671,20 +673,24 @@
             document.getElementById("emailError").innerHTML = "Please enter a valid Gmail address";
             document.getElementById('emailError').style.color = "red";
             return false;
+        }else{
+            document.getElementById('nameError').innerHTML ="";
         }
 
         if (!/^\d{10}$/.test(mobile)) {
             document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
             document.getElementById('phoneError').style.color = "red";
             return false;
+        }else{
+            document.getElementById('nameError').innerHTML ="";
         }
 
-        // Additional validation to check for alphabetic characters or special characters in mobile number
-        if (!/^\d+$/.test(mobile)) {
-            document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
-            document.getElementById('phoneError').style.color = "red";
-            return false;
-        }
+        // // Additional validation to check for alphabetic characters or special characters in mobile number
+        // if (!/^\d+$/.test(mobile)) {
+        //     document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
+        //     document.getElementById('phoneError').style.color = "red";
+        //     return false;
+        // }
         return true;
 
     }
