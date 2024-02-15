@@ -51,6 +51,7 @@
                     <div class="single_confirmation_details">
                         <h4>Billing Address</h4>
                         <ul>
+                            <% if (typeof  address!=="undefined"){%>
                             <li>
                                 <p>Name</p><span>:<%= address.name%></span>
                             </li>
@@ -72,7 +73,9 @@
                             <li>
                                 <p>PinCode</p><span>:<%= address.pincode%></span>
                             </li>
-
+                           <%}else{%>
+                            <p>address no founded</p>
+                            <%}%>
                         </ul>
                     </div>
                 </div> 

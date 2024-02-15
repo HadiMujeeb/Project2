@@ -120,7 +120,7 @@
                                     <label for="product_name" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name"
                                         name="productName" />
-                                        <span id="nameError" class="error"></span>
+                                    <span id="nameError" class="error"></span>
                                     <% if (typeof message !=='undefined' ) { %>
 
                                         <h4 style="color: darkred;">
@@ -133,8 +133,9 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" rows="4"
-                                        name="description"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" name="description"
+                                        id="description"></textarea>
+                                    <span id="descriptionError" class="error"></span>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
@@ -230,6 +231,7 @@
             var productName = document.getElementById("product_name").value;
             var price = document.getElementsByName("price")[0].value;
             var quantity = document.getElementsByName("Quantity")[0].value;
+            var description = document.getElementById("description").value;
 
             var imageInput = document.getElementById("productImage");
 
@@ -238,7 +240,7 @@
                 alert(`image must be  4 it only ${imageInput.files.length}`);
                 return false;
             }
-            if (productName === "" || price === "" || quantity === "") {
+            if (productName === "" || price === "" || quantity === "" || description === "") {
                 alert("Please fill in all fields");
                 return false;
             }
@@ -246,8 +248,16 @@
                 document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
                 document.getElementById('nameError').style.color = "red";
                 return false;
-            }else{
+            } else {
                 document.getElementById("nameError").innerHTML = '';
+            }
+            if (description.trim() === '') {
+                document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
+                document.getElementById("descriptionError").style.color = "red";
+                return false;
+            } else {
+                document.getElementById("descriptionError").innerHTML = '';
+
             }
             if (!/^\d+(\.\d+)?$/.test(price)) {
                 document.getElementById("priceError").innerHTML = 'Please enter a valid numeric price';

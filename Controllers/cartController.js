@@ -329,7 +329,7 @@ const LoadCheckout = async (req, res) => {
       );
 
       if(product){
-        res.render("ProceedCheckout", { user, TotalPrice, product });
+        res.render("ProceedCheckout", { user, TotalPrice, product ,id});
       }else{
         res.redirect('/shop')
       }
@@ -344,7 +344,9 @@ const LoadCheckout = async (req, res) => {
 const Checkout = async (req, res) => {
   try {
     const { addressId, totalPrice, paymentMethod } = req.body;
-
+ 
+   
+   
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
@@ -352,9 +354,12 @@ const Checkout = async (req, res) => {
       
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
+      
       const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
-    
-
+      // if (!user || user.isBlocked==false) {
+     
+      //   return res.render("/login");
+      // }
     for (const cartItem of cart.items) {
     
       const product = cartItem.product_id;
@@ -452,13 +457,15 @@ const LoadConfirm = async (req, res) => {
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
 
-      const address = user.addresses.find(
-        (address) =>
-          address._id.toString() === order.delivery_address.toString()
-      );
+      // const address = user.addresses.find(
+      //   (address) =>
+      //     address._id.toString() === order.delivery_address.toString()
+      // );
 
-      console.log("Address:", address);
-      res.render("confirm", { order, address });
+      
+
+      // console.log("Address:", address);
+      res.render("confirm", { order });
     }
   } catch (error) {
     console.log(error.message);

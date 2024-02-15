@@ -34,7 +34,7 @@ const insertUser = async (req, res) => {
     console.log(req.body);
     const userExist = await User.findOne({ email: req.body.email });
 
-    if (userExist) {
+    if (userExist && userExist.is_Verified==1) {
       return res.render("registration", { messages: "User already exists" });
     } else {
       // Check if the password and confirm password match
@@ -180,6 +180,7 @@ const resendOTP = async (req, res) => {
   try {
     console.log("bodyis", req.body);
     const email = req.body.email;
+    await UserOTPVerification.deleteMany({});
     await sendOTPVerificationEmail({ email }, res);
   } catch (error) {
     console.log(error.message);
@@ -189,21 +190,21 @@ const resendOTP = async (req, res) => {
 const deleteExpiredOtps = async (req, res) => {
   const email = req.body.email;
   console.log("hello", email);
-  await UserOTPVerification.deleteMany({ });
+  await UserOTPVerification.deleteMany({});
 };
 
 //------------------------------------LOGIN-----------------------------------------------------------------------
 
 const Homepage = async (req, res) => {
   try {
-    const product = await Product.find({})
+    const product = await Product.find({});
     const { user_id } = req?.session;
-    const user = await User.findOne({ _id: user_id});
-    console.log("hii",product)
-    res.render("home", { user ,product});
+    const user = await User.findOne({ _id: user_id });
+    console.log("hii", product);
+    res.render("home", { user, product });
   } catch (error) {
     console.log(error.message);
-  } 
+  }
 };
 
 // -----------------------------
@@ -300,12 +301,15 @@ const SingleProduct = async (req, res) => {
   try {
     const productId = req.query.productId;
     console.log("ProductId:", productId);
-
+    const user = await User.findOne({ _id: req.session.user_id });
     const product = await Product.findOne({ _id: productId }).populate(
       "category"
     );
-
-    res.render("SingleProduct", { product });
+    if (user) {
+      res.render("SingleProduct", { product, user });
+    } else {
+      res.redirect("/login");
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -420,7 +424,9 @@ const LoadProfile = async (req, res) => {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
     }
-    const order = await Order.find({ user_id: user._id }).sort({createdAt:-1})
+    const order = await Order.find({ user_id: user._id }).sort({
+      createdAt: -1,
+    });
 
     res.render("profile", { user, order });
   } catch (error) {

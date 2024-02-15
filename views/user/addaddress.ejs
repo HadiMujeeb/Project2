@@ -57,12 +57,13 @@
             </div>
 
             <div class="col-md-12 form-group p_star">
-                <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address"></textarea>
+                <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address"
+                    required></textarea>
                 <span id="addressError" class="error"></span>
             </div>
 
             <div class="col-md-12 form-group p_star">
-                <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Landmark" />
+                <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Landmark" required />
                 <span id="landmarkError" class="error"></span>
             </div>
 
@@ -81,55 +82,71 @@
     <script>
         function validateForm() {
             var name = document.getElementById("firstName").value;
-           
             var mobile = document.getElementById("mobile").value;
             var address = document.getElementById("address").value;
-            var state = document.getElementById("state").value;
+            var landmark = document.getElementById("landmark").value;
             var pincode = document.getElementById("pin").value;
+            var state = document.getElementById("state").value;
             var city = document.getElementById("city").value;
+
+
+
+            if (name === "" || mobile === "" || address === "" || state === "" || pincode === "" || city === "" || landmark === "") {
+                alert("Please fill in all fields");
+                return false;
+            }
 
             // Name validation (only text allowed)
             if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
                 document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers (no Spaces)';
                 document.getElementById('nameError').style.color = "red";
                 return false;
-            }else{
+            } else {
                 document.getElementById('nameError').innerHTML = '';
             }
 
-           
+
 
             // Mobile number validation: check for numeric characters and 10-digit length
             if (!/^\d{10}$/.test(mobile)) {
-                document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
-                document.getElementById('phoneError').style.color = "red";
+                document.getElementById("mobileError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+                document.getElementById('mobileError').style.color = "red";
                 return false;
-            }else{
-                document.getElementById('phoneError').innerHTML = '';
+            } else {
+                document.getElementById('mobileError').innerHTML = '';
             }
 
             // Additional validation to check for alphabetic characters or special characters in mobile number
             if (!/^\d+$/.test(mobile)) {
-                document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
-                document.getElementById('phoneError').style.color = "red";
+                document.getElementById("mobileError").innerHTML = 'Mobile number should contain only numeric characters';
+                document.getElementById('mobileError').style.color = "red";
                 return false;
-            }else{
-                document.getElementById('phoneError').innerHTML = '';
+            } else {
+                document.getElementById('mobileError').innerHTML = '';
             }
 
-            // Address validation: check if the address is not empty and does not contain special characters
-            // if (!address || /[^a-zA-Z0-9\s]/.test(address)) {
-            //     document.getElementById("addressError").innerHTML = 'Please enter a valid address';
-            //     document.getElementById('addressError').style.color = "red";
-            //     return false;
-            // }
 
+            if (address.trim() === "" || address !== address.trim()) {
+                document.getElementById("addressError").innerHTML = 'Please enter a valid address without leading or trailing spaces';
+                document.getElementById('addressError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById("addressError").innerHTML = '';
+            }
+
+            if (landmark.trim() === "" || landmark !== landmark.trim()) {
+                document.getElementById("landmarkError").innerHTML = 'Please enter a valid landmark without leading or trailing spaces';
+                document.getElementById('landmarkError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById("landmarkError").innerHTML = '';
+            }
             // State validation: check if a state is selected
             if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(state)) {
                 document.getElementById('stateError').innerHTML = ' (remove the Spaces)';
                 document.getElementById('stateError').style.color = "red";
                 return false;
-            }else{
+            } else {
                 document.getElementById('stateError').innerHTML = '';
             }
 
@@ -138,15 +155,18 @@
                 document.getElementById("pincodeError").innerHTML = 'Please enter a valid 6-digit pincode without alphabets';
                 document.getElementById('pincodeError').style.color = "red";
                 return false;
+            }else{
+                
+                document.getElementById("pincodeError").innerHTML = '';
             }
 
 
             // City validation: check if the city field is not empty and does not contain special characters
             if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(city)) {
-                document.getElementById('cityError').innerHTML =  ' (remove the Spaces)';
+                document.getElementById('cityError').innerHTML = ' (remove the Spaces)';
                 document.getElementById('cityError').style.color = "red";
                 return false;
-            }else{
+            } else {
                 document.getElementById('cityError').innerHTML = '';
             }
 

@@ -69,7 +69,7 @@ user_router.post("/editaddress", userController.EditAddress);
 
 user_router.get("/cart", cartController.loadCart);
 
-user_router.post("/add-to-cart", cartController.AddToCart);
+user_router.post("/add-to-cart",auth.isBlock, cartController.AddToCart);
 
 user_router.post("/quantityUpdate", cartController.UpdateQuantity);
 
@@ -77,19 +77,19 @@ user_router.post("/quantityUpdate", cartController.UpdateQuantity);
 
 user_router.post("/deleteItems", cartController.deleteItems);
 
-user_router.get("/checkout", cartController.LoadCheckout);
+user_router.get("/checkout",auth.isBlock, cartController.LoadCheckout);
 
-user_router.post("/CompleteCheckout",auth.stop, cartController.Checkout);
+user_router.post("/CompleteCheckout",auth.isBlock, cartController.Checkout);
 
 user_router.get("/addressCheckout", cartController. LoadCheckADDaddress);
 
 user_router.post("/addressCheckout", cartController. CheckADDaddress);
 
 
-user_router.get("/confirm", cartController.LoadConfirm);
+user_router.get("/confirm", auth.isBlock,cartController.LoadConfirm);
 
 
-user_router.get("/order", cartController.LoadOrder);
+user_router.get("/order",auth.isBlock, cartController.LoadOrder);
 
 user_router.get("/orderview", cartController.OrderView);
 

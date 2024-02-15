@@ -91,7 +91,7 @@
                                 </ul>
                             </div>
                             <div class="hearer_icon d-flex">
-                                <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
+                                <!-- <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a> -->
                                 <a href=""><i class="ti-heart"></i></a>
                                 <div class="dropdown">
                                     <a class="dropdown" href="#" id="navbarDropdown3" role="button"
@@ -110,7 +110,7 @@
                     </div>
                 </div>
             </div>
-            <div class="search_input" id="search_input_box">
+            <!-- <div class="search_input" id="search_input_box">
                 <div class="container ">
                     <form class="d-flex justify-content-between search-inner">
                         <input type="text" class="form-control" id="search_input" placeholder="Search Here">
@@ -118,7 +118,7 @@
                         <span class="ti-close" id="close_search" title="Close Search"></span>
                     </form>
                 </div>
-            </div>
+            </div> -->
         </header>
         <!-- Header part end-->
 
@@ -175,6 +175,7 @@
 
                                         <input type="text" class="form-control" id="mobile" name="mobile" value=""
                                             placeholder="mobile number">
+                                        <span id="mobileError" class="error"></span>
 
 
 
@@ -405,18 +406,25 @@
 
         <script>
             function validateForm() {
+
                 var name = document.getElementById("name").value;
                 var email = document.getElementById("email").value;
+                var mobile = document.getElementById("mobile").value;
                 var password = document.getElementById("password").value;
                 var confirmPassword = document.getElementById("confirmPassword").value;
 
-
+                // if (name === "" || email === "" || mobile === "" || password === "" || confirmPassword === "") {
+                //     alert("Please fill in all fields");
+                //     return false;
+                // }
 
                 // Name validation (only text allowed)
                 if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
                     document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers(no Spaces)';
                     document.getElementById('nameError').style.color = "red";
                     return false;
+                }else{
+                    document.getElementById('nameError').innerHTML = '';
                 }
 
                 // Email validation using regular expression
@@ -426,6 +434,15 @@
                     document.getElementById("emailError").innerHTML = "Please enter a valid Gmail address";
                     document.getElementById('emailError').style.color = "red";
                     return false;
+                }else{
+                    document.getElementById("emailError").innerHTML = "";
+                }
+                if (!/^\d{10}$/.test(mobile)) {
+                    document.getElementById("mobileError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+                    document.getElementById('mobileError').style.color = "red";
+                    return false;
+                } else {
+                    document.getElementById('mobileError').innerHTML = '';
                 }
 
 
@@ -434,12 +451,11 @@
                     document.getElementById("pError").innerHTML = 'Password should have 8 character not contain Spaces';
                     document.getElementById('pError').style.color = "red";
                     return false;
+                } else {
+                    document.getElementById('pError').innerHTML = '';
+
                 }
-                // Confirm Password validation
-                //    if (password !== confirmPassword) {
-                //         document.getElementById("confirmPasswordError").innerHTML = 'Passwords do not match';
-                //         return false;
-                //     }
+
                 return true;
 
             }

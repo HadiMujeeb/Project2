@@ -378,7 +378,8 @@
                             </div>
 
                             <hr />
-                            <% if (user.addresses.length> 0) { %>
+                           
+                            <% if (user.addresses!=="undefined" && user.addresses.length> 0) { %>
                                 <% user.addresses.forEach((address, index)=> { %>
                                     <div class="row">
                                         <div class="col-sm-3">

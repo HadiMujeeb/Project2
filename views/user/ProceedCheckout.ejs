@@ -151,7 +151,7 @@
                                         <span>Total</span>
                                     </a>
                                 </li>
-
+                          
                                 <ul>
                                     <% product.items.forEach(item=> { %>
                                         <li>
@@ -182,6 +182,7 @@
                                         </a>
                                     </li>
                                 </ul>
+                                <input type="hidden" id="id" value="<%=id%>">
                                 <div class="payment_item">
                                     <div class="radion_btn">
                                         <input type="radio" id="cash-on-delivery" name="payment-selector"
@@ -189,11 +190,11 @@
                                         <label for="cash-on-delivery">Cash on Delivery</label>
                                         <div class="check"></div>
                                     </div>
+                                   
                                     <a class="btn_3" href="#" onclick="validatePaymentSelection(event)"
                                         id="checkoutButton">Proceed to
                                         Pay</a>
-
-
+                                        
                                     <p id="payment-error" style="display: none; color: red;">Please select Cash on
                                         Delivery option</p>
 
@@ -241,20 +242,18 @@
                 $(document).ready(function () {
                     $('.btn_3').click(function (event) {
                         event.preventDefault();
-
-                        // if (addressId !== null && paymentMethod !== null) {
-                        if (!addressId || !paymentMethod) {
-                            // If addressId or paymentMethod is empty, show an error message
+                         
+               if (!addressId || !paymentMethod) {
+                           
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: 'Please select both an address and a payment method before proceeding with the checkout.'
                             });
-                            return; // Exit the function to prevent further execution
+                            return; 
                         }
                         const totalPrice = '<%= TotalPrice %>';
 
-                        // Display a confirmation dialog
                         Swal.fire({
                             title: 'Proceed with Checkout?',
                             text: 'Are you sure you want to proceed with the checkout?',
@@ -264,7 +263,7 @@
                             cancelButtonText: 'No, cancel'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // If the user confirms, make the AJAX request
+                               
                                 $.ajax({
                                     url: "/CompleteCheckout",
                                     method: "post",

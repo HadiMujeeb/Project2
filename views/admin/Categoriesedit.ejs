@@ -103,17 +103,20 @@
     <h3>Edit Categories</h3>
     <br>
     <br>
-    <form  method="post">
+    <form  method="post"  onclick=" return validateForm()" >
         <div class="mb-4">
             <label for="category_name" class="form-label">Name</label>
             <input type="text" placeholder="Type here" class="form-control" id="category_name" name="category_name" value="<%= Data.name  %>" />
             <input type="hidden" name="categoryId" value="<%= Data._id%>">
+            <span id="nameError" class="error"></span>
         </div>
 
         <div class="mb-4">
             <label for="category_description" class="form-label">Description</label>
             <textarea placeholder="Type here" class="form-control" id="category_description" name="category_description" > <%= Data.description %></textarea>
+            <span id="descriptionError" class="error"></span>
         </div>
+
         <div class="d-grid">
             <button class="btn btn-primary" type="submit">Update category</button>
         </div>
@@ -203,6 +206,30 @@
             });
         });
     </script>
+
+<script>
+    function validateForm() {
+        var description = document.getElementById("category_description").value;
+        var name = document.getElementById("category_name").value;
+        
+        if (name.trim() === '') {
+            document.getElementById("nameError").innerHTML = 'name cannot be empty';
+            document.getElementById("nameError").style.color = "red";
+            return false;
+        } else {
+            document.getElementById("nameError").innerHTML = '';
+            
+        }
+        if (description.trim() === '') {
+            document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
+            document.getElementById("descriptionError").style.color = "red";
+            return false;
+        } else {
+            document.getElementById("descriptionError").innerHTML = '';
+           
+        }
+    }
+</script>
 
 </body>
 
