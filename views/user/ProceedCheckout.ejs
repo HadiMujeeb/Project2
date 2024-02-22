@@ -25,13 +25,30 @@
                 <div class="check_title">
                     <h2>
                         Have a coupon?
-                        <a href="#" data-toggle="modal" data-target="#couponModal">Click here to enter your code</a>
+                        <!-- <a href="#" data-toggle="modal" data-target="#couponModal">Click the butto</a> -->
                     </h2>
                 </div>
-                <input type="text" id="couponCodeInput" placeholder="Enter coupon code" />
+                <br>
+                <% if(product.couponDiscount !==undefined && product.couponDiscount !==null) { %>
 
-                <!-- <input type="text" placeholder="Enter coupon code" /> -->
-                <a class="tp_btn" href="#">Apply Coupon</a>
+                    <p>
+                        <%=product.couponDiscount.couponName%>
+                    </p>
+                    <p>
+                        <%=product.couponDiscount.couponCode %>
+                    </p>
+                    <p>
+                        <%=product.couponDiscount. minAmount %>
+                    </p>
+                    <p>
+                        <%=product.couponDiscount.couponDescription %>
+                    </p>
+
+                    <a class="tp_btn" onclick="removeCoupon('<%=product._id%>')">Remove Coupon</a>
+                    <% }else{ %>
+                        <!-- <input type="text" placeholder="Enter coupon code" /> -->
+                        <a class="tp_btn" onclick="couponAdd('<%=product._id%>')">Apply Coupon</a>
+                        <%}%>
             </div>
 
             <!-- Modal -->
@@ -47,7 +64,7 @@
                         </div>
                         <div class="modal-body" id="couponModalBody">
                             <% coupon.forEach((cart, index)=> { %>
-                                <div class="border p-3 mb-3" data-toggle="popover" data-trigger="click"
+                                <div class="border p-3 mb-3 " data-toggle="popover" data-trigger="click"
                                     data-placement="top" title="Coupon Form" data-content='<form id="couponForm<%= index %>" class="mt-2">
                                    <div class="form-group">
                                        <label for="couponCode<%= index %>">Coupon Code:</label>
@@ -55,16 +72,16 @@
                                    </div>
                                    <button type="submit" class="btn btn-primary">Apply</button>
                                </form>'>
-                                    <p>Coupon Name: <%= cart.couponName %>
-                                    </p>
-                                    <p>Coupon Code: <%= cart.couponCode %>
-                                    </p>
-                                    <p>Minimum Amount: $<%= cart.minAmount %>
-                                    </p>
-                                    <p>Discount Amount: $<%= cart.discountAmount %>
-                                    </p>
-                                    <button type="button" class="btn btn-primary select-btn"
-                                        data-index="<%= index %>">Select Coupon</button>
+                                    <div class="couponDetails" id="<%= cart._id%>">
+                                        <p>Coupon Name: <%= cart.couponName %>
+                                        </p>
+                                        <p>Coupon Code: <%= cart.couponCode %>
+                                        </p>
+                                        <p>Minimum Amount: $<%= cart.minAmount %>
+                                        </p>
+                                        <p>Discount Amount: $<%= cart.discountAmount %>
+                                        </p>
+                                    </div>
                                     <!-- <button type="button" class="btn btn-danger remove-btn d-none"
                                        data-index="<%= index %>">Remove Coupon</button> -->
                                 </div>
@@ -78,23 +95,85 @@
                 </div>
             </div>
             <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const selectButtons = document.querySelectorAll('.select-btn');
-                    console.log("hiiii")
-
-                    selectButtons.forEach((button) => {
-                        button.addEventListener('click', function () {
-                            const index = button.getAttribute('data-index');
-                            const couponCode = document.getElementById('couponCode' + index).innerText;
-                            const couponCodeInput = document.getElementById('couponCodeInput');
-                            couponCodeInput.value = couponCode;
-                        });
+                function couponAdd(cartId) {
+                    $('#couponModal').modal("show")
+                    const couponElement = document.querySelectorAll(".couponDetails");
+                    console.log("hii", couponElement)
+                    couponElement.forEach(element => {
+                        element.onclick = function () {
+                            const couponId = element.getAttribute("id")
+                            console.log(couponId)
+                            enterCoupon(couponId, cartId)
+                        }
                     });
-                });
 
+                }
+
+                async function enterCoupon(couponID, cartId) {
+                    $('#couponModal').modal("hide")
+
+                    try {
+
+                        const response = await axios.patch('/addCouponCart', { couponID, cartId })
+                        if (response.data.success) {
+                            Swal.fire({
+                                title: "Coupon applied",
+                                icon: "success",
+                                confirmButtonText: "Ok"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location = "/checkout";
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "User already applied",
+                                icon: "info",
+                                confirmButtonText: "Ok"
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error applying Coupon:', error);
+
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to apply Coupon. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+
+                    }
+                }
+            </script>
+
+            <script>
+                function removeCoupon(cartId) {
+                    $.ajax({
+                        url: '/CouponRemove',
+                        method: 'POST',
+                        data: { cartId: cartId },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Coupon Removed',
+                                text: 'The coupon has been successfully removed from your cart.',
+                                confirmButtonText:"Ok"
+                            });
+                            if(result.isConfirmed){
+                            window.location="/checkout"
+                            console.log('Coupon removed successfully');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error removing coupon:', error);
+                        }
+                    });
+                }
 
 
             </script>
+
+
             <!-- <div class="returning_customer">
         <div class="check_title">
           <h2>
@@ -243,18 +322,22 @@
                                 </li>
 
                                 <ul>
-                                    <% product.items.forEach(item=> { %>
-                                        <li>
-                                            <a href="#">
-                                                <%= item.product_id.name %>
-                                                    <span class="middle">x <%= item.quantity %></span>
-                                                    <span class="last">
-                                                        <%= item.price %>
-                                                    </span>
-                                            </a>
-                                        </li>
-                                        <% }); %>
+                                    <% let TotalPrice=0 %>
+                                        <% product.items.forEach(item=> { %>
+                                            <li>
+                                                <a href="#">
+                                                    <%= item.product_id.name %>
+                                                        <span class="middle">x <%= item.quantity %></span>
+                                                        <span class="last">
+                                                            <%= item.price %>
+                                                        </span>
+                                                        <% TotalPrice+=item.price %>
+                                                </a>
+                                            </li>
+
+                                            <% }); %>
                                 </ul>
+                                <input type="hidden" id="TotalPrice" name="TotalPrice" value="<%=TotalPrice%>">
                                 <ul class="list list_2">
                                     <li>
                                         <a href="#">Subtotal
@@ -263,14 +346,35 @@
                                     </li>
                                     <li>
                                         <a href="#">Shipping
-                                            <span>Flat rate: $50.00</span>
+                                            <span>Flat rate: $00.00</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="#">Total
-                                            <span>$<%=TotalPrice %></span>
-                                        </a>
-                                    </li>
+                                    <% if(product.couponDiscount==null){ %>
+                                        <li>
+                                            <a href="#">Total
+                                                <% var DiscountAmount=TotalPrice %>
+                                                    <span>$<%=DiscountAmount %></span>
+                                            </a>
+                                        </li>
+                                        <%}else{%>
+                                            <li>
+                                                <a href="#">Total
+                                                    <span>$ <del>
+                                                            <%=TotalPrice %>
+                                                        </del></span>
+
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    DISCOUNT AMOUNT
+                                                    <% var DiscountAmount=TotalPrice - product.couponDiscount. minAmount
+                                                        %>
+                                                        <span>$<%= DiscountAmount %></span>
+
+                                                </a>
+                                            </li>
+                                            <%}%>
                                 </ul>
                                 <input type="hidden" id="id" value="<%=id%>">
                                 <div class="payment_item">
@@ -298,6 +402,7 @@
             </div>
 
 
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -372,7 +477,8 @@
                             });
                             return;
                         }
-                        const totalPrice = '<%= TotalPrice %>';
+                        const totalPrice = '<%= DiscountAmount %>';
+                        console.log("hii", totalPrice)
 
                         Swal.fire({
                             title: 'Proceed with Checkout?',

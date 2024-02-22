@@ -323,8 +323,7 @@ const LoadCheckout = async (req, res) => {
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
-      const TotalPrice = parseFloat(req.query.TotalPrice);
-
+    
       const id = req.session.user_id;
 
       const user = await User.findOne({ _id: id });
@@ -332,21 +331,30 @@ const LoadCheckout = async (req, res) => {
       const product = await Cart.findOne({ user_id: user }).populate(
         "items.product_id",
         "name"
-      );
+      ).populate("couponDiscount");
+
+      let totalPrice = 0;
+
+product.items.forEach(item => {
+    totalPrice +=  parseFloat(item.total_price);
+});
+// console.log('hiiiwdw',totalPrice)
+
+
+      
 
       const coupon = await Coupon.aggregate([
         {
           $match: {
-            minAmount: { $lte: TotalPrice },
+            minAmount: { $lte:  totalPrice},
           },
         },
       ]);
-      console.log("hii", TotalPrice);
-      console.log(coupon, "hii");
+     
+      // console.log(coupon, "hii");
       if (product) {
         res.render("ProceedCheckout", {
           user,
-          TotalPrice,
           product,
           id,
           coupon,
@@ -391,6 +399,7 @@ const Checkout = async (req, res) => {
       }
 
       if (cart) {
+        // const Discount = await.find({})
         const orderItems = cart.items.map((item) => ({
           product_id: item.product_id,
           productName: item.productName,
@@ -406,7 +415,7 @@ const Checkout = async (req, res) => {
           payment: paymentMethod,
           delivery_address: addressId,
           user_name: user.name,
-          total_amount: totalPrice,
+          total_amount: totalPrice ,
           items: orderItems,
           date: new Date(),
           status: "Processing",
@@ -469,8 +478,12 @@ const LoadConfirm = async (req, res) => {
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
+
       const { orderId } = req.query;
-      const order = await Order.findOne({ _id: orderId });
+      // const order = await Order.findOne({ _id: orderId });
+      const order = await Order.findOne({ user_id:req.session.user_id }).sort({
+        createdAt: -1,
+      }).limit(1);
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
       res.render("confirm", { order });

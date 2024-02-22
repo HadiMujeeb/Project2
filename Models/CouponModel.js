@@ -17,7 +17,7 @@ const couponSchema = new mongoose.Schema(
     },
     minAmount: {
       type: Number,
-      // required:true
+      required:true
     },
     couponDescription: {
       type: String,
@@ -31,6 +31,10 @@ const couponSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    startingDate: {
+      type: Date,
+    },
+
     userUsed: [
       {
         user_id: {

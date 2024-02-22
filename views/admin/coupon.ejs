@@ -200,6 +200,7 @@
                                     <th scope="col">Code</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Discount <br> Amount</th>
+                                    <th scope="col">Starting Date</th>
                                     <th scope="col">Expire Date</th>
                                   
 
@@ -230,6 +231,7 @@
                                             <td>
                                                 <%= data.couponCode%>
                                             </td>
+                                           
 
 
                                             <td>
@@ -244,10 +246,12 @@
                                             </td>
 
 
-
+                                            <td>
+                                                <%= new Date (data.startingDate).toLocaleDateString()   %>
+                                            </td>
 
                                             <td>
-                                                <%= new Date(data.expiryDate).toLocaleString() %>
+                                                <%= new Date(data.expiryDate).toLocaleDateString() %>
 
                                             </td>
 

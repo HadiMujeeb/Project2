@@ -58,7 +58,7 @@
                 <!-- <th scope="col">Remove</th> -->
                 <th scope="col">Price</th>
                 <th scope="col">Quantity</th>
-              
+
                 <th></th>
                 <th scope="col">Total</th>
 
@@ -67,141 +67,153 @@
             <tbody>
               <%if(cartDetails && cartDetails.items){ %>
 
-               
-                <% let totalQuantity = 0; let totalProductPrice = 0; %>
-                <% cartDetails.items.forEach((cartItem) => { %>
-                    <% let itemTotalPrice = 0; %>
-                    <% if (cartItem.product_id.Offer) { %>
-                        <% itemTotalPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.Offer.percentage / 100)); %>
-                    <% } else { %>
-                        <% itemTotalPrice = cartItem.product_id.price; %>
-                    <% } %>
-                    <% itemTotalPrice *= cartItem.quantity; %>
-                    <% totalQuantity += cartItem.quantity; %>
-                    <% totalProductPrice += itemTotalPrice; %>
-                  <tr>
-                    <td>
-                      <div class="media">
-                        <div class="d-flex">
-                          <img src="/SharpImage/<%= cartItem.product_id.image[0] %>" alt="img" width="100px"
-                            height="100px">
-                        </div>
-                        <div class="media-body">
-                          <p>
-                            <%= cartItem.product_id.name%>
-                          </p>
 
-                        </div>
-                      </div>
-                    </td>
-                    <% if(cartItem.product_id.Offer){ %>
-                    <td>
-                     
-                        <h7>
-                            <del>₹<%= cartItem.product_id.price %></del>
-                            <% var discountedPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.Offer.percentage / 100)); %>
-                            <h3 id="price">₹ <%= discountedPrice.toFixed() %></h3>
-                            
-                        </h7>
-                        
-                    </td>
-                    <% }else if (cartItem.product_id.category.Offer){ %>
-                    <td>
-                     
-                      <h7>
-                          <del>₹<%= cartItem.product_id.price %></del>
-                          <% var discountedPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.category.Offer.percentage / 100)); %>
-                          <h3 id="price">₹ <%= discountedPrice.toFixed() %></h3>
-                          
-                      </h7>
-                      
-                  </td>
-                    <% }else{%>
-                      <td>
-                        <% var discountedPrice = cartItem.product_id.price %>
-                        <h3 id="price">
+                <% let totalQuantity=0; let totalProductPrice=0; %>
+                  <% cartDetails.items.forEach((cartItem)=> { %>
+                    <% let itemTotalPrice=0; %>
+                      <% if (cartItem.product_id.Offer) { %>
+                        <% itemTotalPrice=cartItem.product_id.price - (cartItem.product_id.price *
+                          (cartItem.product_id.Offer.percentage / 100)); %>
+                          <% } else { %>
+                            <% itemTotalPrice=cartItem.product_id.price; %>
+                              <% } %>
+                                <% itemTotalPrice *=cartItem.quantity; %>
+                                  <% totalQuantity +=cartItem.quantity; %>
+                                    <% totalProductPrice +=itemTotalPrice; %>
+                                      <tr>
+                                        <td>
+                                          <div class="media">
+                                            <div class="d-flex">
+                                              <img src="/SharpImage/<%= cartItem.product_id.image[0] %>" alt="img"
+                                                width="100px" height="100px">
+                                            </div>
+                                            <div class="media-body">
+                                              <p>
+                                                <%= cartItem.product_id.name%>
+                                              </p>
 
-                          ₹<%=  discountedPrice.toFixed()  %>
-                        </h3>
-                      </td>
-                     
-                      <%}%>
-                    <!-- <td>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <% if(cartItem.product_id.Offer){ %>
+                                          <td>
+
+                                            <h7>
+                                              <del>₹<%= cartItem.product_id.price %></del>
+                                              <% var discountedPrice=cartItem.product_id.price -
+                                                (cartItem.product_id.price * (cartItem.product_id.Offer.percentage /
+                                                100)); %>
+                                                <h3 id="price">₹ <%= discountedPrice.toFixed() %>
+                                                </h3>
+
+                                            </h7>
+
+                                          </td>
+                                          <% }else if (cartItem.product_id.category.Offer){ %>
+                                            <td>
+
+                                              <h7>
+                                                <del>₹<%= cartItem.product_id.price %></del>
+                                                <% var discountedPrice=cartItem.product_id.price -
+                                                  (cartItem.product_id.price *
+                                                  (cartItem.product_id.category.Offer.percentage / 100)); %>
+                                                  <h3 id="price">₹ <%= discountedPrice.toFixed() %>
+                                                  </h3>
+
+                                              </h7>
+
+                                            </td>
+                                            <% }else{%>
+                                              <td>
+                                                <% var discountedPrice=cartItem.product_id.price %>
+                                                  <h3 id="price">
+
+                                                    ₹<%= discountedPrice.toFixed() %>
+                                                  </h3>
+                                              </td>
+
+                                              <%}%>
+                                                <!-- <td>
                       <h5 id="price">
                         <%= cartItem.product_id.price%>
                       </h5>
                     </td> -->
-                   
-                    <td>
-                      <div class="product_count">
-                        <span class="quantity-decrement"
-                          onclick="updateQuantity('<%= cartDetails._id %>','<%= cartItem.product_id._id %>',-1)">
-                          <i class="ti-minus"></i>
-                        </span>
 
-                        <input class="input-number" type="text" value="<%= cartItem.quantity %>" min="1"
-                          max="<%= cartItem.product_id.quantity %>" name="quantity" readonly>
+                                                <td>
+                                                  <div class="product_count">
+                                                    <span class="quantity-decrement"
+                                                      onclick="updateQuantity('<%= cartDetails._id %>','<%= cartItem.product_id._id %>',-1)">
+                                                      <i class="ti-minus"></i>
+                                                    </span>
 
-                        <span class="quantity-increment"
-                          onclick="updateQuantity('<%= cartDetails._id %>', '<%= cartItem.product_id._id %>',1)">
-                          <i class="ti-plus"></i>
-                        </span>
-                      </div>
-                    </td>
-                    <% if (cartItem._id) { %>
-                      <form action="/deleteItems" method="post">
-                        <td>
-                          <button type="submit" class="btn btn-primary height-auto btn-sm" name="productId">X</button>
-                          <input type="hidden" name="productId" value="<%= cartItem._id %>">
-                        </td>
-                      </form>
-                      <% } %>
-                     
-                        <td>
-                          <h5 style="display: inline;">$<span id="totalEachPice">
-                              <%= discountedPrice.toFixed()  * cartItem.quantity%>
-                            </span>
-                          </h5>
-                        </td>
-                       
-                  </tr>
-                  <% }) %>
+                                                    <input class="input-number" type="text"
+                                                      value="<%= cartItem.quantity %>" min="1"
+                                                      max="<%= cartItem.product_id.quantity %>" name="quantity"
+                                                      readonly>
 
+                                                    <span class="quantity-increment"
+                                                      onclick="updateQuantity('<%= cartDetails._id %>', '<%= cartItem.product_id._id %>',1)">
+                                                      <i class="ti-plus"></i>
+                                                    </span>
+                                                  </div>
+                                                </td>
+                                                <% if (cartItem._id) { %>
+                                                  <form action="/deleteItems" method="post">
+                                                    <td>
+                                                      <button type="submit" class="btn btn-primary height-auto btn-sm"
+                                                        name="productId">X</button>
+                                                      <input type="hidden" name="productId" value="<%= cartItem._id %>">
+                                                    </td>
+                                                  </form>
+                                                  <% } %>
 
+                                                    <td>
+                                                      <h5 style="display: inline;">$<span id="totalEachPice">
+                                                          <%= discountedPrice.toFixed() * cartItem.quantity%>
+                                                        </span>
+                                                      </h5>
+                                                    </td>
 
-                    <tr class="bottom_button">
-                      <td>
-                        <!-- <a class="btn_1" href="/cart">Update Cart</a> -->
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <div class="cupon_text float-right">
-                         
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h5>Subtotal</h5>
-                      </td>
-                      <% if(totalProductPrice !==undefined) { %>
-                        <td>
-                          <h3>₹<%= totalProductPrice %>
-                          </h3>
-                        </td>
-                        <% } %>
-
-                    </tr>
+                                      </tr>
+                                      <% }) %>
 
 
+
+                                        <tr class="bottom_button">
+                                          <td>
+                                            <!-- <a class="btn_1" href="/cart">Update Cart</a> -->
+                                          </td>
+                                          <td></td>
+                                          <td></td>
+                                          <td>
+                                            <div class="cupon_text float-right">
+
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td>
+                                            <h5>Subtotal</h5>
+                                          </td>
+                                          <% if(totalProductPrice !==undefined) { %>
+                                            <td>
+                                              <h3>₹<%= totalProductPrice %>
+                                              </h3>
+                                            </td>
+                                           
+                                        
+                                            <% } %>
+
+                                        </tr>
+
+                                      
             </tbody>
           </table>
           <div class="checkout_btn_inner float-right">
             <a class="btn_1" href="/shop">Continue Shopping</a>
-            <a class="btn_1 checkout_btn_1" href="/checkout?TotalPrice=<%= totalProductPrice %>">Proceed to checkout</a>
+            <a class="btn_1 checkout_btn_1" href="/checkout">Proceed to checkout</a>
           </div>
         </div>
       </div>

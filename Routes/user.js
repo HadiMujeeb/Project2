@@ -4,6 +4,7 @@ const user_router = express();
 const userController = require("../Controllers/userController");
 const cartController = require("../Controllers/cartController");
 const WishlistController = require("../Controllers/WishlistController");
+const couponController = require("../Controllers/CouponController");
 
 const auth = require("../Middlewire/Auth");
 
@@ -103,6 +104,12 @@ user_router.get("/wishlistLoad", WishlistController.WishlistLoad);
 user_router.post("/wishlist", WishlistController.addWishlist);
 
 user_router.post("/deleteWishlist" , WishlistController.deleteWishlist);
+
+user_router.patch('/addCouponCart' , couponController.AddCouponCart);
+
+user_router.post('/CouponRemove' ,couponController.CheckRemoveCoupon );
+
+
 
 
 
