@@ -67,11 +67,18 @@
             <tbody>
               <%if(cartDetails && cartDetails.items){ %>
 
-                <% let totalQuantity=0; let totalProductPrice=0; cartDetails.items.forEach((cartItem)=> {
-                  const itemTotalPrice = cartItem.product_id.price * cartItem.quantity;
-                  totalQuantity += cartItem.quantity;
-                  totalProductPrice += itemTotalPrice;
-                  %>
+               
+                <% let totalQuantity = 0; let totalProductPrice = 0; %>
+                <% cartDetails.items.forEach((cartItem) => { %>
+                    <% let itemTotalPrice = 0; %>
+                    <% if (cartItem.product_id.Offer) { %>
+                        <% itemTotalPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.Offer.percentage / 100)); %>
+                    <% } else { %>
+                        <% itemTotalPrice = cartItem.product_id.price; %>
+                    <% } %>
+                    <% itemTotalPrice *= cartItem.quantity; %>
+                    <% totalQuantity += cartItem.quantity; %>
+                    <% totalProductPrice += itemTotalPrice; %>
                   <tr>
                     <td>
                       <div class="media">
@@ -87,17 +94,44 @@
                         </div>
                       </div>
                     </td>
-                   
+                    <% if(cartItem.product_id.Offer){ %>
                     <td>
-                      <h5 id="price">
-                        <%= cartItem.product_id.price%>
-                      </h5>
+                     
+                        <h7>
+                            <del>₹<%= cartItem.product_id.price %></del>
+                            <% var discountedPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.Offer.percentage / 100)); %>
+                            <h3 id="price">₹ <%= discountedPrice.toFixed() %></h3>
+                            
+                        </h7>
+                        
                     </td>
+                    <% }else if (cartItem.product_id.category.Offer){ %>
+                    <td>
+                     
+                      <h7>
+                          <del>₹<%= cartItem.product_id.price %></del>
+                          <% var discountedPrice = cartItem.product_id.price - (cartItem.product_id.price * (cartItem.product_id.category.Offer.percentage / 100)); %>
+                          <h3 id="price">₹ <%= discountedPrice.toFixed() %></h3>
+                          
+                      </h7>
+                      
+                  </td>
+                    <% }else{%>
+                      <td>
+                        <% var discountedPrice = cartItem.product_id.price %>
+                        <h3 id="price">
+
+                          ₹<%=  discountedPrice.toFixed()  %>
+                        </h3>
+                      </td>
+                     
+                      <%}%>
                     <!-- <td>
                       <h5 id="price">
                         <%= cartItem.product_id.price%>
                       </h5>
                     </td> -->
+                   
                     <td>
                       <div class="product_count">
                         <span class="quantity-decrement"
@@ -122,14 +156,14 @@
                         </td>
                       </form>
                       <% } %>
-
+                     
                         <td>
                           <h5 style="display: inline;">$<span id="totalEachPice">
-                              <%= cartItem.product_id.price * cartItem.quantity%>
+                              <%= discountedPrice.toFixed()  * cartItem.quantity%>
                             </span>
                           </h5>
                         </td>
-
+                       
                   </tr>
                   <% }) %>
 

@@ -2,6 +2,8 @@ const express = require("express");
 const admin_router = express();
 const adminController = require("../Controllers/adminController");
 const productController = require("../Controllers/productController");
+const couponController = require("../Controllers/CouponController");
+const offerController = require("../Controllers/offerController")
 const upload = require("../Middlewire/upload");
 
 const  Auth= require("../Middlewire/adminAuth");
@@ -72,6 +74,8 @@ admin_router.post('/EditProduct',upload.array("image", 4),productController.Edit
 admin_router.patch('/deleteImage',productController.deleteIMG)
 
 
+
+
 admin_router.get("/orderList", adminController.LoadOrderList);
 
 admin_router.post("/orderList", adminController.OrderStatus); 
@@ -79,12 +83,32 @@ admin_router.post("/orderList", adminController.OrderStatus);
 admin_router.get("/orderDetails", adminController.LoadOrderDetails);
 
 
+admin_router.get("/loadCoupon",couponController.LoadCoupon);
+   
+admin_router.get("/addCoupon",couponController.LoadAddCoupon);
 
-// admin_router.patch("/orderStatus",adminController.OrderStatus);
+admin_router.post("/addCoupon",couponController.AddCoupon);
+
+admin_router.get("/RemoveCoupon",couponController.RemoveCoupon);
+
+admin_router.get("/loadOffer",offerController.LoadOffer);
+
+admin_router.get("/loadAddOffer",offerController.loadAddOffer);
+
+admin_router.post("/addOffer",offerController.addOffer);
+
+admin_router.get("/RemoveOffer",offerController.RemoveOffer);
+
+admin_router.patch("/addOffer",offerController.addOfferCategory);
+
+admin_router.post( '/deleteOffer',offerController. deleteOffer);
+
+admin_router.patch('/addOfferProduct',offerController.AddOfferProduct);
+
+admin_router.post('/deleteOfferProduct',offerController.deleteOfferProduct);
 
 
 
-// admin_router.post('/EditProduct',upload.array("productImage"),productController.deleteIMG)
 
 
 module.exports = admin_router;

@@ -5,6 +5,7 @@ const Order = require("../Models/OrderModel");
 const bcrypt = require("bcrypt");
 const { response } = require("../Routes/user");
 const Product = require("../Models/productModel");
+const Offer = require("../Models/offerModel")
 
 // const { LoginPage } = require("./userController");
 
@@ -127,8 +128,13 @@ const unblockUser = async (req, res) => {
 
 const LoadCategory = async (req, res) => {
   try {
-    const Data = await Categories.find({});
-    res.render("Categories", { Data: Data });
+    const Data = await Categories.find({}).populate("Offer");
+ 
+    const offerId = await Offer.find({
+      startingDate: { $lte: new Date },
+      expiryDate: { $gte: new Date }
+    });
+    res.render("Categories", { Data,offerId });
   } catch (error) {
     console.log(error.message);
   }
@@ -299,18 +305,13 @@ const LoadOrderDetails = async (req, res) => {
       const orderId = req.query.ORid;
       console.log("qq", orderId);
       const order = await Order.findOne({ _id: orderId }).populate("items.product_id")
-      // const OR_PDT_id = order.items.map((PRD_id) => {
-      //   return PRD_id.product_id;
-      // });
-      // console.log("IIDID", OR_PDT_id);
+    
       const user = await User.findOne({ _id: order.user_id });
       const address = user.addresses.find(
         (address) =>
           address._id.toString() === order.delivery_address.toString()
       );
 
-      // const ImageID = await Product.find({ _id: OR_PDT_id });
-      // console.log("dsa",ImageID)
 
       res.render("orderDetails", { user, order, address, });
     }
@@ -318,6 +319,7 @@ const LoadOrderDetails = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 module.exports = {
   loadLogin,

@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard">
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/user">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">User</span>
+                    </a>
+
+                </li>
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/category">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Catogoies</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/product">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Products</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/orderList">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/coupon">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Coupons</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/loadOffer">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Offers</span>
+                    </a>
+
+                </li>
+
+                <br />
+                <br />
+        </nav>
+
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <!-- <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form> -->
+            </div>
+            <!-- <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar-2.png" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div> -->
+        </header>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Offer</h2>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="post" action="/addOffer">
+                                <div class="row">
+                                    <hr class="mb-4 mt-0">
+                                    <div class="col-md-9">
+                                        <% if(typeof message !=="undefined" ){ %>
+                                            <h5 style="color: red;"><%= message%></h5> 
+                                                 <%}%>
+                                                 
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Name</label>
+                                            <input type="text" placeholder="Enter name" class="form-control" name="name"
+                                                id="name" required>
+                                               <span id="nameError" class="error"></span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Starting Date</label>
+                                            <input type="date" placeholder="Enter Strating Date" class="form-control"
+                                                name="startingDate" id="startingDate" required>
+                                            <!-- <span id="couponCodeError" class="error"></span> -->
+                                        </div>
+
+
+
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Percentage</label>
+                                            <div class="input-group">
+                                                <input type="number" placeholder="Enter value" class="form-control"
+                                                    name="discountAmount" id="discountAmount" min="0" max="100"
+                                                    step="0.01" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <span id="discountError" class="error"></span>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Expire Date</label>
+                                            <input type="date" placeholder="Enter expire data" class="form-control"
+                                                name="expire" id="expire" required>
+                                            <span id="nameError" class="error"></span>
+                                        </div>
+                                        <div>
+
+                                            <button class="btn btn-md rounded font-sm hover-up">save</button>
+                                        </div>
+                                    </div> <!-- col.// -->
+
+                                </div> <!-- row.// -->
+                            </form>
+                        </div>
+                        <hr class="mb-4 mt-0">
+                    </div>
+
+                </div>
+            </div>
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script> &copy; Nest - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <!-- <script src="assets/js/main.js?v=1.1" type="text/javascript"></script> -->
+
+    <script>
+        function ValidateForm() {
+            var name = document.getElementById("name").value;
+            var couponCode = document.getElementById("couponCode").value;
+            var description = document.getElementById("description").value;
+            var discountAmount = document.getElementById("discountAmount").value;
+            var minAmount = document.getElementById("minAmount").value;
+            var expire = document.getElementById("expire").value;
+
+
+            // if (name === "" || couponCode === "" || description === "" || discountAmount === "" || minAmount === "" || expire === "") {
+            //     alert("Please fill in all fields");
+            //     return false;
+            // }
+
+
+
+            if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(name)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById("nameError").innerHTML = '';
+            }
+
+            if (couponCode.trim() === '') {
+                document.getElementById("couponCodeError").innerHTML = 'Coupon Code cannot be empty';
+                document.getElementById("couponCodeError").style.color = "red";
+                return false;
+            } else if (couponCode.trim().length < 6) {
+                document.getElementById("couponCodeError").innerHTML = 'Coupon Code must be 5 characters long';
+                document.getElementById("couponCodeError").style.color = "red";
+                return false;
+            } else {
+                document.getElementById("couponCodeError").innerHTML = '';
+            }
+
+
+            if (description.trim() === '') {
+                document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
+                document.getElementById("descriptionError").style.color = "red";
+                return false;
+            } else {
+                document.getElementById("descriptionError").innerHTML = '';
+
+            }
+            if (!/^\d+(\.\d+)?$/.test(discountAmount)) {
+                document.getElementById("discountError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('discountError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("discountError").innerHTML = '';
+            }
+
+            if (!/^\d+(\.\d+)?$/.test(minAmount)) {
+                document.getElementById("minAmountError").innerHTML = 'Please enter a valid numeric price';
+                document.getElementById('minAmountError').style.color = "red";
+                return false;
+            } else {
+                // Reset the error message when the validation passes
+                document.getElementById("minAmountError").innerHTML = '';
+            }
+
+
+
+        }
+    </script>
+</body>
+
+</html>

@@ -40,6 +40,8 @@ const CartModel = new mongoose.Schema({
       },
     },
   ],
+
+  
 });
 
 const Cart = mongoose.model("Cart", CartModel);

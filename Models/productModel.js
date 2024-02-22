@@ -31,14 +31,14 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: Date.now(),
     },
-    // brand:{
-    //     type:String,
-    //     required:true,
-    // },
     is_Listed:{
         type:Boolean,
        default:true         
     },
+    Offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"offer",
+      },
    
 })
 

@@ -36,7 +36,6 @@ app.use(flash());
 
 
 
-//public css
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public/user")));

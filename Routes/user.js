@@ -3,6 +3,7 @@ const express = require("express");
 const user_router = express();
 const userController = require("../Controllers/userController");
 const cartController = require("../Controllers/cartController");
+const WishlistController = require("../Controllers/WishlistController");
 
 const auth = require("../Middlewire/Auth");
 
@@ -94,6 +95,19 @@ user_router.get("/order",auth.isBlock, cartController.LoadOrder);
 user_router.get("/orderview", cartController.OrderView);
 
 user_router.get("/OrderCancel", cartController.OrderCancel);
+
+
+
+user_router.get("/wishlistLoad", WishlistController.WishlistLoad);
+
+user_router.post("/wishlist", WishlistController.addWishlist);
+
+user_router.post("/deleteWishlist" , WishlistController.deleteWishlist);
+
+
+
+
+
 
 
 

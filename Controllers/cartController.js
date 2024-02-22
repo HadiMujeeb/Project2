@@ -5,6 +5,7 @@ const User = require("../Models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 const Order = require("../Models/OrderModel");
 const { now } = require("mongoose");
+const Coupon = require("../Models/CouponModel");
 
 const loadCart = async (req, res) => {
   try {
@@ -19,9 +20,15 @@ const loadCart = async (req, res) => {
     }
     const cartDetails = await Cart.findOne({ user_id: id }).populate({
       path: "items.product_id",
-    });
-    const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
-    
+      populate: [
+          { path: "Offer" },
+          { path: "category", populate: { path: "Offer" } }
+      ],
+  });
+    const cart = await Cart.findOne({ user_id: user }).populate(
+      "items.product_id"
+    );
+
     const userData = await User.findOne({ _id: user._id });
 
     let originalAmount = 0;
@@ -32,7 +39,7 @@ const loadCart = async (req, res) => {
       });
     }
 
-    res.render("cart", { user: userData, cartDetails, originalAmount ,cart});
+    res.render("cart", { user: userData, cartDetails, originalAmount, cart });
   } catch (error) {
     console.log(error.message);
   }
@@ -231,7 +238,6 @@ const UpdateQuantity = async (req, res) => {
             success: false,
             message: "no more quantity.",
           });
-         
         }
       } else {
         return res.json({
@@ -240,8 +246,8 @@ const UpdateQuantity = async (req, res) => {
         });
       }
     }
-    
-     if (count == -1) {
+
+    if (count == -1) {
       if (cartProduct.quantity > 1) {
         await Cart.updateOne(
           { user_id: req.session.user_id, "items.product_id": productId },
@@ -317,7 +323,7 @@ const LoadCheckout = async (req, res) => {
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
-      const { TotalPrice } = req.query;
+      const TotalPrice = parseFloat(req.query.TotalPrice);
 
       const id = req.session.user_id;
 
@@ -328,13 +334,26 @@ const LoadCheckout = async (req, res) => {
         "name"
       );
 
-      if(product){
-        res.render("ProceedCheckout", { user, TotalPrice, product ,id});
-      }else{
-        res.redirect('/shop')
+      const coupon = await Coupon.aggregate([
+        {
+          $match: {
+            minAmount: { $lte: TotalPrice },
+          },
+        },
+      ]);
+      console.log("hii", TotalPrice);
+      console.log(coupon, "hii");
+      if (product) {
+        res.render("ProceedCheckout", {
+          user,
+          TotalPrice,
+          product,
+          id,
+          coupon,
+        });
+      } else {
+        res.redirect("/shop");
       }
-
-     
     }
   } catch (error) {
     console.log(error.message);
@@ -344,33 +363,32 @@ const LoadCheckout = async (req, res) => {
 const Checkout = async (req, res) => {
   try {
     const { addressId, totalPrice, paymentMethod } = req.body;
- 
-   
-   
+
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
-      console.log("hii")
-      
+      console.log("hii");
+
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
-      
-      const cart = await Cart.findOne({ user_id: user }).populate("items.product_id");
+
+      const cart = await Cart.findOne({ user_id: user }).populate(
+        "items.product_id"
+      );
       // if (!user || user.isBlocked==false) {
-     
+
       //   return res.render("/login");
       // }
-    for (const cartItem of cart.items) {
-    
-      const product = cartItem.product_id;
-      const requestedQuantity = cartItem.quantity;
-      if (product.stockQuantity < requestedQuantity) {
+      for (const cartItem of cart.items) {
+        const product = cartItem.product_id;
+        const requestedQuantity = cartItem.quantity;
+        if (product.stockQuantity < requestedQuantity) {
           return res.status(400).json({
-              success: false,
-              message: `Not enough quantity available for product ${product.name}`,
+            success: false,
+            message: `Not enough quantity available for product ${product.name}`,
           });
-      }
-        }
+        }
+      }
 
       if (cart) {
         const orderItems = cart.items.map((item) => ({
@@ -391,7 +409,7 @@ const Checkout = async (req, res) => {
           total_amount: totalPrice,
           items: orderItems,
           date: new Date(),
-          status: "none",
+          status: "Processing",
         });
 
         await order.save();
@@ -399,7 +417,7 @@ const Checkout = async (req, res) => {
         if (order) {
           await Cart.deleteMany({});
           console.log("Items deleted from the cart");
-          const order = await Order.findOne({ user_id: user._id })
+          const order = await Order.findOne({ user_id: user._id });
           console.log("orderid", order._id);
           res.json({ success: true, order: order._id });
         }
@@ -410,7 +428,7 @@ const Checkout = async (req, res) => {
   }
 };
 
-const LoadCheckADDaddress = async (req,res) => {
+const LoadCheckADDaddress = async (req, res) => {
   try {
     res.render("checkaddress");
   } catch (error) {
@@ -418,8 +436,7 @@ const LoadCheckADDaddress = async (req,res) => {
   }
 };
 
-
-const  CheckADDaddress = async (req, res) => {
+const CheckADDaddress = async (req, res) => {
   try {
     const { name, mobile, pincode, address, city, landmark, state } = req.body;
     const id = req.session.user_id;
@@ -428,7 +445,7 @@ const  CheckADDaddress = async (req, res) => {
     console.log("user", user);
 
     if (!user) {
-      res.redirect("/login")
+      res.redirect("/login");
     }
     const newAddress = {
       name,
@@ -456,15 +473,6 @@ const LoadConfirm = async (req, res) => {
       const order = await Order.findOne({ _id: orderId });
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
-
-      // const address = user.addresses.find(
-      //   (address) =>
-      //     address._id.toString() === order.delivery_address.toString()
-      // );
-
-      
-
-      // console.log("Address:", address);
       res.render("confirm", { order });
     }
   } catch (error) {
@@ -481,9 +489,8 @@ const LoadOrder = async (req, res) => {
 
       const user = await User.findOne({ _id: id });
 
-      const order = await Order.find({})
-console.log("FGR",order);
-
+      const order = await Order.find({});
+      console.log("FGR", order);
 
       // console.log("hh", order);.
 
@@ -500,8 +507,9 @@ const OrderView = async (req, res) => {
       res.redirect("/login");
     } else {
       const { orderId } = req.query;
-      const order = await Order.findOne({ _id: orderId }).populate("items.product_id")
-   
+      const order = await Order.findOne({ _id: orderId }).populate(
+        "items.product_id"
+      );
 
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
@@ -545,5 +553,5 @@ module.exports = {
   LoadOrder,
   OrderView,
   OrderCancel,
-  CheckADDaddress 
+  CheckADDaddress,
 };

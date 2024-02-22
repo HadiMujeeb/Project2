@@ -90,7 +90,7 @@
                         </div>
                         <div class="hearer_icon d-flex">
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <a href=""><i class="ti-heart"></i></a>
+                            <a href="/wishlistLoad"><i class="ti-heart"></i></a>
                             <div class="dropdown ">
                                 <a class="dropdown" href="/cart" id="navbarDropdown3" role="button">
                                     <i class="fas fa-cart-plus"></i>
@@ -116,6 +116,8 @@
                 </form>
             </div>
         </div>
+
+
     </header>
     <!-- Header part end-->
 
@@ -172,6 +174,8 @@
 
     <!-- feature_part start-->
     <section class="feature_part padding_top">
+
+
         <!-- <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -245,8 +249,28 @@
                                                 <h4>
                                                     <%= item.name %>
                                                 </h4>
-                                                <h3>$<%= item.price %>
-                                                </h3>
+                                                <% if(item.Offer){ %>
+                                                    <h7>
+                                                        <del>₹<%= item.price %></del>
+                                                        <h3>₹<%=item.price - ((item.price *
+                                                                item.Offer.percentage/100).toFixed(2)) %>
+                                                        </h3>
+                                                    </h7>
+                                                    <% }else if (item.category.Offer){ %>
+                                                        <del>₹<%= item.price %></del>
+                                                        <h3>₹<%=item.price - ((item.price *
+                                                            item.category.Offer.percentage/100).toFixed(2)) %>
+                                                        </h3>
+
+                                                        <%}else{%>
+
+
+                                                            <h3>
+                                                                ₹<%= item.price %>
+                                                            </h3>
+
+
+                                                            <%}%>
 
 
                                             </div>
@@ -259,7 +283,7 @@
                         </div>
                         <!-- <div class="single_product_list_slider">
                             <div class="row align-items-center justify-content-between"> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_1.png" alt="">
                                         <div class="single_product_text">
@@ -269,7 +293,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_2.png" alt="">
                                         <div class="single_product_text">
@@ -279,7 +303,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_3.png" alt="">
                                         <div class="single_product_text">
@@ -289,7 +313,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_4.png" alt="">
                                         <div class="single_product_text">
@@ -299,7 +323,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_5.png" alt="">
                                         <div class="single_product_text">
@@ -309,7 +333,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_6.png" alt="">
                                         <div class="single_product_text">
@@ -319,7 +343,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_7.png" alt="">
                                         <div class="single_product_text">
@@ -329,7 +353,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <!-- <div class="col-lg-3 col-sm-6">
+                        <!-- <div class="col-lg-3 col-sm-6">
                                     <div class="single_product_item">
                                         <img src="img/product/product_8.png" alt="">
                                         <div class="single_product_text">
@@ -339,15 +363,15 @@
                                         </div>
                                     </div>
                                 </div> -->
-                            <!-- </div>
+                        <!-- </div>
                         </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-   
+
+
 
     <!-- subscribe_area part start-->
     <!-- <section class="client_logo padding_top">

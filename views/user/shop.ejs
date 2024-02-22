@@ -92,7 +92,7 @@
                         </div>
                         <div class="hearer_icon d-flex">
                             <!-- <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a> -->
-                            <a href=""><i class="ti-heart"></i></a>
+                            <a href="/wishlistLoad"><i class="ti-heart"></i></a>
                             <div class="dropdown ">
                                 <a class="dropdown" href="/cart" id="navbarDropdown3" role="button">
                                     <i class="fas fa-cart-plus"></i>
@@ -207,7 +207,7 @@
                             </div>
                         </aside>
 
-        <input type="hidden" id="user" value="<%=user%>">
+                        <input type="hidden" id="user" value="<%=user%>">
                         <!-- <aside class="left_widgets p_filter_widgets">
                             <div class="l_w_title">
                                 <h3>Color Filter</h3>
@@ -304,6 +304,8 @@
                             <% for(let i=0; i < products.length; i++) { %>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="single_product_item">
+
+
                                         <a href="/single/?productId=<%= products[i].id %>">
                                             <img src="SharpImage/<%= products[i].image[1] %>" alt="img">
                                         </a>
@@ -311,13 +313,39 @@
                                             <h4>
                                                 <%= products[i].name %>
                                             </h4>
-                                            <h3> ₹ <%= products[i].price %>
-                                            </h3>
-                                            <!-- Add to Cart button -->
-                                            <a href="#" class="add_cart"
-                                                onclick="addToCart('<%= products[i]._id %>','<%= products[i].name %>','<%= products[i].price%>')">
-                                                + Add to Cart<i class="ti-heart"></i>
-                                            </a>
+                                            <% if(products[i].Offer){ %>
+                                                <h7>
+                                                    <del>₹<%= products[i].price %></del>
+                                                    <h3>₹<%=products[i].price - ((products[i].price *
+                                                            products[i].Offer.percentage/100).toFixed(2)) %>
+                                                    </h3>
+                                                </h7>
+                                                <% }else if (products[i].category.Offer){ %>
+                                                    <del>₹<%= products[i].price %></del>
+                                                    <h3>₹<%=products[i].price - ((products[i].price *
+                                                            products[i].category.Offer.percentage/100).toFixed(2)) %>
+                                                    </h3>
+
+                                                    <%}else{%>
+
+
+                                                        <h3>
+                                                            ₹<%= products[i].price %>
+                                                        </h3>
+
+
+                                                        <%}%>
+                                                            <!-- Add to Cart button -->
+                                                            <a href="#" class="add_cart"
+                                                                onclick="addToCart('<%= products[i]._id %>','<%= products[i].name %>','<%= products[i].price%>')">
+                                                                + Add to Cart
+                                                            </a>
+                                                            <a href="#" class="add_wishlist"
+                                                                onclick="addToWishlist('<%= products[i]._id %>')">
+                                                                Add to Wishlist
+                                                            </a>
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -328,30 +356,7 @@
                                         </div>
                                         <% } %>
 
-                                            <!-- <div class="col-lg-12">
-                            <div class="pageination">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Previous">
-                                                <i class="ti-angle-double-left"></i>
-                                            </a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">6</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <i class="ti-angle-double-right"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div> -->
+
                     </div>
                 </div>
             </div>
@@ -491,12 +496,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
-        // Define your addToCart function
-        function addToCart(productId, productName, productPrice) {
-            let  user  =  document.getElementById("user").value;
+        function addToWishlist(productId) {
+            swal.fire({
+                title: 'Add to Wishlist',
+                text: 'Do you want to add this product to your wishlist?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/wishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId: productId })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                swal.fire("Success", "Product added to wishlist", "success");
+                                console.log('Product added to wishlist:', productId);
 
-         if(!user){
-         
+                            } else {
+                                console.error('Failed to add product to wishlist:', productId);
+
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error adding product to wishlist:', error);
+
+                        });
+                }
+            });
+        }
+
+    </script>
+    <script>
+
+        function addToCart(productId, productName, productPrice) {
+            let user = document.getElementById("user").value;
+
+            if (!user) {
+
                 Swal.fire({
                     icon: 'info',
                     title: 'Login Required',
@@ -506,15 +548,15 @@
                     cancelButtonText: 'Cancel',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Redirect user to login page or show login form
-                        window.location.href = '/login'; // Replace '/login' with your actual login page URL
+
+                        window.location.href = '/login';
                     }
                 });
-                return; // Exit function to prevent further execution
-            
+                return;
 
-         
-        }
+
+
+            }
 
             Swal.fire({
                 icon: 'question',
@@ -526,8 +568,8 @@
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    // User clicked "Yes," add the item to the cart
-                    const quantity = 1; // You may get this from a form input
+
+                    const quantity = 1;
                     fetch('/add-to-cart', {
                         method: 'POST',
                         headers: {

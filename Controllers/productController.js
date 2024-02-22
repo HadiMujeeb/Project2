@@ -5,11 +5,16 @@ const path = require("path");
 const fs = require("fs");
 const { log } = require("util");
 const { default: mongoose } = require("mongoose");
+const Offer = require("../Models/offerModel")
 
 const LoadProduct = async (req, res) => {
   try {
-    const products = await Product.find({}).populate("category");
-    res.render("productList", { products: products });
+    const offerId = await Offer.find({
+      startingDate: { $lte: new Date },
+      expiryDate: { $gte: new Date }
+    });
+    const products = await Product.find({}).populate("category").populate("Offer")
+    res.render("productList", { products: products,offerId  });
   } catch (error) {
     console.log(error.message);
   }
@@ -17,6 +22,7 @@ const LoadProduct = async (req, res) => {
 
 const LoadAddProducts = async (req, res) => {
   try {
+   
     const Categories = await Category.find({ isListed: true });
     res.render("productadd", { Category: Categories });
   } catch (error) {
@@ -235,6 +241,7 @@ const deleteIMG = async (req, res) => {
     console.log(error.message);
   }
 };
+ 
 
 module.exports = {
   LoadProduct,

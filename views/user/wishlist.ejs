@@ -1,0 +1,192 @@
+<%- include('../user/layouts/header') %>
+
+    <!--================Home Banner Area =================-->
+    <!-- breadcrumb start-->
+    <section class="breadcrumb breadcrumb_bg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="breadcrumb_iner">
+                        <div class="breadcrumb_iner_item">
+                            <h2>Cart Products</h2>
+                            <p>Home <span>-</span>Cart Products</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumb start-->
+
+    <!--================Cart Area =================-->
+    <section class="cart_area padding_top">
+        <div class="container">
+            <div class="cart_inner">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Remove</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (wishlistItem && wishlistItem.product.length> 0) { %>
+                                <% wishlistItem.product.forEach((item)=> { %>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="SharpImage/<%=item.product_id.image[0]%>" alt="img"
+                                                        width="100px" height="100px" />
+                                                </div>
+                                                <div class="media-body">
+                                                    <p>
+                                                        <%= item.product_id.name %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5> $<%= item.product_id.price %>
+                                            </h5> <!-- Assuming this is a placeholder -->
+                                        </td>
+                                        <input type="hidden" id="id" value="<%=id%>">
+                                        <td>
+                                            <a href="#" class="add_cart"
+                                                onclick="addToCart('<%= item.product_id._id %>','<%= item.product_id.name %>','<%= item.product_id.price%>')">
+                                                + Add to Cart
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <button onclick="deleteFromWishlist('<%= item.product_id._id %>')"
+                                                class="btn btn-primary height-auto btn-sm">X</button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <h2>There is no item in the wishlist</h2>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                                <script>
+
+                                                    function addToCart(productId, productName, productPrice) {
+                                                       
+                                                        let user = document.getElementById("id").value;
+
+                                                        if (!user) {
+
+                                                            Swal.fire({
+                                                                icon: 'info',
+                                                                title: 'Login Required',
+                                                                text: 'Please login to add items to your cart.',
+                                                                showCancelButton: true,
+                                                                confirmButtonText: 'Login',
+                                                                cancelButtonText: 'Cancel',
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+
+                                                                    window.location.href = '/login';
+                                                                }
+                                                            });
+                                                            return;
+
+
+
+                                                        }
+
+                                                        Swal.fire({
+                                                            
+                                                            icon: 'question',
+                                                            title: 'Add to Cart',
+                                                            text: `Do you want to add ${productName} to your cart?`,
+                                                            showCancelButton: true,
+                                                            confirmButtonText: 'Yes',
+                                                            cancelButtonText: 'No',
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+
+                                                                console.log("hiii")
+
+                                                                const quantity = 1;
+                                                                fetch('/add-to-cart', {
+                                                                    method: 'POST',
+                                                                    headers: {
+                                                                        'Content-Type': 'application/json',
+                                                                    },
+                                                                    body: JSON.stringify({
+                                                                        productId, productName, productPrice, quantity
+                                                                    }),
+                                                                })
+                                                                    .then(response => response.json())
+                                                                    .then(data => {
+                                                                        if (data.success === false) {
+                                                                            Swal.fire({
+                                                                                icon: 'info',
+                                                                                title: 'Info',
+                                                                                text: data.message,
+                                                                            });
+                                                                        } else {
+                                                                            // Handle success response
+                                                                            console.log(data.message);
+                                                                            // Show success message
+                                                                            Swal.fire({
+                                                                                icon: 'success',
+                                                                                title: 'Added to cart!',
+                                                                                text: `${productName} has been added to your cart.`,
+                                                                                showConfirmButton: false,
+                                                                                timer: 1500
+                                                                            });
+                                                                        }
+                                                                    })
+
+
+                                                                    .catch(error => {
+                                                                        console.error('Error adding to cart:', error);
+                                                                        // Show error message
+                                                                        Swal.fire({
+                                                                            icon: 'error',
+                                                                            title: 'Error',
+                                                                            text: 'Failed to add the item to the cart. Please try again.',
+                                                                        });
+                                                                    });
+                                                            } else {
+                                                                // User clicked "No," do nothing or show a different message
+                                                            }
+                                                        });
+                                                    }
+
+                                                </script>
+                                                <script>
+                                                    function deleteFromWishlist(productId) {
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: '/deleteWishlist',
+                                                            data: { productId: productId },
+                                                            success: function (response) {
+
+                                                                window.location.href = '/wishlistLoad';
+
+                                                                console.log(response);
+                                                                // You can update the UI here if needed
+                                                            },
+                                                            error: function (xhr, status, error) {
+                                                                // Handle errors
+                                                                console.error(error);
+                                                            }
+                                                        });
+                                                    }
+                                                </script>
+                        </tbody>
+                    </table>
+
+                </div>
+    </section>
+    <!--================End Cart Area =================-->
+    <%- include('../user/layouts/footer') %>

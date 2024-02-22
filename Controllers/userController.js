@@ -34,7 +34,7 @@ const insertUser = async (req, res) => {
     console.log(req.body);
     const userExist = await User.findOne({ email: req.body.email });
 
-    if (userExist && userExist.is_Verified==1) {
+    if (userExist && userExist.is_Verified == 1) {
       return res.render("registration", { messages: "User already exists" });
     } else {
       // Check if the password and confirm password match
@@ -54,7 +54,6 @@ const insertUser = async (req, res) => {
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
           sendOTPVerificationEmail(result, res);
-          // const timer = setTimeout(() => {});
         });
 
         if (userData) {
@@ -197,10 +196,12 @@ const deleteExpiredOtps = async (req, res) => {
 
 const Homepage = async (req, res) => {
   try {
-    const product = await Product.find({});
+    const product = await Product.find({})
+      .populate("Offer")
+      .populate({ path: "category", populate: { path: "Offer" } });
     const { user_id } = req?.session;
     const user = await User.findOne({ _id: user_id });
-    console.log("hii", product);
+    // console.log("hii", product);
     res.render("home", { user, product });
   } catch (error) {
     console.log(error.message);
@@ -264,12 +265,10 @@ const loadShop = async (req, res) => {
 
     if (categId) {
       const CategoryId = new mongoose.Types.ObjectId(categId);
-      products = await Product.find({ category: CategoryId }).populate(
-        "category"
-      );
+      products = await Product.find({ category: CategoryId }).populate({path:"category",populate:{path:"Offer"}}).populate("Offer");
       console.log("linkproduct", products);
     } else {
-      products = await Product.find({}).populate("category");
+      products = await Product.find({}).populate({path:"category",populate:{path:"Offer"}}).populate("Offer");
     }
 
     const Categdata = await Categories.find({});
@@ -302,9 +301,9 @@ const SingleProduct = async (req, res) => {
     const productId = req.query.productId;
     console.log("ProductId:", productId);
     const user = await User.findOne({ _id: req.session.user_id });
-    const product = await Product.findOne({ _id: productId }).populate(
-      "category"
-    );
+    const product = await Product.findOne({ _id: productId })
+      .populate({ path: "category", populate: { path: "Offer" } })
+      .populate("Offer");
     if (user) {
       res.render("SingleProduct", { product, user });
     } else {

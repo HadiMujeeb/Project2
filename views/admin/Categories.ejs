@@ -65,6 +65,20 @@
                     </a>
 
                 </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/loadCoupon">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Coupon</span>
+                    </a>
+
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/loadOffer">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Offers</span>
+                    </a>
+
+                </li>
 
                 <br />
                 <br />
@@ -115,44 +129,16 @@
                     <h2 class="content-title card-title">Categories</h2>
                     <p>Add, edit or delete a category</p>
                 </div>
-                <!-- <div>
-                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
-                    </div> -->
+
                 <div>
-                    <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
-                        <a href="#" class="btn btn-light rounded font-md">Import</a> -->
+
                     <a href="/add" class="btn btn-primary btn-sm rounded">Add Categories</a>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <!-- <div class="col-md-3">
-                                <form>
-                                    <div class="mb-4">
-                                        <label for="product_name" class="form-label">Name</label>
-                                        <input type="text" placeholder="Type here" class="form-control" id="product_name" />
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="product_slug" class="form-label">Slug</label>
-                                        <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Parent</label>
-                                        <select class="form-select">
-                                            <option>Fruit</option>
-                                            <option>Snack</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Description</label>
-                                        <textarea placeholder="Type here" class="form-control"></textarea>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary">Create category</button>
-                                    </div>
-                                </form>
-                            </div> -->
+
                         <div class="col-md">
                             <div class="table-responsive">
                                 <table class="table table-hover ">
@@ -163,9 +149,9 @@
                                             <th>Description</th>
                                             <th></th>
                                             <th></th>
-                                            <!-- <th>Edit</th> -->
-                                            <!-- <th>Delete</th> -->
-                                            <!-- <th>Status</th> -->
+
+                                            <th></th>
+
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
@@ -185,36 +171,63 @@
                                                     <td>
                                                         <%= Data[i].description%>
                                                     </td>
-                                                    <td> <a href="/edit?id=<%= Data[i]._id %>"
-                                                        class="btn btn-sm font-sm rounded btn-brand"> <i
-                                                            class="material-icons md-edit"></i> Edit </a></td>
-                                                    <td class="text-end">
-                                                      
-                                                        <style>
-                                                            /* Add this style to your existing CSS or in a style block in the head of your HTML */
-                                                            .delete-button:hover {
-                                                                background-color: red;
-                                                                /* color: Your desired text color; */
-                                                            }
-                                                        </style>
-                                                        
-                                                        <button class="btn btn-sm font-sm btn-light rounded delete-button" onclick="handleDelete('<%= Data[i]._id %>')">
-                                                            <i class="material-icons md-delete_forever"></i> Delete
-                                                        </button>
-                                                    </td>
+                                                    <% if (Data[i].Offer) { %>
                                                         <td class="text-end">
-                                                            <div class="dropdown">
-                                                                <% if (Data[i].isListed == false) { %>
-                                                                    <button class="btn btn-light rounded btn-sm font-sm" onclick="handleListAction('<%= Data[i]._id %>', 'List')">
-                                                                        <i>List</i>
-                                                                    </button>
-                                                                <% } else { %>
-                                                                    <button class="btn btn-light rounded btn-sm font-sm" onclick="handleListAction('<%= Data[i]._id %>', 'Unlist')">
-                                                                        <i>Unlist</i>
-                                                                    </button>
-                                                                <% } %>
-                                                            </div>
+                                                            <button onclick="confirmDelete('<%= Data[i]._id %>')"
+                                                                class="btn btn-primary rounded font-sm">Remove</button><br>
+                                                                <%= Data[i].Offer.name %> (<%= Data[i].Offer.percentage %>%) 
                                                         </td>
+
+
+                                                        <%}else{%>
+                                                            <td class="text-end">
+                                                                <button type="button"
+                                                                    class="btn btn-primary rounded font-sm"
+                                                                    onclick="showModal('<%= Data[i]._id%>')">Apply
+                                                                    Offer</button>
+
+                                                            </td>
+
+                                                            <%}%>
+
+                                                                <td> <a href="/edit?id=<%= Data[i]._id %>"
+                                                                        class="btn btn-sm font-sm rounded btn-brand">
+                                                                        <i class="material-icons md-edit"></i>
+                                                                        Edit </a></td>
+                                                                <td class="text-end">
+
+                                                                    <style>
+                                                                        /* Add this style to your existing CSS or in a style block in the head of your HTML */
+                                                                        .delete-button:hover {
+                                                                            background-color: red;
+                                                                            /* color: Your desired text color; */
+                                                                        }
+                                                                    </style>
+
+                                                                    <button
+                                                                        class="btn btn-sm font-sm btn-light rounded delete-button"
+                                                                        onclick="handleDelete('<%= Data[i]._id %>')">
+                                                                        <i class="material-icons md-delete_forever"></i>
+                                                                        Delete
+                                                                    </button>
+                                                                </td>
+                                                                <td class="text-end">
+                                                                    <div class="dropdown">
+                                                                        <% if (Data[i].isListed==false) { %>
+                                                                            <button
+                                                                                class="btn btn-light rounded btn-sm font-sm"
+                                                                                onclick="handleListAction('<%= Data[i]._id %>', 'List')">
+                                                                                <i>List</i>
+                                                                            </button>
+                                                                            <% } else { %>
+                                                                                <button
+                                                                                    class="btn btn-light rounded btn-sm font-sm"
+                                                                                    onclick="handleListAction('<%= Data[i]._id %>', 'Unlist')">
+                                                                                    <i>Unlist</i>
+                                                                                </button>
+                                                                                <% } %>
+                                                                    </div>
+                                                                </td>
                                                 </tr>
 
                                                 <% } }else{ %>
@@ -229,15 +242,152 @@
                                 </table>
                             </div>
                         </div>
-                        <!-- .col// -->
+
                     </div>
-                    <!-- .row // -->
+
                 </div>
-                <!-- card body .// -->
+
             </div>
-            <!-- card .// -->
+
         </section>
-        <!-- content-main end// -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Include Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Include Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="offerModalLabel">Special Offers</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <% if(offerId && offerId.length> 0) { %>
+                        <% offerId.forEach((item)=> { %>
+                            <div class="modal-body text-center" data-offerid="<%= item._id %>">
+                                <%= item.name %> <br>
+                                    <%= new Date(item.startingDate).toLocaleDateString() %> <br>
+                                        <%= new Date(item.expiryDate).toLocaleDateString() %> <br>
+                                            <%= item.percentage %>% <br>
+                                                <!-- <button class="btn btn-primary">Apply</button> -->
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <div class="modal-body">
+                                        <h4>Offer is not found</h4>
+                                    </div>
+                                    <% } %>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                        </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function confirmDelete(categoryId) {
+                Swal.fire({
+                    title: "Delete Offer",
+                    text: "Are you sure you want to delete this offer?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                }).then((result) => {
+                    $.ajax({
+                        url: '/deleteOffer',
+                        method: "POST",
+                        data: { categoryId: categoryId },
+                        success: function (response) {
+                            Swal.fire("Deleted!", response.message, "success");
+                            window.location = '/category'
+                        },
+                        error: function (error) {
+                            Swal.fire("Error", "An error occurred while deleting the offer.", "error");
+                        }
+                    })
+                })
+            }
+        </script>
+        <script> function showModal(categoryId) {
+                console.log("hii", categoryId)
+                $("#offerModal").modal("show")
+
+                const offerElements = document.querySelectorAll('.modal-body.text-center');
+                offerElements.forEach(element => {
+                    element.onclick = function () {
+                        const offerId = this.getAttribute('data-offerid');
+                        console.log(offerId, "heeee")
+
+                        enterOffer(offerId, categoryId)
+                    }
+
+                });
+                console.log("hello", offerElements)
+
+            }
+
+            async function enterOffer(offerId, categoryId) {
+                $("#offerModal").modal("hide");
+
+                try {
+                    const response = await axios.patch('/addOffer', { offerId, categoryId });
+
+                    if (response.data.success) {
+                        Swal.fire({
+                            title: "offer applied",
+                            icon: "success",
+                            confirmButtonText: "Ok"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = '/category'
+                            }
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error applying offer:', error);
+
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to apply offer. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+
+        </script>
+        <script>
+
+            function applyOffer(offerId) {
+
+
+                $.ajax({
+                    type: 'POST',
+                    data: {
+                        categoryId: categoryId,
+                        offerId: offerId
+                    },
+                    url: '/addOffer',
+                    success: function (response) {
+                        if (response.success) {
+                            // Do something with the success response
+                        }
+                    }
+                });
+
+            }
+
+
+
+
+        </script>
+
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
@@ -260,53 +410,57 @@
     <!-- Main Script -->
     <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-    function handleListAction(categoryId, action) {
-        let title, text, icon, confirmButtonColor;
 
-        if (action === 'List') {
-            title = 'List Category';
-            text = 'Do you want to list this category?';
-            icon = 'info';
-            confirmButtonColor = '#3bb77e';
-        } else {
-            title = 'Unlist Category';
-            text = 'Do you want to unlist this category?';
-            icon = 'warning';
-            confirmButtonColor = 'red';
+    <script>
+
+    </script>
+    <script>
+        function handleListAction(categoryId, action) {
+            let title, text, icon, confirmButtonColor;
+
+            if (action === 'List') {
+                title = 'List Category';
+                text = 'Do you want to list this category?';
+                icon = 'info';
+                confirmButtonColor = '#3bb77e';
+            } else {
+                title = 'Unlist Category';
+                text = 'Do you want to unlist this category?';
+                icon = 'warning';
+                confirmButtonColor = 'red';
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: confirmButtonColor,
+                cancelButtonColor: '#d33',
+                confirmButtonText: `Yes, ${action.toLowerCase()} it!`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/${action.toLowerCase()}?id=${categoryId}`;
+                }
+            });
         }
 
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: icon,
-            showCancelButton: true,
-            confirmButtonColor: confirmButtonColor,
-            cancelButtonColor: '#d33',
-            confirmButtonText: `Yes, ${action.toLowerCase()} it!`
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = `/${action.toLowerCase()}?id=${categoryId}`;
-            }
-        });
-    }
-
-    function handleDelete(categoryId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You want to delete this category?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: 'red',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = `/delete-Categories?id=${categoryId}`;
-            }
-        });
-    }
-</script>
+        function handleDelete(categoryId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to delete this category?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'red',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/delete-Categories?id=${categoryId}`;
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

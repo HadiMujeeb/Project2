@@ -166,8 +166,28 @@
             <h3>
               <%= product.name%>
             </h3>
-            <h2>$<%= product.price%>
-            </h2>
+            <% if(product.Offer){ %>
+              <h7>
+                  <del>₹<%= product.price %></del>
+                  <h3>₹<%=product.price - ((product.price *
+                          product.Offer.percentage/100).toFixed(2)) %>
+                  </h3>
+              </h7>
+              <% }else if (product.category.Offer){ %>
+                  <del>₹<%= product.price %></del>
+                  <h3>₹<%=product.price - ((product.price *
+                      product.category.Offer.percentage/100).toFixed(2)) %>
+                  </h3>
+
+                  <%}else{%>
+
+
+                      <h3>
+                          ₹<%= product.price %>
+                      </h3>
+
+
+                      <%}%>
             <ul class="list">
               <li>
                 <a class="active" href="#">
