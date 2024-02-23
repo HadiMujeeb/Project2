@@ -29,7 +29,7 @@
                     </h2>
                 </div>
                 <br>
-                <% if(product.couponDiscount !==undefined && product.couponDiscount !==null) { %>
+                <% if(product.couponDiscount !==null) { %>
 
                     <p>
                         <%=product.couponDiscount.couponName%>
@@ -157,12 +157,12 @@
                                 icon: 'success',
                                 title: 'Coupon Removed',
                                 text: 'The coupon has been successfully removed from your cart.',
-                                confirmButtonText:"Ok"
+                                confirmButtonText: "Ok"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location = "/checkout";
+                                }
                             });
-                            if(result.isConfirmed){
-                            window.location="/checkout"
-                            console.log('Coupon removed successfully');
-                            }
                         },
                         error: function (xhr, status, error) {
                             console.error('Error removing coupon:', error);
@@ -328,20 +328,40 @@
                                                 <a href="#">
                                                     <%= item.product_id.name %>
                                                         <span class="middle">x <%= item.quantity %></span>
-                                                        <span class="last">
-                                                            <%= item.price %>
-                                                        </span>
-                                                        <% TotalPrice+=item.price %>
+                                                        <% if(item.product_id.Offer){ %>
+                                                            <span class="last">
+
+                                                                <% var item_price=item.total_price - (item.total_price *
+                                                                    (item.product_id.Offer.percentage / 100)); %>
+                                                                    <%= item_price %>
+                                                            </span>
+                                                            <%}else if (item.product_id.category.Offer) { %>
+                                                                <span class="last">
+
+                                                                    <% var item_price=item.total_price -
+                                                                        (item.total_price *
+                                                                        (item.product_id.category.Offer.percentage /
+                                                                        100)); %>
+                                                                        <%= item_price %>
+                                                                </span>
+                                                                <%}else{%>
+                                                                    <span class="last">
+                                                                        <% var item_price=item.total_price %>
+                                                                            <%= item_price %>
+                                                                    </span>
+                                                                    <%}%>
+                                                                        <% TotalPrice+=item_price %>
                                                 </a>
                                             </li>
 
                                             <% }); %>
                                 </ul>
-                                <input type="hidden" id="TotalPrice" name="TotalPrice" value="<%=TotalPrice%>">
+
+
                                 <ul class="list list_2">
                                     <li>
                                         <a href="#">Subtotal
-                                            <span>$<%=TotalPrice %></span>
+                                            <span>$<%=TotalPrice.toFixed(2) %></span>
                                         </a>
                                     </li>
                                     <li>
@@ -353,14 +373,16 @@
                                         <li>
                                             <a href="#">Total
                                                 <% var DiscountAmount=TotalPrice %>
-                                                    <span>$<%=DiscountAmount %></span>
+                                                    <span>$<%=DiscountAmount.toFixed(2) %></span>
                                             </a>
                                         </li>
+
+
                                         <%}else{%>
                                             <li>
                                                 <a href="#">Total
                                                     <span>$ <del>
-                                                            <%=TotalPrice %>
+                                                            <%=TotalPrice.toFixed(2) %>
                                                         </del></span>
 
                                                 </a>
@@ -370,7 +392,7 @@
                                                     DISCOUNT AMOUNT
                                                     <% var DiscountAmount=TotalPrice - product.couponDiscount. minAmount
                                                         %>
-                                                        <span>$<%= DiscountAmount %></span>
+                                                        <span>$<%= DiscountAmount.toFixed(2) %></span>
 
                                                 </a>
                                             </li>
@@ -380,8 +402,14 @@
                                 <div class="payment_item">
                                     <div class="radion_btn">
                                         <input type="radio" id="cash-on-delivery" name="payment-selector"
-                                            value="Cash on Delivery" onclick="handlePaymentSelection(this)" />
+                                            value="Cash-on-Delivery" onclick="handlePaymentSelection(this)" />
                                         <label for="cash-on-delivery">Cash on Delivery</label>
+                                        <div class="check"></div>
+                                    </div>
+                                    <div class="radion_btn">
+                                        <input type="radio" id="cash-on-online" name="payment-selector"
+                                            value="Cash-on-online" onclick="handlePaymentSelectionOnline(this)" />
+                                        <label for="cash-on-online">payment on online</label>
                                         <div class="check"></div>
                                     </div>
 
@@ -434,7 +462,7 @@
                 });
 
             </script> -->
-
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
             <script>
 
@@ -463,6 +491,11 @@
                 function handlePaymentSelection(radioButton) {
                     paymentMethod = radioButton.value;
                 }
+                function handlePaymentSelectionOnline(radioButton) {
+                    paymentMethod = radioButton.value;
+                    console.log("hello", paymentMethod)
+                }
+
 
                 $(document).ready(function () {
                     $('.btn_3').click(function (event) {
@@ -505,7 +538,8 @@
                                             console.log("Order:", order);
                                             window.location.href = '/confirm?orderId=' + encodeURIComponent(order);
                                         } else if (response.success == false) {
-                                            alert('Quantity is not available.');
+                                            console.log('response.success has become false now');
+                                            razorpaypayment(response.orders);
                                         }
                                     },
                                     error: function (xhr, status, error) {
@@ -527,6 +561,62 @@
                     });
                 });
 
+
+                function razorpaypayment(orders) {
+                    console.log("here i have reached ");
+                    var options = {
+                        "key": "rzp_test_Zdu4uWOEbGyw30",
+                        "amount": orders.amount,
+                        "currency": "INR",
+                        "name": "hadi",
+                        "description": "Test Transaction",
+                        "image": "https://example.com/your_logo",
+                        "order_id": orders.id,
+                        "handler": function (response) {
+                            verifypayment(response, orders);
+                        },
+                        "prefill": {
+                            "name": "Gaurav Kumar",
+                            "email": "gaurav.kumar@example.com",
+                            "contact": "9000090000"
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+                    let raz = new Razorpay(options);
+                    raz.open();
+                }
+
+                function verifypayment(Payment, orders) {
+                    console.log("now im here buddy")
+                    $.ajax({
+                        url: '/verifypayment',
+                        method: 'post',
+                        data: {
+                            Payment,
+                            orders
+                        },
+                        success: function (response) {
+                            console.log("ajax verify payment response", response);
+                            if (response.success) {
+                                let orderId = response.orderId
+                                console.log("the order id may her for the razo pay and ::", orderId)
+                                window.location.href = `/ordersuccess?id=${orderId}`
+                            } else if (response.onlineSuccess) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Payment has done',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                        }
+                    });
+                }
 
 
             </script>

@@ -251,7 +251,8 @@
                                 </li>
 
                                 <li class="list-group-item">
-                                    <a href="/walletHistory" class="text-decoration-none"><i class="fas fa-wallet"></i>
+                                    <a href="#" class="text-decoration-none" onclick="toggleWallet()"><i
+                                            class="fas fa-wallet"></i>
                                         Wallet History</a>
                                 </li>
                                 <li class="list-group-item">
@@ -339,7 +340,7 @@
                                     <label for="firstName"><i class="fas fa-user"></i> First Name</label>
                                     <input type="text" class="form-control" name="name" id="firstName"
                                         value="<%= user.name%> " placeholder="Enter your first name" required>
-                                        <span id="nameError" class="error"></span>
+                                    <span id="nameError" class="error"></span>
 
                                     <input type="hidden" name="id" value="<%=user._id%>">
                                 </div>
@@ -347,17 +348,17 @@
                                     <label for="email"><i class="fas fa-envelope"></i> Email</label>
                                     <input type="email" class="form-control" id="email" name="email" readonly
                                         value="<%= user.email%> " required>
-                                        <span id="emailError"class="error"></span>
+                                    <span id="emailError" class="error"></span>
                                 </div>
                                 <div class="form-group">
                                     <label for="mobile"><i class="fas fa-mobile-alt"></i> Mobile</label>
                                     <input type="text" class="form-control" id="mobile" name="mobile"
                                         value="<%= user.mobile%> " placeholder="Enter your mobile number" required>
-                                        <span id="phoneError"class="error"></span>
+                                    <span id="phoneError" class="error"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save
                                     Changes</button>
-                                    <!-- <button type="button" class="btn btn-primary"><i class="fas fa-save">reset</i></button> -->
+                                <!-- <button type="button" class="btn btn-primary"><i class="fas fa-save">reset</i></button> -->
                             </form>
 
                             <% if (typeof message !=="undefined" ) { %>
@@ -378,7 +379,7 @@
                             </div>
 
                             <hr />
-                           
+
                             <% if (user.addresses!=="undefined" && user.addresses.length> 0) { %>
                                 <% user.addresses.forEach((address, index)=> { %>
                                     <div class="row">
@@ -453,38 +454,102 @@
                                             </tr>
 
                                         </thead>
-                                        <% let num = 1 %>
-                                        <% order.forEach((orderItem, i) => { %>
+                                        <% let num=1 %>
+                                            <% order.forEach((orderItem, i)=> { %>
 
-                                            <tbody>
-                                                <tr>
-                                                    <td onclick="redirectToOrderDetails('<%= orderItem._id %>')">
-                                                        #<%= num %>
-                                                    </td>
-                                                    <td>
-                                                        <%= orderItem.payment %>
-                                                    </td>
-                                                    <td>
-                                                        $<%= orderItem.total_amount %>
-                                                    </td>
-                                                    <td>
-                                                        <%= orderItem.status %>
-                                                    </td>
-                                                <% if (order[i].status !== "Cancelled" ) { %>
-                                                    <td>
-                                                        <a class="genric-btn danger-border circle" href="#" onclick="CancelOrder('<%= order[i]._id %>')">CANCEL</a>
-                                                    </td>
-                                                <% } else { %>
-                                                    <td>
-                                                        <a class="genric-btn danger-border circle" style="background-color: #fd0404;" ></a>
-                                                    </td>
-                                                    
-                                                <% } %>
-                                                <% num++ %>
+                                                <tbody>
+                                                    <tr>
+                                                        <td onclick="redirectToOrderDetails('<%= orderItem._id %>')">
+                                                            #<%= num %>
+                                                        </td>
+                                                        <td>
+                                                            <%= orderItem.payment %>
+                                                        </td>
+                                                        <td>
+                                                            $<%= orderItem.total_amount %>
+                                                        </td>
+                                                        <td>
+                                                            <%= orderItem.status %>
+                                                        </td>
+                                                        <% if (order[i].status==="Processing" ||
+                                                            order[i].status==="On Hold" ) { %>
 
-                                            </tbody>
-                                            <% }); %>
-                                          
+                                                            <td>
+                                                                <a class="genric-btn danger-border circle" href="#"
+                                                                    onclick="CancelOrder('<%= order[i]._id %>')">CANCEL</a>
+                                                            </td>
+
+                                                            <% }else if(order[i].status==="Delivered" ){ %>
+                                                                <td>
+                                                                    <a class="genric-btn danger-border circle" href="#"
+                                                                        onclick="OrderReturn('<%= order[i]._id %>')">RETURN</a>
+                                                                </td>
+
+                                                                <% } else { %>
+                                                                    <td>
+                                                                        <a class="genric-btn danger-border circle"
+                                                                            style="background-color: #fd0404;"></a>
+                                                                    </td>
+
+                                                                    <% } %>
+                                                                        <% num++ %>
+
+                                                </tbody>
+                                                <% }); %>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card mb-4" id="userWallet" style="display: none">
+                        <div class="card-body">
+                            <h5 class="card-title">Wallet history</h5>
+                            <hr />
+                            <div class="shopping_cart_table">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th> Transaction </th>
+                                                <th>Amount</th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody>
+                                            <tr>
+                                                <!-- <td onclick="redirectToOrderDetails()">
+
+                                                </td> -->
+                                                <td>
+
+                                                </td>
+
+
+                                                <td>
+
+                                                </td>
+
+                                                <td>
+
+                                                </td>
+
+                                                <td>
+                                                    <!-- <a class="genric-btn danger-border circle" href="#"
+                                                        onclick="CancelOrder()">CANCEL</a> -->
+                                                </td>
+
+
+                                        </tbody>
+
+
                                     </table>
                                 </div>
                             </div>
@@ -523,6 +588,45 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
 
+        function OrderReturn(orderId) {
+            Swal.fire({
+                title: 'Confirm Order Return',
+                text: "Are you sure you want to return this order?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, return it',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/ReturnOrder",
+                        method: "post",
+                        data: { orderId: orderId },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Order returned successfully',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location = "/profile";
+                                    }
+                                })
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Order return failed',
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         function redirectToOrderDetails(orderId) {
 
             //   var url = "/orderview?" + orderId;
@@ -548,11 +652,11 @@
                     // Perform the cancellation action
                     // You can replace this with your actual cancellation logic
                     window.location.href = "/OrderCancel?CancelId=" + encodeURIComponent(cancelId);
-                    
+
                 }
                 setTimeout(function () {
                     location.reload();
-                    
+
                 }, 50);
             });
         }
@@ -607,6 +711,25 @@
             }
         }
 
+        function toggleWallet() {
+            var orderDetails = document.getElementById('orderDetails');
+            var userDetails = document.getElementById("userDetails");
+            var addressDetails = document.getElementById("addressDetails");
+            var profileForm = document.getElementById("profileForm");
+            var userWallet = document.getElementById("userWallet");
+
+            if (userWallet.style.display = "none") {
+                addressDetails.style.display = "none";
+                userDetails.style.display = "none";
+                profileForm.style.display = "none";
+                orderDetails.style.display = "none";
+                userWallet.style.display = "block";
+            } else {
+                userWallet.style.display = "none";
+                userDetails.style.display = "block";
+            }
+        }
+
 
     </script>
     <script>
@@ -647,55 +770,55 @@
 
 
 
-        
+
     </script>
- <script>
-    function validateForm() {
-        var name = document.getElementById("firstName").value;
-        var email = document.getElementById("email").value;
-        var mobile = document.getElementById("mobile").value;
-    
+    <script>
+        function validateForm() {
+            var name = document.getElementById("firstName").value;
+            var email = document.getElementById("email").value;
+            var mobile = document.getElementById("mobile").value;
 
 
 
-        // Name validation (only text allowed)
-        if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
-            document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers(no Spaces)';
-            document.getElementById('nameError').style.color = "red";
-            return false;
-        }else{
-            document.getElementById('nameError').innerHTML ="";
+
+            // Name validation (only text allowed)
+            if (!/^[a-zA-Z][a-zA-z-0-9]*$/.test(name)) {
+                document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then numbers(no Spaces)';
+                document.getElementById('nameError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById('nameError').innerHTML = "";
+            }
+
+            // Email validation using regular expression
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.[a-zA-Z]{2,4}$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById("emailError").innerHTML = "Please enter a valid Gmail address";
+                document.getElementById('emailError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById('nameError').innerHTML = "";
+            }
+
+            if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
+                document.getElementById('phoneError').style.color = "red";
+                return false;
+            } else {
+                document.getElementById('nameError').innerHTML = "";
+            }
+
+            // // Additional validation to check for alphabetic characters or special characters in mobile number
+            // if (!/^\d+$/.test(mobile)) {
+            //     document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
+            //     document.getElementById('phoneError').style.color = "red";
+            //     return false;
+            // }
+            return true;
+
         }
-
-        // Email validation using regular expression
-
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.[a-zA-Z]{2,4}$/;
-        if (!emailRegex.test(email)) {
-            document.getElementById("emailError").innerHTML = "Please enter a valid Gmail address";
-            document.getElementById('emailError').style.color = "red";
-            return false;
-        }else{
-            document.getElementById('nameError').innerHTML ="";
-        }
-
-        if (!/^\d{10}$/.test(mobile)) {
-            document.getElementById("phoneError").innerHTML = 'Mobile number should contain exactly 10 numeric characters';
-            document.getElementById('phoneError').style.color = "red";
-            return false;
-        }else{
-            document.getElementById('nameError').innerHTML ="";
-        }
-
-        // // Additional validation to check for alphabetic characters or special characters in mobile number
-        // if (!/^\d+$/.test(mobile)) {
-        //     document.getElementById("phoneError").innerHTML = 'Mobile number should contain only numeric characters';
-        //     document.getElementById('phoneError').style.color = "red";
-        //     return false;
-        // }
-        return true;
-
-    }
-</script>
+    </script>
 
     <!-- </body>
 

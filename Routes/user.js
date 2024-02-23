@@ -5,6 +5,7 @@ const userController = require("../Controllers/userController");
 const cartController = require("../Controllers/cartController");
 const WishlistController = require("../Controllers/WishlistController");
 const couponController = require("../Controllers/CouponController");
+const walletController = require("../Controllers/walletController");
 
 const auth = require("../Middlewire/Auth");
 
@@ -109,6 +110,13 @@ user_router.patch('/addCouponCart' , couponController.AddCouponCart);
 
 user_router.post('/CouponRemove' ,couponController.CheckRemoveCoupon );
 
+user_router.post('/verifypayment' ,cartController.Verifypayment);
+
+
+// wallet Controller 
+
+
+user_router.post("/ReturnOrder",walletController.returnProduct)
 
 
 

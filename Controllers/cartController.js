@@ -6,6 +6,14 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const Order = require("../Models/OrderModel");
 const { now } = require("mongoose");
 const Coupon = require("../Models/CouponModel");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const { generate } = require("randomstring");
+
+var instance = new Razorpay({
+  key_id: "rzp_test_Zdu4uWOEbGyw30",
+  key_secret: "szr5SFPPifbykQd7YtHKeZHr",
+});
 
 const loadCart = async (req, res) => {
   try {
@@ -21,10 +29,10 @@ const loadCart = async (req, res) => {
     const cartDetails = await Cart.findOne({ user_id: id }).populate({
       path: "items.product_id",
       populate: [
-          { path: "Offer" },
-          { path: "category", populate: { path: "Offer" } }
+        { path: "Offer" },
+        { path: "category", populate: { path: "Offer" } },
       ],
-  });
+    });
     const cart = await Cart.findOne({ user_id: user }).populate(
       "items.product_id"
     );
@@ -323,34 +331,35 @@ const LoadCheckout = async (req, res) => {
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
-    
       const id = req.session.user_id;
 
       const user = await User.findOne({ _id: id });
 
-      const product = await Cart.findOne({ user_id: user }).populate(
-        "items.product_id",
-        "name"
-      ).populate("couponDiscount");
+      const product = await Cart.findOne({ user_id: user })
+        .populate({
+          path: "items.product_id",
+          populate: [
+            { path: "Offer" },
+            { path: "category", populate: { path: "Offer" } },
+          ],
+        })
+        .populate("couponDiscount");
 
       let totalPrice = 0;
 
-product.items.forEach(item => {
-    totalPrice +=  parseFloat(item.total_price);
-});
-// console.log('hiiiwdw',totalPrice)
-
-
-      
+      product.items.forEach((item) => {
+        totalPrice += parseFloat(item.total_price);
+      });
+      // console.log('hiiiwdw',totalPrice)
 
       const coupon = await Coupon.aggregate([
         {
           $match: {
-            minAmount: { $lte:  totalPrice},
+            minAmount: { $lte: totalPrice },
           },
         },
       ]);
-     
+
       // console.log(coupon, "hii");
       if (product) {
         res.render("ProceedCheckout", {
@@ -368,6 +377,11 @@ product.items.forEach(item => {
   }
 };
 
+
+
+
+
+
 const Checkout = async (req, res) => {
   try {
     const { addressId, totalPrice, paymentMethod } = req.body;
@@ -377,16 +391,14 @@ const Checkout = async (req, res) => {
     } else {
       console.log("hii");
 
+
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
 
       const cart = await Cart.findOne({ user_id: user }).populate(
         "items.product_id"
       );
-      // if (!user || user.isBlocked==false) {
 
-      //   return res.render("/login");
-      // }
       for (const cartItem of cart.items) {
         const product = cartItem.product_id;
         const requestedQuantity = cartItem.quantity;
@@ -399,7 +411,6 @@ const Checkout = async (req, res) => {
       }
 
       if (cart) {
-        // const Discount = await.find({})
         const orderItems = cart.items.map((item) => ({
           product_id: item.product_id,
           productName: item.productName,
@@ -415,20 +426,31 @@ const Checkout = async (req, res) => {
           payment: paymentMethod,
           delivery_address: addressId,
           user_name: user.name,
-          total_amount: totalPrice ,
+          total_amount: totalPrice,
           items: orderItems,
           date: new Date(),
           status: "Processing",
         });
-
         await order.save();
         console.log("Order placed successfully");
         if (order) {
           await Cart.deleteMany({});
-          console.log("Items deleted from the cart");
           const order = await Order.findOne({ user_id: user._id });
-          console.log("orderid", order._id);
+          // console.log("orderid", order._id);
+        if(paymentMethod==="Cash-on-Delivery"){
           res.json({ success: true, order: order._id });
+        }else if(paymentMethod==="Cash-on-online"){
+
+          const orders = await instance.orders.create({
+            amount: totalPrice * 100,
+            currency: "INR",
+            receipt: "" + order._id,
+          });
+          console.log(orders,"hii")
+          return res.json({ success: false, orders });
+          
+        }
+        
         }
       }
     }
@@ -436,6 +458,40 @@ const Checkout = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+const Verifypayment = async ( req,res)=>{
+  try {
+    const userId = req.session.user_id;
+    const Data = req.body;
+
+    let hmac = crypto.createHmac("sha256","szr5SFPPifbykQd7YtHKeZHr");
+    hmac.update(Data.razorpay_order_id + "|" + Data.razorpay_payment_id);
+  } catch (error) {
+    
+  }
+}
+// const generaterazorpay = async (orderId, totalPrice) => {
+//   try {
+//     var options = {
+//       amount: totalPrice * 100, // amount is in smallest currency unit, so multiply by 100 for INR
+//       currency: "INR",
+//       receipt: orderId,
+//     };
+//     instance.orders.create(options, function (err, order) {
+//       if (err) {
+//         console.error(err);
+//         return;
+//       }
+//       console.log("Order:", order);
+//       // res.json({ orderId: order.id, amount: order.amount });
+//     });
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+
 
 const LoadCheckADDaddress = async (req, res) => {
   try {
@@ -478,12 +534,13 @@ const LoadConfirm = async (req, res) => {
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
-
       const { orderId } = req.query;
       // const order = await Order.findOne({ _id: orderId });
-      const order = await Order.findOne({ user_id:req.session.user_id }).sort({
-        createdAt: -1,
-      }).limit(1);
+      const order = await Order.findOne({ user_id: req.session.user_id })
+        .sort({
+          createdAt: -1,
+        })
+        .limit(1);
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
       res.render("confirm", { order });
@@ -567,4 +624,5 @@ module.exports = {
   OrderView,
   OrderCancel,
   CheckADDaddress,
+  Verifypayment
 };

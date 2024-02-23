@@ -76,61 +76,6 @@ const RemoveCoupon = async (req, res) => {
   }
 };
 
-// const applyCoupon = async (req, res) => {
-//   try {
-//     const couponId = req.body.id;
-//     const userId = req.session.userId;
-//     const currentDate = new Date();
-//     const CouponData = await Coupon.findOne({
-//       _id: couponId,
-//       expiryDate: { $gt: currentDate },
-//     });
-//     const Exist = CouponData.userUsed.includes(userId);
-
-//     if (!Exist) {
-//       const existCart = await Cart.findOne({ user_id: userId });
-
-//       if (existCart && existCart.coupondicount == null) {
-//         const addUser = await Coupon.findByIdAndUpdate(
-//           { _id: couponId },
-//           { $push: { userUsed: userId } }
-//         );
-
-//         const addCart = await Cart.findOneAndUpdate(
-//           { user_id: userId },
-//           { $set: { coupondicount: CouponData._id } }
-//         );
-
-//         res.json({ coupon: true, CouponData });
-//       } else {
-//         res.json({ coupon: "Already Applied" });
-//       }
-//     } else {
-//       res.json({ coupon: "AlreadyUsed" });
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-// const CheckRemoveCoupon = async (req, res) => {
-//   try {
-//     const couponId = req.body.id;
-//     const userId = req.session.user_id;
-//     const CouponData = await Coupon.findByIdAndUpdate(
-//       { _id: couponId },
-//       { $pull: { userUsed: userId } }
-//     );
-//     const cartUpdate = await Cart.findOneAndUpdate(
-//       { user_id: userId },
-//       { $set: { coupondicount: null } }
-//     );
-//     res.json({ success: true });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
 const AddCouponCart = async (req, res) => {
   try {
     if (!req.session.user_id) {
@@ -145,14 +90,12 @@ const AddCouponCart = async (req, res) => {
       console.log("coupon is not available");
       return;
     }
-  const cart = await Cart.findById(cartId);
-  console.log(cart,"cart")
+    const cart = await Cart.findById(cartId);
 
-  if (!cart.couponDiscount  || cart.couponDiscount !== null) {
-    console.log("coupon already added");
-    return;
-  }
-  
+    if (cart.couponDiscount !== null) {
+      console.log("coupon already added");
+      return;
+    }
 
     if (
       coupon &&
@@ -173,38 +116,38 @@ const AddCouponCart = async (req, res) => {
         { new: true }
       );
 
-      if (cart && coupon) {
-        console.log("Coupon has not been used by the user");
-        res.render("ProceedCheckout")
-        res.json({ success: true });
-      } else {
-        res.json({ success: false });
-      }
+      console.log("Coupon has not been used by the user");
+      res.json({ success: true });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const CheckRemoveCoupon  = async (req,res)=>{
+const CheckRemoveCoupon = async (req, res) => {
   try {
-    console.log("hisdfefwewi")
-    const {cartId}= req.body
-    const cart = await Cart.findByIdAndUpdate(
+    console.log("hisdfefwewi");
+    const { cartId } = req.body;
+
+    const cart = await Cart.findById(cartId);
+    const coupon = await Coupon.findByIdAndUpdate(cart.couponDiscount, {
+      $unset: { userUsed: 1 },
+    });
+
+    await Cart.findByIdAndUpdate(
       cartId,
       { $unset: { couponDiscount: null } },
       { new: true }
-  );
-   res.json({success:true})
-  } catch (error) {
-    
-  }
-}
+    );
+
+    res.json({ success: true });
+  } catch (error) {}
+};
 module.exports = {
   LoadCoupon,
   LoadAddCoupon,
   AddCoupon,
   RemoveCoupon,
   AddCouponCart,
-  CheckRemoveCoupon 
+  CheckRemoveCoupon,
 };

@@ -74,6 +74,11 @@
                       <% if (cartItem.product_id.Offer) { %>
                         <% itemTotalPrice=cartItem.product_id.price - (cartItem.product_id.price *
                           (cartItem.product_id.Offer.percentage / 100)); %>
+                           
+                          <% }else if(cartItem.product_id.category.Offer){ %>
+                            <% itemTotalPrice=cartItem.product_id.price - (cartItem.product_id.price *
+                            (cartItem.product_id.category.Offer.percentage / 100)); %>
+
                           <% } else { %>
                             <% itemTotalPrice=cartItem.product_id.price; %>
                               <% } %>
@@ -199,7 +204,7 @@
                                           </td>
                                           <% if(totalProductPrice !==undefined) { %>
                                             <td>
-                                              <h3>₹<%= totalProductPrice %>
+                                              <h3>₹<%= totalProductPrice.toFixed(0) %>
                                               </h3>
                                             </td>
                                            

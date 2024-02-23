@@ -43,6 +43,7 @@ const CartModel = new mongoose.Schema({
   couponDiscount: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Coupon",
+    default:null,
   },
 });
 

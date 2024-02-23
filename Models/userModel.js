@@ -59,6 +59,23 @@ const userSchema = new mongoose.Schema({
       
     }
   ],
+  wallet: {
+    type: Number,
+    default: 0,
+  },
+  wallet_history: [
+    {
+      date: {
+        type: Date,
+      },
+      amount: {
+        type: Number,
+      },
+      description: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
