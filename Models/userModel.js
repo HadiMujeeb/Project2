@@ -74,6 +74,10 @@ const userSchema = new mongoose.Schema({
       description: {
         type: String,
       },
+      paymentMethod: {
+        type: String,
+      },
+
     },
   ],
 });

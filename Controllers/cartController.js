@@ -434,13 +434,14 @@ const Checkout = async (req, res) => {
         await order.save();
         console.log("Order placed successfully");
         if (order) {
-          await Cart.deleteMany({});
-          const order = await Order.findOne({ user_id: user._id });
-          // console.log("orderid", order._id);
+          
+          
+          console.log("orderid", order._id);
         if(paymentMethod==="Cash-on-Delivery"){
+          await Cart.deleteMany({});
           res.json({ success: true, order: order._id });
         }else if(paymentMethod==="Cash-on-online"){
-
+     
           const orders = await instance.orders.create({
             amount: totalPrice * 100,
             currency: "INR",
@@ -449,6 +450,16 @@ const Checkout = async (req, res) => {
           console.log(orders,"hii")
           return res.json({ success: false, orders });
           
+        }else{
+          const user = await User.findByIdAndUpdate(
+            { _id: order.user_id },
+            {
+                $inc: { wallet: -order.total_amount },
+                $push: { wallet_history: { date: new Date(), amount: order.total_amount, description:"Processing",paymentMethod:order.payment } }
+            }
+        );
+        await Cart.deleteMany({});
+        res.json({ success: true, order: order._id });
         }
         
         }
@@ -471,26 +482,6 @@ const Verifypayment = async ( req,res)=>{
     
   }
 }
-// const generaterazorpay = async (orderId, totalPrice) => {
-//   try {
-//     var options = {
-//       amount: totalPrice * 100, // amount is in smallest currency unit, so multiply by 100 for INR
-//       currency: "INR",
-//       receipt: orderId,
-//     };
-//     instance.orders.create(options, function (err, order) {
-//       if (err) {
-//         console.error(err);
-//         return;
-//       }
-//       console.log("Order:", order);
-//       // res.json({ orderId: order.id, amount: order.amount });
-//     });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
 
 
 const LoadCheckADDaddress = async (req, res) => {
@@ -602,7 +593,18 @@ const OrderCancel = async (req, res) => {
     const id = req.query.CancelId;
     console.log("fi", id);
     const order = await Order.findOne({ _id: id });
-    if (order) {
+
+    if ( order && order.payment==="Cash-on-online" ||order.payment==="Cash-on-wallet") {
+      const user = await User.findByIdAndUpdate(
+        { _id: order.user_id },
+        {
+            $inc: { wallet: order.total_amount },
+            $push: { wallet_history: { date: new Date(), amount: order.total_amount, description: "Cancelled",paymentMethod:order.payment } }
+        }
+    );
+      await Order.updateOne({ _id: id }, { $set: { status: "Cancelled" } });
+      console.log("cancelled successfully");
+    }else{
       await Order.updateOne({ _id: id }, { $set: { status: "Cancelled" } });
       console.log("cancelled successfully");
     }

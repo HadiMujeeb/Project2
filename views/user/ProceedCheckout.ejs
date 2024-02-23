@@ -409,7 +409,14 @@
                                     <div class="radion_btn">
                                         <input type="radio" id="cash-on-online" name="payment-selector"
                                             value="Cash-on-online" onclick="handlePaymentSelectionOnline(this)" />
-                                        <label for="cash-on-online">payment on online</label>
+                                        <label for="cash-on-online">Payment on Online</label>
+                                        <div class="check"></div>
+                                    </div>
+                                    <div class="radion_btn">
+                                        <input type="radio" id="cash-on-Wallet" name="payment-selector"
+                                            value="Cash-on-wallet" onclick="handlePaymentSelectionWallet(this)" />
+                                        <label for="cash-on-Wallet">Wallet</label>
+
                                         <div class="check"></div>
                                     </div>
 
@@ -492,6 +499,10 @@
                     paymentMethod = radioButton.value;
                 }
                 function handlePaymentSelectionOnline(radioButton) {
+                    paymentMethod = radioButton.value;
+                    console.log("hello", paymentMethod)
+                }
+                function handlePaymentSelectionWallet(radioButton) {
                     paymentMethod = radioButton.value;
                     console.log("hello", paymentMethod)
                 }

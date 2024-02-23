@@ -14,7 +14,7 @@ const returnProduct = async (req, res) => {
             { _id: order.user_id },
             {
                 $inc: { wallet: order.total_amount },
-                $push: { wallet_history: { date: new Date(), amount: order.total_amount, description: "Refunded" } }
+                $push: { wallet_history: { date: new Date(), amount: order.total_amount, description: "Refunded",paymentMethod:order.payment } }
             }
         );
         await Order.findByIdAndUpdate(orderId,{$set:{status:"Refunded"}});

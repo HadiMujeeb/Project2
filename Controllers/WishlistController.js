@@ -42,9 +42,10 @@ const addWishlist = async (req, res) => {
           { $addToSet: { product: data } },
           { upsert: true, new: true }
         );
-        res.status(200).json({ success: true, message: 'Product added to wishlist' });
+        res.json({ success:true});
       } else {
         console.log("product already existed");
+        res.json({success:false})
       }
     }
   } catch (error) {

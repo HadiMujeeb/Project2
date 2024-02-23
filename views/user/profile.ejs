@@ -322,7 +322,7 @@
                                     <p class="" style="font-weight: 900; font-weight: 500;font-size: larger;"><i
                                             class="fas fa-rupee-sign"></i> Balance: <b
                                             style="font-weight: 900; font-weight: 500;font-size: larger; color: #ff0000;">
-
+                                            <%=user.wallet %>
                                         </b>
                                     </p>
                                 </div>
@@ -514,7 +514,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Date</th>
-                                                <th>Description</th>
+                                                <th>Status</th>
                                                 <th> Transaction </th>
                                                 <th>Amount</th>
 
@@ -524,32 +524,34 @@
 
 
                                         <tbody>
-                                            <tr>
-                                                <!-- <td onclick="redirectToOrderDetails()">
-
-                                                </td> -->
-                                                <td>
-
-                                                </td>
-
-
-                                                <td>
-
-                                                </td>
-
-                                                <td>
-
-                                                </td>
-
-                                                <td>
-                                                    <!-- <a class="genric-btn danger-border circle" href="#"
-                                                        onclick="CancelOrder()">CANCEL</a> -->
-                                                </td>
+                                            <% user.wallet_history.forEach((wallet)=>{ %>
+                                                <tr>
+                                                   
+                                                    <td>
+                                                      
+                                                        <%= new Date(wallet.date).toLocaleDateString() %>
 
 
+
+                                                    </td>
+                                               
+
+                                                    <td>
+                                                    <%= wallet.description%>
+                                                    </td>
+
+                                                    <td>
+                                                    <%= wallet.paymentMethod %>
+                                                    </td>
+
+                                                    <td>
+                                                       <%= wallet.amount%>
+                                                    </td>
+                                                </tr>
+                                                <% })%>
                                         </tbody>
 
-
+ 
                                     </table>
                                 </div>
                             </div>
@@ -666,12 +668,15 @@
             var profileForm = document.getElementById("profileForm");
             var userDetails = document.getElementById("userDetails");
             var addressDetails = document.getElementById("addressDetails");
+            var userWallet = document.getElementById("userWallet");
+
 
             if (profileForm.style.display === "none") {
                 profileForm.style.display = "block";
                 userDetails.style.display = "none";
                 addressDetails.style.display = "none";
                 orderDetails.style.display = "none";
+                userWallet.style.display = "none";
             } else {
                 profileForm.style.display = "none";
                 userDetails.style.display = "block";
@@ -683,11 +688,14 @@
             var userDetails = document.getElementById("userDetails");
             var addressDetails = document.getElementById("addressDetails");
             var profileForm = document.getElementById("profileForm");
+            var userWallet = document.getElementById("userWallet");
+
             if (addressDetails.style.display === "none") {
                 addressDetails.style.display = "block";
                 userDetails.style.display = "none";
                 profileForm.style.display = "none";
                 orderDetails.style.display = "none";
+                userWallet.style.display = "none";
             } else {
                 addressDetails.style.display = "none";
                 userDetails.style.display = "block";
@@ -700,11 +708,14 @@
             var userDetails = document.getElementById("userDetails");
             var addressDetails = document.getElementById("addressDetails");
             var profileForm = document.getElementById("profileForm");
+            var userWallet = document.getElementById("userWallet");
+
             if (orderDetails.style.display = "none") {
                 addressDetails.style.display = "none";
                 userDetails.style.display = "none";
                 profileForm.style.display = "none";
                 orderDetails.style.display = "block";
+                userWallet.style.display = "none";
             } else {
                 orderDetails.style.display = "none";
                 userDetails.style.display = "block";
