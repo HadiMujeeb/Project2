@@ -80,6 +80,14 @@
 
                 </li>
 
+                <li class="menu-item ">
+                    <a class="menu-link" href="/SaleReport">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Sales Report</span>
+                    </a>
+
+                </li>
+
                 <br />
                 <br />
         </nav>
@@ -202,7 +210,7 @@
                                     <th scope="col">Discount <br> Amount</th>
                                     <th scope="col">Starting Date</th>
                                     <th scope="col">Expire Date</th>
-                                  
+
 
                                     <th scope="col">Min <br> Amount</th>
                                     <!-- <th scope="col" class="text-end">Delete</th> -->
@@ -231,7 +239,7 @@
                                             <td>
                                                 <%= data.couponCode%>
                                             </td>
-                                           
+
 
 
                                             <td>
@@ -247,7 +255,7 @@
 
 
                                             <td>
-                                                <%= new Date (data.startingDate).toLocaleDateString()   %>
+                                                <%= new Date (data.startingDate).toLocaleDateString() %>
                                             </td>
 
                                             <td>
@@ -268,7 +276,7 @@
                                                 <a href="/"
                                                     class="btn btn-md rounded font-sm">Edit</a>
                                             </td> -->
-                                                  <td class="text-end">
+                                            <td class="text-end">
                                                 <button onclick="confirmDelete('<%= data._id %>')"
                                                     class="btn btn-md rounded font-sm">Remove</button>
                                             </td>
@@ -343,6 +351,9 @@
     <!-- Main Script -->
     <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
     <script>
         function confirmDelete(couponId) {
             Swal.fire({
@@ -362,7 +373,7 @@
         }
     </script>
 
-    
+
 </body>
 
 </html>

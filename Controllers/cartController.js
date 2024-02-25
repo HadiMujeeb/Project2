@@ -9,6 +9,7 @@ const Coupon = require("../Models/CouponModel");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { generate } = require("randomstring");
+const { Console } = require("console");
 
 var instance = new Razorpay({
   key_id: "rzp_test_Zdu4uWOEbGyw30",
@@ -377,20 +378,17 @@ const LoadCheckout = async (req, res) => {
   }
 };
 
-
-
-
-
-
+let referral;
+let TotalAmount;
 const Checkout = async (req, res) => {
   try {
-    const { addressId, totalPrice, paymentMethod } = req.body;
-
+    const { addressId, totalPrice, paymentMethod, referralCode } = req.body;
+    referral = referralCode;
+    TotalAmount = totalPrice;
     if (!req.session.user_id) {
       res.redirect("/login");
     } else {
       console.log("hii");
-
 
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
@@ -408,6 +406,10 @@ const Checkout = async (req, res) => {
             message: `Not enough quantity available for product ${product.name}`,
           });
         }
+      }
+      let coupon;
+      if (cart.couponDiscount) {
+        coupon = await Coupon.findOne({ _id: cart.couponDiscount });
       }
 
       if (cart) {
@@ -429,39 +431,99 @@ const Checkout = async (req, res) => {
           total_amount: totalPrice,
           items: orderItems,
           date: new Date(),
-          status: "Processing",
+          status: "Pending",
+          CouponDiscount: coupon?.discountAmount || 0,
         });
+
         await order.save();
         console.log("Order placed successfully");
         if (order) {
-          
-          
           console.log("orderid", order._id);
-        if(paymentMethod==="Cash-on-Delivery"){
-          await Cart.deleteMany({});
-          res.json({ success: true, order: order._id });
-        }else if(paymentMethod==="Cash-on-online"){
-     
-          const orders = await instance.orders.create({
-            amount: totalPrice * 100,
-            currency: "INR",
-            receipt: "" + order._id,
-          });
-          console.log(orders,"hii")
-          return res.json({ success: false, orders });
-          
-        }else{
-          const user = await User.findByIdAndUpdate(
-            { _id: order.user_id },
-            {
-                $inc: { wallet: -order.total_amount },
-                $push: { wallet_history: { date: new Date(), amount: order.total_amount, description:"Processing",paymentMethod:order.payment } }
+
+          if (paymentMethod === "Cash-on-Delivery") {
+            await Order.findByIdAndUpdate(order._id, {
+              $set: { status: "Placed" },
+            });
+            if (referralCode !== null) {
+              const percentage = 5;
+              const result = (percentage / 100) * totalPrice;
+              const user = await User.findOne({ referalcode: referralCode });
+              if (user) {
+                await User.findOneAndUpdate(
+                  { referalcode: referralCode },
+                  { $inc: { wallet: result.toFixed(0) } }
+                );
+              } else {
+                console.log(" there is no user based this referral");
+              }
+            } else {
+              console.log("there is no referral");
             }
-        );
-        await Cart.deleteMany({});
-        res.json({ success: true, order: order._id });
-        }
-        
+
+            const cart = await Cart.findOne({ user_id: req.session.user_id });
+
+            for (const Data of cart.items) {
+              await Product.updateOne(
+                { _id: Data.product_id },
+                { $inc: { stockQuantity: -Data.quantity } }
+              );
+            }
+
+            await Cart.deleteMany({});
+            res.json({ success: true, order: order._id });
+          } else if (paymentMethod === "Cash-on-online") {
+            const orders = await instance.orders.create({
+              amount: totalPrice*10,
+              currency: "INR",
+              receipt: "" + order._id,
+            });
+            console.log(orders, "hii");
+            return res.json({ success: false, orders, referralCode });
+          } else {
+            await Order.findByIdAndUpdate(order._id, {
+              $set: { status: "Placed" },
+            });
+            const user = await User.findByIdAndUpdate(
+              { _id: order.user_id },
+              {
+                $inc: { wallet: -order.total_amount },
+                $push: {
+                  wallet_history: {
+                    date: new Date(),
+                    amount: order.total_amount,
+                    description: "Placed",
+                    paymentMethod: order.payment,
+                  },
+                },
+              }
+            );
+            if (referralCode !== null) {
+              const percentage = 5;
+              const result = (percentage / 100) * totalPrice;
+              const user = await User.findOne({ referalcode: referralCode });
+              if (user) {
+                await User.findOneAndUpdate(
+                  { referalcode: referralCode },
+                  { $inc: { wallet: result.toFixed(0) } }
+                );
+              } else {
+                console.log(" there is no user based this referral");
+              }
+            } else {
+              console.log("there is no referral");
+            }
+
+            const cart = await Cart.findOne({ user_id: req.session.user_id });
+
+            for (const Data of cart.items) {
+              await Product.updateOne(
+                { _id: Data.product_id },
+                { $inc: { stockQuantity: -Data.quantity } }
+              );
+            }
+            await Cart.deleteMany({});
+            res.json({ success: true, order: order._id });
+          }
         }
       }
     }
@@ -470,19 +532,54 @@ const Checkout = async (req, res) => {
   }
 };
 
-
-const Verifypayment = async ( req,res)=>{
+const Verifypayment = async (req, res) => {
   try {
     const userId = req.session.user_id;
     const Data = req.body;
 
-    let hmac = crypto.createHmac("sha256","szr5SFPPifbykQd7YtHKeZHr");
+    let hmac = crypto.createHmac("sha256", "szr5SFPPifbykQd7YtHKeZHr");
     hmac.update(Data.razorpay_order_id + "|" + Data.razorpay_payment_id);
-  } catch (error) {
-    
-  }
-}
+    const hmacvalue = hmac.digest("hex");
+    if (hmacvalue == Data.razorpay_signature){
+     console.log('working')
+      
+    }
+    await Order.findByIdAndUpdate(Data.orders.receipt, {
+      $set: { status: "Placed" },
+    });
+    if (typeof referral !== 'undefined' && referral !== null) {
+        const percentage = 5;
+        const result = (percentage / 100) * TotalAmount;
+        const user = await User.findOne({ referalcode: referral });
+        if (user) {
+          await User.findOneAndUpdate(
+            { referalcode: referral },
+            { $inc: { wallet: result.toFixed(0) } }
+          );
+        } else {
+          console.log(" there is no user based this referral");
+        }
+      } else {
+        console.log("there is no referral");
+      }
 
+      const cart = await Cart.findOne({ user_id: userId});
+      console.log("cart",cart)
+
+      for (const Data of cart.items) {
+        await Product.updateOne(
+          { _id: Data.product_id },
+          { $inc: { stockQuantity: -Data.quantity } }
+        );
+      }
+      await Cart.deleteMany({});
+      res.json({ success: true, order: Data.orders.receipt });
+    
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 const LoadCheckADDaddress = async (req, res) => {
   try {
@@ -527,14 +624,20 @@ const LoadConfirm = async (req, res) => {
     } else {
       const { orderId } = req.query;
       // const order = await Order.findOne({ _id: orderId });
-      const order = await Order.findOne({ user_id: req.session.user_id })
-        .sort({
-          createdAt: -1,
-        })
-        .limit(1);
+      // const order = await Order.findOne({ user_id: req.session.user_id })
+      //   .sort({
+      //     createdAt: -1,
+      //   })
+      //   .limit(1);
+      const order = await Order.findOne({ _id: orderId });
+
       console.log("hii", order);
       const user = await User.findOne({ _id: req.session.user_id });
-      res.render("confirm", { order });
+      if (order.items) {
+        res.render("confirm", { order });
+      } else {
+        res.redirect("/home");
+      }
     }
   } catch (error) {
     console.log(error.message);
@@ -549,6 +652,8 @@ const LoadOrder = async (req, res) => {
       const id = req.session.user_id;
 
       const user = await User.findOne({ _id: id });
+      const result = await Order.deleteMany({ status: "Pending" });
+      console.log("ds", result);
 
       const order = await Order.find({});
       console.log("FGR", order);
@@ -594,17 +699,41 @@ const OrderCancel = async (req, res) => {
     console.log("fi", id);
     const order = await Order.findOne({ _id: id });
 
-    if ( order && order.payment==="Cash-on-online" ||order.payment==="Cash-on-wallet") {
+    if (
+      (order && order.payment === "Cash-on-online") ||
+      order.payment === "Cash-on-wallet"
+    ) {
       const user = await User.findByIdAndUpdate(
         { _id: order.user_id },
         {
-            $inc: { wallet: order.total_amount },
-            $push: { wallet_history: { date: new Date(), amount: order.total_amount, description: "Cancelled",paymentMethod:order.payment } }
+          $inc: { wallet: order.total_amount },
+          $push: {
+            wallet_history: {
+              date: new Date(),
+              amount: order.total_amount,
+              description: "Cancelled",
+              paymentMethod: order.payment,
+            },
+          },
         }
-    );
+      );
+
+      for (const data of order.items) {
+        const product = await Product.findByIdAndUpdate(
+          { _id: data.product_id },
+          { $inc: { stockQuantity: data.quantity } }
+        );
+      }
+
       await Order.updateOne({ _id: id }, { $set: { status: "Cancelled" } });
       console.log("cancelled successfully");
-    }else{
+    } else {
+      for (const data of order.items) {
+        const product = await Product.findByIdAndUpdate(
+          { _id: data.product_id },
+          { $inc: { stockQuantity: data.quantity } }
+        );
+      }
       await Order.updateOne({ _id: id }, { $set: { status: "Cancelled" } });
       console.log("cancelled successfully");
     }
@@ -626,5 +755,5 @@ module.exports = {
   OrderView,
   OrderCancel,
   CheckADDaddress,
-  Verifypayment
+  Verifypayment,
 };

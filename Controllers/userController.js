@@ -9,6 +9,15 @@ const { default: mongoose } = require("mongoose");
 const Order = require("../Models/OrderModel");
 require("dotenv").config();
 
+const generateReferralCode = (length) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    code += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return code;
+};
 // password hide
 
 const securePassword = async (password) => {
@@ -42,6 +51,7 @@ const insertUser = async (req, res) => {
         req.flash("message", "Password do not match");
         return res.redirect("/register");
       } else {
+        const referralCode = generateReferralCode(8);
         const spassword = await securePassword(req.body.password);
 
         const user = new User({
@@ -50,6 +60,7 @@ const insertUser = async (req, res) => {
           password: spassword,
           is_admin: 0,
           mobile: req.body.mobile,
+          referalcode:referralCode,
         });
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
@@ -265,10 +276,14 @@ const loadShop = async (req, res) => {
 
     if (categId) {
       const CategoryId = new mongoose.Types.ObjectId(categId);
-      products = await Product.find({ category: CategoryId }).populate({path:"category",populate:{path:"Offer"}}).populate("Offer");
+      products = await Product.find({ category: CategoryId })
+        .populate({ path: "category", populate: { path: "Offer" } })
+        .populate("Offer");
       console.log("linkproduct", products);
     } else {
-      products = await Product.find({}).populate({path:"category",populate:{path:"Offer"}}).populate("Offer");
+      products = await Product.find({})
+        .populate({ path: "category", populate: { path: "Offer" } })
+        .populate("Offer");
     }
 
     const Categdata = await Categories.find({});
@@ -418,11 +433,14 @@ const resetpassword = async (req, res) => {
 const LoadProfile = async (req, res) => {
   try {
     let user;
-
+    let data;
     if (req.session.user_id) {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
+    user.wallet_history.sort((a, b) => b.date - a.date);
+  console.log(data,"data")
     }
+    const result = await Order.deleteMany({ status: "Pending" });
     const order = await Order.find({ user_id: user._id }).sort({
       createdAt: -1,
     });

@@ -30,11 +30,10 @@ const orderModel = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // expected_delivery: {
-    //   type: String,
-    //   required: true
-
-    // },
+    CouponDiscount: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
       required: true,

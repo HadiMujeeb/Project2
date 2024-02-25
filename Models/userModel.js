@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  referalcode: {
+    type: String,
+    required: true,
+  },
   addresses: [
     {
       name: {

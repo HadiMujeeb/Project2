@@ -5,7 +5,7 @@ const Order = require("../Models/OrderModel");
 const bcrypt = require("bcrypt");
 const { response } = require("../Routes/user");
 const Product = require("../Models/productModel");
-const Offer = require("../Models/offerModel")
+const Offer = require("../Models/offerModel");
 
 // const { LoginPage } = require("./userController");
 
@@ -85,7 +85,6 @@ const loadUser = async (req, res) => {
   try {
     const userData = await User.find({ is_admin: 0, is_Verified: 1 });
 
-   
     res.render("User", { users: userData });
   } catch (error) {
     console.log(error.message);
@@ -129,12 +128,12 @@ const unblockUser = async (req, res) => {
 const LoadCategory = async (req, res) => {
   try {
     const Data = await Categories.find({}).populate("Offer");
- 
+
     const offerId = await Offer.find({
-      startingDate: { $lte: new Date },
-      expiryDate: { $gte: new Date }
+      startingDate: { $lte: new Date() },
+      expiryDate: { $gte: new Date() },
     });
-    res.render("Categories", { Data,offerId });
+    res.render("Categories", { Data, offerId });
   } catch (error) {
     console.log(error.message);
   }
@@ -261,7 +260,9 @@ const LoadOrderList = async (req, res) => {
     if (!req.session.admin) {
       res.redirect("/admin");
     } else {
-      const order = await Order.find({});
+      const order = await Order.find({}).sort({
+        createdAt: -1,
+      });
       res.render("orderList", { order });
     }
   } catch (error) {
@@ -304,23 +305,56 @@ const LoadOrderDetails = async (req, res) => {
     } else {
       const orderId = req.query.ORid;
       console.log("qq", orderId);
-      const order = await Order.findOne({ _id: orderId }).populate("items.product_id")
-    
+      const order = await Order.findOne({ _id: orderId }).populate(
+        "items.product_id"
+      );
+
       const user = await User.findOne({ _id: order.user_id });
       const address = user.addresses.find(
         (address) =>
           address._id.toString() === order.delivery_address.toString()
       );
 
-
-      res.render("orderDetails", { user, order, address, });
+      res.render("orderDetails", { user, order, address });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
+const salesReport = async (req, res) => {
+  try {
+    if (!req.session.admin) {
+      res.redirect("/admin");
+    } else {
+      const { reportType } = req.body;
+      console.log("redfv", reportType);
+      const sales = await Order.find({ status: "Delivered" });
+      // console.log('hii',sales)
+      res.render("salesReport", { sales });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
+const CustomDate = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+    const fromDate = new Date(startDate);
+    const toDate = new Date(endDate);
+    toDate.setHours(23, 59, 59, 999);
+    const sales = await Order.find({
+      date: { $gte: fromDate, $lte: toDate },
+      status: "Delivered",
+    });
+    console.log(sales, "dfge");
+    console.log("hiiii");
+    res.render("salesReport", { sales });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 module.exports = {
   loadLogin,
   logout,
@@ -341,4 +375,6 @@ module.exports = {
   LoadOrderList,
   OrderStatus,
   LoadOrderDetails,
+  salesReport,
+  CustomDate,
 };

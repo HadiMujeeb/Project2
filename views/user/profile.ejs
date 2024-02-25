@@ -471,8 +471,8 @@
                                                         <td>
                                                             <%= orderItem.status %>
                                                         </td>
-                                                        <% if (order[i].status==="Processing" ||
-                                                            order[i].status==="On Hold" ) { %>
+                                                        <% if (order[i].status==="Placed" || order[i].status==="On Hold"
+                                                            ) { %>
 
                                                             <td>
                                                                 <a class="genric-btn danger-border circle" href="#"
@@ -526,32 +526,39 @@
                                         <tbody>
                                             <% user.wallet_history.forEach((wallet)=>{ %>
                                                 <tr>
-                                                   
+
                                                     <td>
-                                                      
+
                                                         <%= new Date(wallet.date).toLocaleDateString() %>
 
 
 
                                                     </td>
-                                               
+
 
                                                     <td>
-                                                    <%= wallet.description%>
+                                                        <%= wallet.description%>
                                                     </td>
 
                                                     <td>
-                                                    <%= wallet.paymentMethod %>
+                                                        <%= wallet.paymentMethod %>
                                                     </td>
-
-                                                    <td>
-                                                       <%= wallet.amount%>
-                                                    </td>
+                                                    <% if (wallet.description==="Placed" ||
+                                                        wallet.description==="Processing" ||
+                                                        wallet.description==="Delivered" ){ %>
+                                                        <td style="color: #fd0404;">
+                                                            -<%= wallet.amount%>
+                                                        </td>
                                                 </tr>
-                                                <% })%>
+                                                <%}else{%>
+                                                    <td style="color: greenyellow;">
+                                                        +<%= wallet.amount%>
+                                                    </td>
+                                                    <%}%>
+                                                        <% })%>
                                         </tbody>
 
- 
+
                                     </table>
                                 </div>
                             </div>

@@ -107,6 +107,13 @@ admin_router.patch('/addOfferProduct',offerController.AddOfferProduct);
 
 admin_router.post('/deleteOfferProduct',offerController.deleteOfferProduct);
 
+admin_router.get('/saleReport',adminController.salesReport);
+
+admin_router.post("/customDate",adminController.CustomDate);
+
+
+
+
 
 
 

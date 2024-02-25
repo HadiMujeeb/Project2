@@ -15,7 +15,22 @@
         </div>
     </section>
     <!-- breadcrumb start-->
+<style>
+    .coupon_details {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
 
+.coupon_details h5 {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+</style>
     <!--================Checkout Area =================-->
     <section class="checkout_area padding_top">
 
@@ -30,23 +45,17 @@
                 </div>
                 <br>
                 <% if(product.couponDiscount !==null) { %>
-
-                    <p>
-                        <%=product.couponDiscount.couponName%>
-                    </p>
-                    <p>
-                        <%=product.couponDiscount.couponCode %>
-                    </p>
-                    <p>
-                        <%=product.couponDiscount. minAmount %>
-                    </p>
-                    <p>
-                        <%=product.couponDiscount.couponDescription %>
-                    </p>
+                    <div class="coupon_details">
+                        <h5>Coupon Name: <%= product.couponDiscount.couponName %></h5>
+                        <h5>Coupon Code: <%= product.couponDiscount.couponCode %></h5>
+                        <h5>Minimum Amount: <%= product.couponDiscount.minAmount %></h5>
+                        <h5>Discount Amount: <%= product.couponDiscount.discountAmount %></h5>
+                    </div>
+                    
 
                     <a class="tp_btn" onclick="removeCoupon('<%=product._id%>')">Remove Coupon</a>
                     <% }else{ %>
-                        <!-- <input type="text" placeholder="Enter coupon code" /> -->
+
                         <a class="tp_btn" onclick="couponAdd('<%=product._id%>')">Apply Coupon</a>
                         <%}%>
             </div>
@@ -58,9 +67,9 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>
+                            </button> -->
                         </div>
                         <div class="modal-body" id="couponModalBody">
                             <% coupon.forEach((cart, index)=> { %>
@@ -82,15 +91,11 @@
                                         <p>Discount Amount: $<%= cart.discountAmount %>
                                         </p>
                                     </div>
-                                    <!-- <button type="button" class="btn btn-danger remove-btn d-none"
-                                       data-index="<%= index %>">Remove Coupon</button> -->
+
                                 </div>
                                 <% }) %>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <!-- You can add a button here to apply the selected coupon if needed -->
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -312,9 +317,31 @@
                                 <input type="text" placeholder="Enter coupon code" />
                                 <a class="tp_btn" href="#">Apply Coupon</a>
                             </div> -->
+                            <style>
+                                /* CSS for the referral code input field */
+                                #referalcode {
+                                    padding: 10px;
+                                    font-size: 16px;
+                                    border: 1px solid #ccc;
+                                    border-radius: 5px;
+                                    margin-bottom: 10px;
+                                }
 
+                                #referalcode::placeholder {
+                                    color: #999;
+                                }
+
+                                #referalcode:focus {
+                                    outline: none;
+                                    border-color: #66afe9;
+                                    box-shadow: 0 0 5px #66afe9;
+                                }
+                            </style>
                             <h2>Your Order</h2>
                             <ul class="list">
+                                <input type="text" id="referalcode" name="referralCode" placeholder="Enter referralCode"
+                                    oninput="handleInputChange()" />
+
                                 <li>
                                     <a href="#">Product
                                         <span>Total</span>
@@ -390,8 +417,8 @@
                                             <li>
                                                 <a href="#">
                                                     DISCOUNT AMOUNT
-                                                    <% var DiscountAmount=TotalPrice - product.couponDiscount. minAmount
-                                                        %>
+                                                    <% var DiscountAmount=TotalPrice -
+                                                        product.couponDiscount.discountAmount %>
                                                         <span>$<%= DiscountAmount.toFixed(2) %></span>
 
                                                 </a>
@@ -470,11 +497,20 @@
 
             </script> -->
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script>
 
+            </script>
             <script>
 
                 let addressId = null;
 
+                let referralCode = null;
+
+
+                function handleInputChange() {
+                    referralCode = document.getElementById('referalcode').value;
+                    console.log("input", referralCode);
+                }
 
                 function selectAddress(selectedId) {
 
@@ -540,7 +576,8 @@
                                     data: {
                                         addressId: addressId,
                                         totalPrice: totalPrice,
-                                        paymentMethod: paymentMethod
+                                        paymentMethod: paymentMethod,
+                                        referralCode: referralCode
                                     },
                                     success: function (response) {
                                         console.log(response);
@@ -609,14 +646,16 @@
                         method: 'post',
                         data: {
                             Payment,
-                            orders
+                            orders,
+
                         },
                         success: function (response) {
                             console.log("ajax verify payment response", response);
                             if (response.success) {
-                                let orderId = response.orderId
+                                let orderId = response.order
                                 console.log("the order id may her for the razo pay and ::", orderId)
-                                window.location.href = `/ordersuccess?id=${orderId}`
+                                window.location.href = '/confirm?orderId=' + orderId;
+
                             } else if (response.onlineSuccess) {
                                 Swal.fire({
                                     icon: 'error',

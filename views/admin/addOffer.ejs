@@ -66,9 +66,9 @@
 
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/coupon">
+                    <a class="menu-link" href="/loadcoupon">
                         <i class="icon material-icons md-shopping_cart"></i>
-                        <span class="text">Coupons</span>
+                        <span class="text">Coupon</span>
                     </a>
 
                 </li>
@@ -76,6 +76,14 @@
                     <a class="menu-link" href="/loadOffer">
                         <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Offers</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item ">
+                    <a class="menu-link" href="/SaleReport">
+                        <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Sales Report</span>
                     </a>
 
                 </li>
@@ -153,52 +161,57 @@
                 <div class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form method="post" action="/addOffer">
+                            <form method="post" action="/addOffer" onsubmit=" return ValidateForm()">
                                 <div class="row">
                                     <hr class="mb-4 mt-0">
                                     <div class="col-md-9">
                                         <% if(typeof message !=="undefined" ){ %>
-                                            <h5 style="color: red;"><%= message%></h5> 
-                                                 <%}%>
-                                                 
-
-                                        <div class="mb-4">
-                                            <label class="form-label">Name</label>
-                                            <input type="text" placeholder="Enter name" class="form-control" name="name"
-                                                id="name" required>
-                                               <span id="nameError" class="error"></span>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Starting Date</label>
-                                            <input type="date" placeholder="Enter Strating Date" class="form-control"
-                                                name="startingDate" id="startingDate" required>
-                                            <!-- <span id="couponCodeError" class="error"></span> -->
-                                        </div>
+                                            <h5 style="color: red;">
+                                                <%= message%>
+                                            </h5>
+                                            <%}%>
 
 
+                                                <div class="mb-4">
+                                                    <form action="">
+                                                    <label class="form-label">Name</label>
+                                                    <input type="text" placeholder="Enter name" class="form-control"
+                                                        name="name" id="name" required>
+                                                    <span id="nameError" class="error"></span>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="form-label">Starting Date</label>
+                                                    <input type="date" placeholder="Enter Strating Date"
+                                                        class="form-control" name="startingDate" id="startingDate"
+                                                        required>
+                                                    <!-- <span id="couponCodeError" class="error"></span> -->
+                                                </div>
 
 
-                                        <div class="mb-4">
-                                            <label class="form-label">Percentage</label>
-                                            <div class="input-group">
-                                                <input type="number" placeholder="Enter value" class="form-control"
-                                                    name="discountAmount" id="discountAmount" min="0" max="100"
-                                                    step="0.01" required>
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                            <span id="discountError" class="error"></span>
-                                        </div>
 
-                                        <div class="mb-4">
-                                            <label class="form-label">Expire Date</label>
-                                            <input type="date" placeholder="Enter expire data" class="form-control"
-                                                name="expire" id="expire" required>
-                                            <span id="nameError" class="error"></span>
-                                        </div>
-                                        <div>
 
-                                            <button class="btn btn-md rounded font-sm hover-up">save</button>
-                                        </div>
+                                                <div class="mb-4">
+                                                    <label class="form-label">Percentage</label>
+                                                    <div class="input-group">
+                                                        <input type="number" placeholder="Enter value"
+                                                            class="form-control" name="discountAmount"
+                                                            id="discountAmount" min="0" max="100" step="0.01" required>
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                    <span id="discountError" class="error"></span>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="form-label">Expire Date</label>
+                                                    <input type="date" placeholder="Enter expire data"
+                                                        class="form-control" name="expire" id="expire" required>
+                                                    <span id="nameError" class="error"></span>
+                                                </div>
+                                                <div>
+
+                                                    <button class="btn btn-md rounded font-sm hover-up">save</button>
+                                                    </form>
+                                                </div>
                                     </div> <!-- col.// -->
 
                                 </div> <!-- row.// -->
@@ -237,11 +250,11 @@
     <script>
         function ValidateForm() {
             var name = document.getElementById("name").value;
-            var couponCode = document.getElementById("couponCode").value;
-            var description = document.getElementById("description").value;
-            var discountAmount = document.getElementById("discountAmount").value;
-            var minAmount = document.getElementById("minAmount").value;
-            var expire = document.getElementById("expire").value;
+            // var couponCode = document.getElementById("couponCode").value;
+            // var description = document.getElementById("description").value;
+            // var discountAmount = document.getElementById("discountAmount").value;
+            // var minAmount = document.getElementById("minAmount").value;
+            // var expire = document.getElementById("expire").value;
 
 
             // if (name === "" || couponCode === "" || description === "" || discountAmount === "" || minAmount === "" || expire === "") {
@@ -259,44 +272,44 @@
                 document.getElementById("nameError").innerHTML = '';
             }
 
-            if (couponCode.trim() === '') {
-                document.getElementById("couponCodeError").innerHTML = 'Coupon Code cannot be empty';
-                document.getElementById("couponCodeError").style.color = "red";
-                return false;
-            } else if (couponCode.trim().length < 6) {
-                document.getElementById("couponCodeError").innerHTML = 'Coupon Code must be 5 characters long';
-                document.getElementById("couponCodeError").style.color = "red";
-                return false;
-            } else {
-                document.getElementById("couponCodeError").innerHTML = '';
-            }
+            // if (couponCode.trim() === '') {
+            //     document.getElementById("couponCodeError").innerHTML = 'Coupon Code cannot be empty';
+            //     document.getElementById("couponCodeError").style.color = "red";
+            //     return false;
+            // } else if (couponCode.trim().length < 6) {
+            //     document.getElementById("couponCodeError").innerHTML = 'Coupon Code must be 5 characters long';
+            //     document.getElementById("couponCodeError").style.color = "red";
+            //     return false;
+            // } else {
+            //     document.getElementById("couponCodeError").innerHTML = '';
+            // }
 
 
-            if (description.trim() === '') {
-                document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
-                document.getElementById("descriptionError").style.color = "red";
-                return false;
-            } else {
-                document.getElementById("descriptionError").innerHTML = '';
+            // if (description.trim() === '') {
+            //     document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
+            //     document.getElementById("descriptionError").style.color = "red";
+            //     return false;
+            // } else {
+            //     document.getElementById("descriptionError").innerHTML = '';
 
-            }
-            if (!/^\d+(\.\d+)?$/.test(discountAmount)) {
-                document.getElementById("discountError").innerHTML = 'Please enter a valid numeric price';
-                document.getElementById('discountError').style.color = "red";
-                return false;
-            } else {
-                // Reset the error message when the validation passes
-                document.getElementById("discountError").innerHTML = '';
-            }
+            // }
+            // if (!/^\d+(\.\d+)?$/.test(discountAmount)) {
+            //     document.getElementById("discountError").innerHTML = 'Please enter a valid numeric price';
+            //     document.getElementById('discountError').style.color = "red";
+            //     return false;
+            // } else {
+            //     // Reset the error message when the validation passes
+            //     document.getElementById("discountError").innerHTML = '';
+            // }
 
-            if (!/^\d+(\.\d+)?$/.test(minAmount)) {
-                document.getElementById("minAmountError").innerHTML = 'Please enter a valid numeric price';
-                document.getElementById('minAmountError').style.color = "red";
-                return false;
-            } else {
-                // Reset the error message when the validation passes
-                document.getElementById("minAmountError").innerHTML = '';
-            }
+            // if (!/^\d+(\.\d+)?$/.test(minAmount)) {
+            //     document.getElementById("minAmountError").innerHTML = 'Please enter a valid numeric price';
+            //     document.getElementById('minAmountError').style.color = "red";
+            //     return false;
+            // } else {
+            //     // Reset the error message when the validation passes
+            //     document.getElementById("minAmountError").innerHTML = '';
+            // }
 
 
 

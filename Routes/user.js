@@ -89,7 +89,7 @@ user_router.get("/addressCheckout", cartController. LoadCheckADDaddress);
 user_router.post("/addressCheckout", cartController. CheckADDaddress);
 
 
-user_router.get("/confirm", auth.isBlock,cartController.LoadConfirm);
+user_router.get("/confirm",cartController.LoadConfirm);
 
 
 user_router.get("/order",auth.isBlock, cartController.LoadOrder);
