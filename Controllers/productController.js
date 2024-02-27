@@ -51,7 +51,7 @@ const addProduct = async (req, res) => {
         Quantity,
         price,
         category,
-        
+        brand
       } = req.body;
       console.log(req.body);
       console.log(category);
@@ -91,6 +91,7 @@ const addProduct = async (req, res) => {
         image: filenames,
         category: selectedCategory._id,
         date: new Date(),
+        brand:brand,
       });
 
       console.log(filenames);

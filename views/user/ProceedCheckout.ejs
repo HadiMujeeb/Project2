@@ -15,22 +15,21 @@
         </div>
     </section>
     <!-- breadcrumb start-->
-<style>
-    .coupon_details {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
+    <style>
+        .coupon_details {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
 
-.coupon_details h5 {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333;
-}
-
-</style>
+        .coupon_details h5 {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
     <!--================Checkout Area =================-->
     <section class="checkout_area padding_top">
 
@@ -46,12 +45,16 @@
                 <br>
                 <% if(product.couponDiscount !==null) { %>
                     <div class="coupon_details">
-                        <h5>Coupon Name: <%= product.couponDiscount.couponName %></h5>
-                        <h5>Coupon Code: <%= product.couponDiscount.couponCode %></h5>
-                        <h5>Minimum Amount: <%= product.couponDiscount.minAmount %></h5>
-                        <h5>Discount Amount: <%= product.couponDiscount.discountAmount %></h5>
+                        <h5>Coupon Name: <%= product.couponDiscount.couponName %>
+                        </h5>
+                        <h5>Coupon Code: <%= product.couponDiscount.couponCode %>
+                        </h5>
+                        <h5>Minimum Amount: <%= product.couponDiscount.minAmount %>
+                        </h5>
+                        <h5>Discount Amount: <%= product.couponDiscount.discountAmount %>
+                        </h5>
                     </div>
-                    
+
 
                     <a class="tp_btn" onclick="removeCoupon('<%=product._id%>')">Remove Coupon</a>
                     <% }else{ %>
@@ -383,7 +386,7 @@
 
                                             <% }); %>
                                 </ul>
-
+                                <% var ShippingCharge=50; %>
 
                                 <ul class="list list_2">
                                     <li>
@@ -393,14 +396,15 @@
                                     </li>
                                     <li>
                                         <a href="#">Shipping
-                                            <span>Flat rate: $00.00</span>
+                                           
+                                            <span>Flat rate: $<%= ShippingCharge%></span>
                                         </a>
                                     </li>
                                     <% if(product.couponDiscount==null){ %>
                                         <li>
                                             <a href="#">Total
                                                 <% var DiscountAmount=TotalPrice %>
-                                                    <span>$<%=DiscountAmount.toFixed(2) %></span>
+                                                    <span>$<%=(DiscountAmount+ShippingCharge).toFixed(2) %></span>
                                             </a>
                                         </li>
 
@@ -557,8 +561,20 @@
                             });
                             return;
                         }
-                        const totalPrice = '<%= DiscountAmount %>';
+                        const totalPrice = '<%= DiscountAmount+ShippingCharge %>';
                         console.log("hii", totalPrice)
+
+                        if (paymentMethod === "Cash-on-Delivery" && totalPrice > 1000) {
+
+                            swal.fire({
+                                title: "Minimum Order Amount",
+                                text: "The minimum order amount for Cash on Delivery is 1000. choose another payment option.",
+                                icon: "info"
+                            });
+                            return
+                        }
+                        console.log("hiiiisda")
+
 
                         Swal.fire({
                             title: 'Proceed with Checkout?',
@@ -588,6 +604,12 @@
                                         } else if (response.success == false) {
                                             console.log('response.success has become false now');
                                             razorpaypayment(response.orders);
+                                        } else {
+                                            swal.fire({
+                                                title: 'Wallet Amount',
+                                                text: 'Your wallet amount is currently 0.',
+                                                icon: 'info'
+                                            });
                                         }
                                     },
                                     error: function (xhr, status, error) {

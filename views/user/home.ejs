@@ -237,29 +237,28 @@
                                             </a>
 
                                             <div class="single_product_text">
-                                                <h4>
-                                                    <%= item.name %>
-                                                </h4>
+                                                <h5><%= item.brand %></h5>
+                                             <h15><%= item.name %></h15>
                                                 <% if(item.Offer){ %>
                                                     <h7>
-                                                        <del>₹<%= item.price %></del>
-                                                        <h3>₹<%=item.price - ((item.price *
+                                                       
+                                                        <h3 style="font-weight: bold;">Rs.<%=item.price - ((item.price *
                                                                 item.Offer.percentage/100).toFixed(2)) %>
                                                         </h3>
+                                                        <del>Rs.<%= item.price %></del>
                                                     </h7>
                                                     <% }else if (item.category.Offer){ %>
-                                                        <del>₹<%= item.price %></del>
-                                                        <h3>₹<%=item.price - ((item.price *
+                                                       
+                                                        <h3 style="font-weight: bold;">Rs.<%=item.price - ((item.price *
                                                             item.category.Offer.percentage/100).toFixed(2)) %>
                                                         </h3>
-
+                                                        <del>Rs.<%= item.price %></del>
                                                         <%}else{%>
 
-
-                                                            <h3>
-                                                                ₹<%= item.price %>
+<br><br>
+                                                            <h3 style="font-weight: bold;">
+                                                                Rs.<%= item.price %>
                                                             </h3>
-
 
                                                             <%}%>
 

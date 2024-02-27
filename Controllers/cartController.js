@@ -109,14 +109,7 @@ const AddToCart = async (req, res) => {
               },
             }
           );
-          // const result = await Product.updateOne(
-          //   { _id: productId },
-          //   {
-          //     $inc: {
-          //       stockQuantity: -quantity,
-          //     },
-          //   }
-          // );
+        
         } else {
           if (parseInt(quantity, 10) > product.stockQuantity) {
             res.json({ success: false, message: "Exceeds available quantity" });
@@ -138,14 +131,7 @@ const AddToCart = async (req, res) => {
           );
 
           console.log("hiii");
-          // await Product.updateOne(
-          //   { _id: productId },
-          //   {
-          //     $inc: {
-          //       stockQuantity: -quantity,
-          //     },
-          //   }
-          // );
+          
         }
       } else {
         if (parseInt(quantity, 10) > product.stockQuantity) {
@@ -237,10 +223,7 @@ const UpdateQuantity = async (req, res) => {
               },
             }
           );
-          // await Product.findByIdAndUpdate(
-          //   { _id: productId },
-          //   { $inc: { stockQuantity: -1 } }
-          // );
+          
           return res.json({ success: true });
         } else {
           return res.json({
@@ -441,6 +424,9 @@ const Checkout = async (req, res) => {
           console.log("orderid", order._id);
 
           if (paymentMethod === "Cash-on-Delivery") {
+
+            // if(totalPrice)
+
             await Order.findByIdAndUpdate(order._id, {
               $set: { status: "Placed" },
             });
@@ -473,13 +459,20 @@ const Checkout = async (req, res) => {
             res.json({ success: true, order: order._id });
           } else if (paymentMethod === "Cash-on-online") {
             const orders = await instance.orders.create({
-              amount: totalPrice*10,
+              amount: totalPrice * 100,
               currency: "INR",
               receipt: "" + order._id,
             });
             console.log(orders, "hii");
             return res.json({ success: false, orders, referralCode });
           } else {
+            const userId = await User.findById({_id:req.session.user_id});
+            if(userId.wallet <=0){
+              console.log("wallet is 0")
+              res.json({ message: 'Operation failed' });
+              return
+            }
+            
             await Order.findByIdAndUpdate(order._id, {
               $set: { status: "Placed" },
             });

@@ -16,9 +16,15 @@
         </div>
     </section>
     <!-- breadcrumb start-->
-
+    <div >
+        <a class="dropdown-item" href="#" onclick="downloadPDF('printThisDiv')"
+            style="color: green; font-weight: 600;">Download as PDF</a>
+        <!-- <a class="dropdown-item" href="#" onclick="downloadExcel('printThisDiv')"
+            style="color: green; font-weight: 600;">Download as Excel</a> -->
+    </div>
     <!--================ confirmation part start =================-->
-    <section class="confirmation_part padding_top">
+    <section class="confirmation_part padding_top" id='printThisDiv'>
+       
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -147,5 +153,14 @@
             </div>
         </div>
     </section>
+    <script>
+        function downloadPDF(divName) {
+           const printContents = document.getElementById(divName).innerHTML;
+           const originalContents = document.body.innerHTML;
+           document.body.innerHTML = printContents;
+           window.print();
+           document.body.innerHTML = originalContents;
+       }
+   </script>
     <!--================ confirmation part end =================-->
     <%- include('../user/layouts/footer') %>

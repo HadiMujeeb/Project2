@@ -174,7 +174,7 @@
                                         <input type="hidden" id="id" value="<%=id%>">
                                         <td>
                                             <a href="#" class="add_cart"
-                                                onclick="addToCart('<%= item.product_id._id %>','<%= item.product_id.name %>','<%= item.product_id.price%>')">
+                                                onclick="addToCart('<%= item.product_id._id %>','<%= item.product_id.name %>','<%= item.product_id.price%>') ;deleteFromWishlist('<%= item.product_id._id %>')">
                                                 + Add to Cart
                                             </a>
                                         </td>

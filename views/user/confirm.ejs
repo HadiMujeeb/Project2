@@ -218,8 +218,9 @@
                                             <th> <span>$<%= order.total_amount%></span></th>
                                         </tr>
                                         <tr>
+                                            <% var ShippingCharge=50; %>
                                             <th colspan="3">shipping</th>
-                                            <th><span>flat rate: $00.00</span></th>
+                                            <th><span>flat rate: $<%=ShippingCharge %></span></th>
                                         </tr>
                             </tbody>
                             <tfoot>

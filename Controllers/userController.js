@@ -51,8 +51,27 @@ const insertUser = async (req, res) => {
         req.flash("message", "Password do not match");
         return res.redirect("/register");
       } else {
+        let walletAmount;
         const referralCode = generateReferralCode(8);
         const spassword = await securePassword(req.body.password);
+        if (req.body.referralCode !== null||req.body.referralCode !== undefined) {
+          const result = 50;
+          const user = await User.findOne({ referalcode: req.body.referralCode });
+          if (user) {
+            await User.findOneAndUpdate(
+              { referalcode: req.body.referralCode },
+              { $inc: { wallet: result.toFixed(0) } }
+            );
+            walletAmount=result
+          } else {
+            console.log(" there is no user based this referral");
+            walletAmount=0;
+          }
+          
+        } else {
+          console.log("there is no referral");
+          walletAmount=0
+        }
 
         const user = new User({
           name: req.body.name,
@@ -60,7 +79,8 @@ const insertUser = async (req, res) => {
           password: spassword,
           is_admin: 0,
           mobile: req.body.mobile,
-          referalcode:referralCode,
+          referalcode: referralCode,
+          wallet:walletAmount,
         });
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
@@ -437,8 +457,8 @@ const LoadProfile = async (req, res) => {
     if (req.session.user_id) {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
-    user.wallet_history.sort((a, b) => b.date - a.date);
-  console.log(data,"data")
+      user.wallet_history.sort((a, b) => b.date - a.date);
+      console.log(data, "data");
     }
     const result = await Order.deleteMany({ status: "Pending" });
     const order = await Order.find({ user_id: user._id }).sort({

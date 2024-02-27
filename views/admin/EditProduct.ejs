@@ -148,7 +148,7 @@
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="productName"
-                                        name="productName" value="<%=Data.name%>" />
+                                        name="productName" value="<%=Data.name%>" required />
                                     <span id="nameError" class="error"></span>
 
                                     <%console.log(Data._id)%>
@@ -157,7 +157,7 @@
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
                                     <textarea placeholder="Type here" class="form-control" rows="4" name="description"
-                                        id="description"><%=Data.description%> </textarea>
+                                        id="description" required><%=Data.description%> </textarea>
                                     <span id="descriptionError" class="error"></span>
                                 </div>
                                 <div class="row">
@@ -166,7 +166,7 @@
                                             <label class="form-label">Price</label>
                                             <div class="row gx-2">
                                                 <input placeholder="$" type="text" class="form-control" name="price"
-                                                    value="<%= Data.price%>" id="price" />
+                                                    value="<%= Data.price%>" id="price" required/>
                                                 <span id="priceError" class="error"></span>
                                             </div>
                                         </div>
@@ -175,7 +175,7 @@
                                         <div class="mb-4">
                                             <label class="form-label">Stock Quantity</label>
                                             <input placeholder="$" type="text" class="form-control" name="Quantity"
-                                                value="<%= Data.stockQuantity%>" id="quantity" />
+                                                value="<%= Data.stockQuantity%>" id="quantity" required/>
                                             <span id="quantityError" class="error"></span>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                                     <div class="card-body">
                                         <div class="input-upload">
                                             <input class="form-control" type="file" name="image" id="productImage"
-                                                multiple />
+                                                multiple required />
                                         </div>
                                         <!-- Add an element for image preview -->
                                         <div id="imagePreview"></div>
@@ -359,18 +359,18 @@
             //     alert(`image must be  4 it only ${imageInput.files.length}`);
             //     return false;
             // }
-            if (productName === "" || price === "" || quantity === "" || description === "") {
-                alert("Please fill in all fields");
-                return false;
-            }
-            if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(productName)) {
+            // if (productName === "" || price === "" || quantity === "" || description === "") {
+            //     alert("Please fill in all fields");
+            //     return false;
+            // }
+            if (productName.trim().length === 0 || productName.endsWith(' ')) {
                 document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
                 document.getElementById('nameError').style.color = "red";
                 return false;
             } else {
                 document.getElementById("nameError").innerHTML = '';
             }
-            if (description.trim() === '') {
+            if (description.trim().length === 0||description.endsWith(' ') ) {
                 document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
                 document.getElementById("descriptionError").style.color = "red";
                 return false;

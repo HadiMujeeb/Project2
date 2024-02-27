@@ -140,12 +140,33 @@
         </section>
         <!-- breadcrumb start-->
         <!--================login_part Area =================-->
+        <style>
+            /* CSS for the referral code input field */
+            #referalcode {
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+
+            #referalcode::placeholder {
+                color: #999;
+            }
+
+            #referalcode:focus {
+                outline: none;
+                border-color: #66afe9;
+                box-shadow: 0 0 5px #66afe9;
+            }
+        </style>
         <section class="login_part padding_top">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 col-md-6">
                         <div class="login_part_text text-center">
                             <div class="login_part_text_iner">
+                                
                                 <h2>New to our Shop?</h2>
                                 <p>There are advances being made in science and technology
                                     everyday, and a good example of this is the</p>
@@ -158,9 +179,13 @@
                             <div class="login_part_form_iner">
                                 <h3>Welcome Back ! <br>
                                     Please register in now</h3>
+                                   
 
                                 <form class="row contact_form" action="#" method="post" novalidate="novalidate"
                                     onsubmit="return validateForm()">
+                                    <input type="text" id="referalcode" name="referralCode" placeholder="Enter referralCode"
+                                    />
+
 
                                     <div class="col-md-12 form-group p_star">
                                         <input type="text" class="form-control" id="name" name="name" value=""
@@ -404,6 +429,17 @@
 
     <% include('./layouts/footer.ejs') %>
 
+
+    <script>
+//          let referralCode = null;
+
+
+// function handleInputChange() {
+//     referralCode = document.getElementById('referalcode').value;
+//     console.log("input", referralCode);
+// }
+
+    </script>
         <script>
             function validateForm() {
 

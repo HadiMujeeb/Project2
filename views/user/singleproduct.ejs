@@ -155,19 +155,19 @@
         <div class="col-lg-5 col-xl-4">
           <div class="s_product_text">
             <h5>previous <span>|</span> next</h5>
-            <h3>
+            <h15>
               <%= product.name%>
-            </h3>
+            </h15>
             <% if(product.Offer){ %>
               <h7>
-                  <del>₹<%= product.price %></del>
-                  <h3>₹<%=product.price - ((product.price *
+                  <del>Rs.<%= product.price %></del>
+                  <h3>Rs.<%=product.price - ((product.price *
                           product.Offer.percentage/100).toFixed(2)) %>
                   </h3>
               </h7>
               <% }else if (product.category.Offer){ %>
-                  <del>₹<%= product.price %></del>
-                  <h3>₹<%=product.price - ((product.price *
+                  <del>Rs.<%= product.price %></del>
+                  <h3>Rs.<%=product.price - ((product.price *
                       product.category.Offer.percentage/100).toFixed(2)) %>
                   </h3>
 
@@ -175,7 +175,7 @@
 
 
                       <h3>
-                          ₹<%= product.price %>
+                          Rs.<%= product.price %>
                       </h3>
 
 
@@ -325,34 +325,34 @@
 
     <!-- jquery plugins here-->
     <!-- jquery -->
-    <script src="js/jquery-1.12.1.min.js"></script>
+    <script src="user/js/jquery-1.12.1.min.js"></script>
     <!-- popper js -->
-    <script src="js/popper.min.js"></script>
+    <script src="user/js/popper.min.js"></script>
     <!-- bootstrap js -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="user/js/bootstrap.min.js"></script>
     <!-- easing js -->
-    <script src="js/jquery.magnific-popup.js"></script>
+    <script src="user/js/jquery.magnific-popup.js"></script>
     <!-- swiper js -->
-    <script src="js/lightslider.min.js"></script>
+    <script src="user/js/lightslider.min.js"></script>
     <!-- swiper js -->
-    <script src="js/masonry.pkgd.js"></script>
+    <script src="user/js/masonry.pkgd.js"></script>
     <!-- particles js -->
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="user/js/owl.carousel.min.js"></script>
+    <script src="user/js/jquery.nice-select.min.js"></script>
     <!-- slick js -->
-    <script src="js/slick.min.js"></script>
-    <script src="js/swiper.jquery.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/contact.js"></script>
-    <script src="js/jquery.ajaxchimp.min.js"></script>
-    <script src="js/jquery.form.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
-    <script src="js/mail-script.js"></script>
-    <script src="js/stellar.js"></script>
+    <script src="user/js/slick.min.js"></script>
+    <script src="user/js/swiper.jquery.js"></script>
+    <script src="user/js/jquery.counterup.min.js"></script>
+    <script src="user/js/waypoints.min.js"></script>
+    <script src="user/js/contact.js"></script>
+    <script src="user/js/jquery.ajaxchimp.min.js"></script>
+    <script src="user/js/jquery.form.js"></script>
+    <script src="user/js/jquery.validate.min.js"></script>
+    <script src="user/js/mail-script.js"></script>
+    <script src="user/js/stellar.js"></script>
     <!-- custom js -->
-    <script src="js/theme.js"></script>
-    <script src="js/custom.js"></script>
+    <script src="user/js/theme.js"></script>
+    <script src="user/js/custom.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 

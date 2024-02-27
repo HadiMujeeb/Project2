@@ -1,12 +1,23 @@
 const Wishlist = require("../Models/WishlistModel");
 const Product = require("../Models/productModel");
 const User = require("../Models/userModel");
-
+const Cart= require("../Models/cartModel")
 const WishlistLoad = async (req, res) => {
   try {
     if (!req.session.user_id) {
       res.redirect("/");
     }
+//     const cart = await Cart.find({});
+//     const wishlist = await Wishlist.find({});
+    
+//     const cartProductIds = cart.map(item => item._id.toString());
+    
+//     const filteredWishlist = wishlist.filter(item => cartProductIds.includes(item._id.toString()));
+//     filteredWishlist.forEach(async item => {
+//     await Wishlist.deleteOne({ _id: item._id });
+// });
+
+    // console.log("cart,",cart)
     const id = req.session.user_id;
 
     const wishlistItem = await Wishlist.findOne({ user_id: id }).populate(
