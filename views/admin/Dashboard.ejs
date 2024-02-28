@@ -230,9 +230,56 @@
                         <div class="card mb-4">
                             <article class="card-body">
                                 <h5 class="card-title">Sale statistics</h5>
+                                <div>
+                                    <button class="btn btn-primary toggle-chart" data-chart-type="monthly">Monthly</button>
+                                      <button class="btn btn-primary toggle-chart" data-chart-type="yearly">Yearly</button>
+                            
+                                </div>
                                 <canvas id="myChart" height="120px"></canvas>
                             </article>
                         </div>
+
+                        <input type="hidden" value="<%= updatedMonthlyValues[0].count %>" id="jan" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[1].count %>" id="feb" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[2].count %>" id="mar" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[3].count %>" id="apr" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[4].count %>" id="may" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[5].count %>" id="jun" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[6].count %>" id="jul" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[7].count %>" id="aug" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[8].count %>" id="sep" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[9].count %>" id="oct" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[10].count %>" id="nov" />
+                        <input type="hidden" value="<%= updatedMonthlyValues[11].count %>" id="dec" />
+
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[0]. totalUsers %>" id="Jan" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[1]. totalUsers %>" id="Feb" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[2]. totalUsers %>" id="Mar" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[3]. totalUsers %>" id="Apr" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[4]. totalUsers %>" id="May" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[5]. totalUsers %>" id="Jun" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[6]. totalUsers %>" id="Jul" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[7]. totalUsers %>" id="Aug" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[8]. totalUsers %>" id="Sep" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[9]. totalUsers %>" id="Oct" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[10]. totalUsers %>" id="Nov" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalUsers[11]. totalUsers %>" id="Dec" />
+
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[0].totalOrders %>" id="JAN" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[1].totalOrders %>" id="FEB" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[2].totalOrders %>" id="MAr" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[3].totalOrders %>" id="APR" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[4].totalOrders %>" id="MAY" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[5].totalOrders %>" id="JUN" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[6].totalOrders %>" id="JUL" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[7].totalOrders %>" id="AUG" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[8].totalOrders %>" id="SEP" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[9].totalOrders %>" id="OCT" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[10].totalOrders %>" id="NOV" />
+                        <input type="hidden" value="<%= updatedMonthlyTotalOrders[11].totalOrders %>" id="DEC" />
+
+
+
                         <!-- <div class="row">
                             <div class="col-lg-5">
                                 <div class="card mb-4">
@@ -275,7 +322,7 @@
                             </div>
                             <div class="col-lg-7">
                                 <div class="card mb-4">
-                                    <article class="card-body">
+                                    <article class="card-body">+
                                         <h5 class="card-title">Recent activities</h5>
                                         <ul class="verti-timeline list-unstyled font-sm">
                                             <li class="event-list">

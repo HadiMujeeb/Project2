@@ -64,7 +64,151 @@ const verifyLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
   try {
-    res.render("Dashboard");
+    const yearsToInclude = 7;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const defaultMonthlyValues = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      total: 0,
+      count: 0,
+    }));
+
+    const defaultYearlyValues = Array.from(
+      { length: yearsToInclude },
+      (_, i) => ({
+        year: currentYear - yearsToInclude + i + 1,
+        total: 0,
+        count: 0,
+      })
+    );
+
+    const monthlySalesData = await Order.aggregate([
+      {
+        $match: {
+          status: "Delivered",
+          createdAt: { $gte: new Date(currentYear, currentMonth - 1, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          total: {
+            $sum: "$total_amount",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id",
+          total: "$total",
+          count: "$count",
+        },
+      },
+    ]);
+
+    const updatedMonthlyValues = defaultMonthlyValues.map((defaultMonth) => {
+      const foundMonth = monthlySalesData.find(
+        (monthData) => monthData.month === defaultMonth.month
+      );
+      return foundMonth || defaultMonth;
+    });
+    const monthlyTotalUsers = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: new Date(currentYear, currentMonth - 1, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalUsers: { $sum: 1 },
+        },
+      },
+    ]);
+    const updatedMonthlyTotalUsers = defaultMonthlyValues.map(
+      (defaultMonth) => {
+        const foundMonth = monthlyTotalUsers.find(
+          (monthData) => monthData._id === defaultMonth.month
+        );
+        return {
+          month: defaultMonth.month,
+          totalUsers: foundMonth ? foundMonth.totalUsers : 0,
+        };
+      }
+    );
+
+    const monthlyTotalOrders = await Order.aggregate([
+      {
+        $unwind: "$items",
+      },
+      {
+        $match: {
+          createdAt: { $gte: new Date(currentYear, currentMonth - 1, 1) },
+          status: { $ne: "pending" },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+    ]);
+    const updatedMonthlyTotalOrders = defaultMonthlyValues.map(
+      (defaultMonth) => {
+        const foundMonth = monthlyTotalOrders.find(
+          (monthData) => monthData._id === defaultMonth.month
+        );
+        return {
+          month: defaultMonth.month,
+          totalOrders: foundMonth ? foundMonth.totalOrders : 0,
+        };
+      }
+    );
+
+    const yearlySalesData = await Order.aggregate([
+      {
+        $match: {
+          status: "Delivered",
+          createdAt: { $gte: new Date(currentYear, yearsToInclude, 0, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $year: "$createdAt" },
+          total: {
+            $sum: "$total_amount",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id",
+          total: "$total",
+          count: "$count",
+        },
+      },
+    ]);
+
+    // Update yearly values based on retrieved data
+    const updatedYearlyValues = defaultYearlyValues.map((defaultYear) => {
+      const foundYear = yearlySalesData.find(
+        (yearData) => yearData.year === defaultYear.year
+      );
+      return foundYear || defaultYear;
+    });
+
+    console.log(updatedMonthlyTotalOrders);
+    res.render("Dashboard", {
+      updatedMonthlyValues,
+      updatedMonthlyTotalUsers,
+      updatedMonthlyTotalOrders,
+      updatedYearlyValues
+    });
   } catch (error) {
     console.log(error.message);
   }
