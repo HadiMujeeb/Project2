@@ -340,7 +340,7 @@
                                                         <%}%>
                                                             <!-- Add to Cart button -->
                                                             <a href="#" class="add_cart"
-                                                                onclick="addToCart('<%= products[i]._id %>','<%= products[i].name %>','<%= products[i].price%>')">
+                                                                onclick="addToCart('<%= products[i]._id %>','<%= products[i].name %>','<%= products[i].price%>','<%= products[i].category.name%>','<%= products[i].brand%>')">
                                                                 + Add to Cart
                                                             </a>
                                                             <a href="#" class="add_wishlist"
@@ -536,9 +536,9 @@
     </script>
     <script>
 
-        function addToCart(productId, productName, productPrice) {
+        function addToCart(productId, productName, productPrice ,category,brand) {
             let user = document.getElementById("user").value;
-
+   
             if (!user) {
 
                 Swal.fire({
@@ -578,7 +578,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            productId, productName, productPrice, quantity
+                            productId, productName, productPrice, quantity,category,brand
                         }),
                     })
                         .then(response => response.json())

@@ -339,11 +339,11 @@ const SingleProduct = async (req, res) => {
     const product = await Product.findOne({ _id: productId })
       .populate({ path: "category", populate: { path: "Offer" } })
       .populate("Offer");
-    if (user) {
+    // if (user) {
       res.render("SingleProduct", { product, user });
-    } else {
-      res.redirect("/login");
-    }
+    // } else {
+    //   res.redirect("/login");
+    // }
   } catch (error) {
     console.log(error.message);
   }
@@ -460,7 +460,7 @@ const LoadProfile = async (req, res) => {
       user.wallet_history.sort((a, b) => b.date - a.date);
       console.log(data, "data");
     }
-    const result = await Order.deleteMany({ status: "Pending" });
+    // const result = await Order.deleteMany({ status: "Pending" });
     const order = await Order.find({ user_id: user._id }).sort({
       createdAt: -1,
     });

@@ -1,11 +1,13 @@
 const User = require("../Models/userModel");
-const { ObjectId } = require("mongodb");
+const { ObjectId, Transaction } = require("mongodb");
 const Categories = require("../Models/categoriesModel");
 const Order = require("../Models/OrderModel");
 const bcrypt = require("bcrypt");
 const { response } = require("../Routes/user");
 const Product = require("../Models/productModel");
 const Offer = require("../Models/offerModel");
+// const Legder = require("../Models/legdeModel");
+const Ledgerbook = require("../Models/legdeModel");
 
 // const { LoginPage } = require("./userController");
 
@@ -64,6 +66,68 @@ const verifyLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
   try {
+    const orders = await Order.find({ status: "Delivered" });
+    let ledge = await Ledgerbook.find({});
+    for (const order of orders) {
+      let ledger = await Ledgerbook.findOne({ Order_id: order._id });
+      if (!ledger) {
+        ledger = new Ledgerbook({
+          Order_id: order._id,
+          transactions: order.payment,
+          balance: order.total_amount,
+          debit: 0,
+          credit: order.total_amount,
+        });
+        await ledger.save();
+      }
+      // } else {
+      //     ledger.balance += order.total_amount;
+      //     ledger.credit += order.total_amount;
+      // }
+    }
+
+    const totalOrders = await Order.countDocuments({});
+    // top selling product
+    const topProduct = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.product_id",
+          productName: { $first: "$items.productName" },
+          brand: { $first: "$items.brand" },
+          category: { $first: "$items.category" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
+    // top selling category
+    const topCategory = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.category",
+          category: { $first: "$items.category" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
+    // top selling category
+    const topBrand = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.brand",
+          brand: { $first: "$items.brand" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
     const yearsToInclude = 7;
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -82,6 +146,7 @@ const loadDashboard = async (req, res) => {
       })
     );
 
+    // monthly total sales
     const monthlySalesData = await Order.aggregate([
       {
         $match: {
@@ -114,6 +179,8 @@ const loadDashboard = async (req, res) => {
       );
       return foundMonth || defaultMonth;
     });
+
+    // monthly total user
     const monthlyTotalUsers = await User.aggregate([
       {
         $match: {
@@ -139,6 +206,7 @@ const loadDashboard = async (req, res) => {
       }
     );
 
+    // monthly total orders
     const monthlyTotalOrders = await Order.aggregate([
       {
         $unwind: "$items",
@@ -168,32 +236,24 @@ const loadDashboard = async (req, res) => {
       }
     );
 
+    // total sales in year
+
     const yearlySalesData = await Order.aggregate([
       {
         $match: {
           status: "Delivered",
-          createdAt: { $gte: new Date(currentYear, yearsToInclude, 0, 1) },
+          createdAt: { $gte: new Date(currentYear - yearsToInclude, 0, 1) },
         },
       },
       {
         $group: {
           _id: { $year: "$createdAt" },
-          total: {
-            $sum: "$total_amount",
-          },
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          month: "$_id",
-          total: "$total",
-          count: "$count",
+          totalOrders: { $sum: 1 },
+          totalSales: { $sum: "$total_amount" } // Calculate total sales amount
         },
       },
     ]);
-
+    
     // Update yearly values based on retrieved data
     const updatedYearlyValues = defaultYearlyValues.map((defaultYear) => {
       const foundYear = yearlySalesData.find(
@@ -202,12 +262,70 @@ const loadDashboard = async (req, res) => {
       return foundYear || defaultYear;
     });
 
-    console.log(updatedMonthlyTotalOrders);
+    console.log("asa",updatedYearlyValues)
+    const yearlyTotalOrders = await Order.aggregate([
+      {
+        $match: {
+          status: "Delivered",
+          createdAt: { $gte: new Date(currentYear- yearsToInclude, 0, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $year: "$createdAt" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+    ]);
+    
+
+    // Update yearly total orders based on retrieved data
+    const updatedYearlyTotalOrders = defaultYearlyValues.map((defaultYear) => {
+      const foundYear = yearlyTotalOrders.find(
+        (yearData) => yearData._id === defaultYear.year
+      );
+      return {
+        year: defaultYear.year,
+        totalOrders: foundYear ? foundYear.totalOrders : 0,
+      };
+    });
+
+    const yearlyTotalUsers = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: new Date(currentYear - yearsToInclude, 0, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $year: "$createdAt" },
+          totalUsers: { $sum: 1 },
+        },
+      },
+    ]);
+    
+    // Update yearly total users based on retrieved data
+    const updatedYearlyTotalUsers = defaultYearlyValues.map((defaultYear) => {
+      const foundYear = yearlyTotalUsers.find(
+        (yearData) => yearData._id === defaultYear.year
+      );
+      return { year: defaultYear.year, totalUsers: foundYear ? foundYear.totalUsers : 0 };
+    });
+    
+console.log(updatedYearlyTotalOrders)
     res.render("Dashboard", {
       updatedMonthlyValues,
       updatedMonthlyTotalUsers,
       updatedMonthlyTotalOrders,
-      updatedYearlyValues
+      updatedYearlyValues,
+      updatedYearlyTotalOrders,
+      updatedYearlyTotalUsers,
+      topProduct,
+      topCategory,
+      topBrand,
+      orders,
+      totalOrders,
+      ledge,
     });
   } catch (error) {
     console.log(error.message);

@@ -75,6 +75,14 @@ const orderModel = new mongoose.Schema(
         cancellationReason: {
           type: String,
         },
+        category: {
+          type: String,
+          required:true,
+        },
+        brand: {
+          type: String,
+          required:true,
+        },
       },
     ],
   },

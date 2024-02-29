@@ -56,7 +56,7 @@ const loadCart = async (req, res) => {
 
 const AddToCart = async (req, res) => {
   try {
-    const { productId, quantity, productPrice, productName } = req.body;
+    const { productId, quantity, productPrice, productName,category ,brand } = req.body;
     console.log(req.body);
 
     let user;
@@ -125,6 +125,8 @@ const AddToCart = async (req, res) => {
                   quantity: quantity,
                   price: productPrice,
                   total_price: quantity * productPrice,
+                  category:category,
+                  brand:brand,
                 },
               },
             }
@@ -147,19 +149,14 @@ const AddToCart = async (req, res) => {
               quantity: quantity,
               price: product.price,
               total_price: quantity * product.price,
+              category:category,
+              brand:brand,
             },
           ],
         });
 
         await newCart.save();
-        // await Product.updateOne(
-        //   { _id: productId },
-        //   {
-        //     $inc: {
-        //       stockQuantity: -quantity,
-        //     },
-        //   }
-        // );
+       
       }
       res.json({ success: true });
     }
@@ -404,6 +401,8 @@ const Checkout = async (req, res) => {
           total_price: item.total_price,
           ordered_status: "none",
           cancellationReason: "none",
+          category:item.category,
+          brand:item.brand,
         }));
         console.log("product", orderItems.ProductName);
         const order = new Order({
@@ -463,6 +462,8 @@ const Checkout = async (req, res) => {
               currency: "INR",
               receipt: "" + order._id,
             });
+
+            await Cart.deleteMany({});
             console.log(orders, "hii");
             return res.json({ success: false, orders, referralCode });
           } else {
@@ -514,7 +515,7 @@ const Checkout = async (req, res) => {
                 { $inc: { stockQuantity: -Data.quantity } }
               );
             }
-            await Cart.deleteMany({});
+        
             res.json({ success: true, order: order._id });
           }
         }
@@ -524,6 +525,31 @@ const Checkout = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+const PendingPay = async (req,res)=>{
+  try {
+ 
+    const {orderId,totalPrice }= req.body
+    console.log(req.body)
+   
+    const orders = await instance.orders.create({
+      amount: totalPrice * 100,
+      currency: "INR",
+      receipt: "" + orderId,
+    });
+   
+    return res.json({ success: true, orders });
+  
+
+  } catch (error) {
+    
+  }
+}
+
+
+
+
 
 const Verifypayment = async (req, res) => {
   try {
@@ -540,32 +566,33 @@ const Verifypayment = async (req, res) => {
     await Order.findByIdAndUpdate(Data.orders.receipt, {
       $set: { status: "Placed" },
     });
-    if (typeof referral !== 'undefined' && referral !== null) {
-        const percentage = 5;
-        const result = (percentage / 100) * TotalAmount;
-        const user = await User.findOne({ referalcode: referral });
-        if (user) {
-          await User.findOneAndUpdate(
-            { referalcode: referral },
-            { $inc: { wallet: result.toFixed(0) } }
-          );
-        } else {
-          console.log(" there is no user based this referral");
-        }
-      } else {
-        console.log("there is no referral");
-      }
+    // if (typeof referral !== 'undefined' && referral !== null) {
+    //     const percentage = 5;
+    //     const result = (percentage / 100) * TotalAmount;
+    //     const user = await User.findOne({ referalcode: referral });
+    //     if (user) {
+    //       await User.findOneAndUpdate(
+    //         { referalcode: referral },
+    //         { $inc: { wallet: result.toFixed(0) } }
+    //       );
+    //     } else {
+    //       console.log(" there is no user based this referral");
+    //     }
+    //   } else {
+    //     console.log("there is no referral");
+    //   }
 
-      const cart = await Cart.findOne({ user_id: userId});
-      console.log("cart",cart)
+   
 
-      for (const Data of cart.items) {
+      const order = await Order.findOne({_id:Data.orders.receipt})
+      
+      for (const Data of order.items) {
         await Product.updateOne(
           { _id: Data.product_id },
           { $inc: { stockQuantity: -Data.quantity } }
         );
       }
-      await Cart.deleteMany({});
+  
       res.json({ success: true, order: Data.orders.receipt });
     
 
@@ -749,4 +776,5 @@ module.exports = {
   OrderCancel,
   CheckADDaddress,
   Verifypayment,
+  PendingPay
 };

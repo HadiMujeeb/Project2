@@ -212,7 +212,7 @@
               <!-- <a href="#" class="btn_3">add to cart</a> -->
 
               <a href="#" class="add_cart"
-                onclick="addToCart('<%= product._id %>','<%= product.name %>','<%= product.price%>')">
+                onclick="addToCart('<%= product._id %>','<%= product.name %>','<%= product.price%>','<%= product.category.name%>','<%= product.brand%>')">
                 + Add to Cart<i class=""></i>
               </a>
             </div>
@@ -358,7 +358,7 @@
 
     <script>
       // Define your addToCart function
-      function addToCart(productId, productName, productPrice) {
+      function addToCart(productId, productName, productPrice,category,brand) {
         let user = document.getElementById("user").value;
 
         if (!user) {
@@ -400,7 +400,7 @@
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                productId, productName, productPrice, quantity
+                productId, productName, productPrice, quantity,category,brand
               }),
             })
               .then(response => response.json())

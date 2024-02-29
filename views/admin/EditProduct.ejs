@@ -157,7 +157,7 @@
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
                                     <textarea placeholder="Type here" class="form-control" rows="4" name="description"
-                                        id="description" required><%=Data.description%> </textarea>
+                                        id="description" required><%=Data.description%></textarea>
                                     <span id="descriptionError" class="error"></span>
                                 </div>
                                 <div class="row">
@@ -203,7 +203,7 @@
                                     <div class="card-body">
                                         <div class="input-upload">
                                             <input class="form-control" type="file" name="image" id="productImage"
-                                                multiple required />
+                                                multiple  />
                                         </div>
                                         <!-- Add an element for image preview -->
                                         <div id="imagePreview"></div>
@@ -351,7 +351,7 @@
             var productName = document.getElementById("productName").value;
             var price = document.getElementsByName("price")[0].value;
             var quantity = document.getElementById("quantity").value;
-            var imageInput = document.getElementById("productImage");
+            // var imageInput = document.getElementById("productImage");
             var description = document.getElementById("description").value;;
 
 

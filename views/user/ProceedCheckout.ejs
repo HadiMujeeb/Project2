@@ -676,6 +676,7 @@
                             if (response.success) {
                                 let orderId = response.order
                                 console.log("the order id may her for the razo pay and ::", orderId)
+                                
                                 window.location.href = '/confirm?orderId=' + orderId;
 
                             } else if (response.onlineSuccess) {

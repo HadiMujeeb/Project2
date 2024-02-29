@@ -485,13 +485,18 @@
                                                                         onclick="OrderReturn('<%= order[i]._id %>')">RETURN</a>
                                                                 </td>
 
-                                                                <% } else { %>
+                                                                <% } else if (order[i].status==="Pending" ){ %>
                                                                     <td>
                                                                         <a class="genric-btn danger-border circle"
-                                                                            style="background-color: #fd0404;"></a>
+                                                                            onclick="OnPay('<%= order[i]._id %>','<%= order[i].total_amount %>')">Pay</a>
                                                                     </td>
 
-                                                                    <% } %>
+                                                                    <% }else{ %>
+                                                                        <td>
+                                                                            <a class="genric-btn danger-border circle"
+                                                                               href="/shop">shop</a>
+                                                                        </td> 
+                                                                <%    } %>
                                                                         <% num++ %>
 
                                                 </tbody>
@@ -595,7 +600,95 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+
+        function OnPay(orderId, totalPrice) {
+            
+            $.ajax({
+                url: "/pendingpay",
+                method: "post",
+                data: {
+                    orderId: orderId,
+                    totalPrice: totalPrice,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log('response.success has become false now');
+                        razorpaypayment(response.orders);
+
+
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Order return failed',
+                        });
+                    }
+                }
+            });
+        }
+
+        function razorpaypayment(orders) {
+            console.log("here i have reached ");
+            var options = {
+                "key": "rzp_test_Zdu4uWOEbGyw30",
+                "amount": orders.amount,
+                "currency": "INR",
+                "name": "hadi",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": orders.id,
+                "handler": function (response) {
+                    verifypayment(response, orders);
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            let raz = new Razorpay(options);
+            raz.open();
+        }
+
+        function verifypayment(Payment, orders) {
+            console.log("now im here buddy")
+            $.ajax({
+                url: '/verifypayment',
+                method: 'post',
+                data: {
+                    Payment,
+                    orders,
+
+                },
+                success: function (response) {
+                    console.log("ajax verify payment response", response);
+                    if (response.success) {
+                        let orderId = response.order
+                        console.log("the order id may her for the razo pay and ::", orderId)
+                        window.location.href = '/confirm?orderId=' + orderId;
+
+                    } else if (response.onlineSuccess) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment has done',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                }
+            });
+        }
+
+
 
         function OrderReturn(orderId) {
             Swal.fire({

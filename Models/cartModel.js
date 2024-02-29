@@ -30,6 +30,14 @@ const CartModel = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      category: {
+        type: String,
+        required: true,
+      },
+      brand: {
+        type: String,
+        required: true,
+      },
       status: {
         type: String,
         default: "placed",

@@ -118,6 +118,8 @@ user_router.post('/verifypayment' ,cartController.Verifypayment);
 
 user_router.post("/ReturnOrder",walletController.returnProduct)
 
+user_router.post("/pendingpay",cartController.PendingPay)
+
 
 
 
