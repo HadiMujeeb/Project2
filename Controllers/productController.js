@@ -13,7 +13,7 @@ const LoadProduct = async (req, res) => {
       startingDate: { $lte: new Date },
       expiryDate: { $gte: new Date }
     });
-    const products = await Product.find({}).populate("category").populate("Offer")
+    const products = await Product.find({}).populate("category").populate("Offer").sort({_id:-1})
     res.render("productList", { products: products,offerId  });
   } catch (error) {
     console.log(error.message);

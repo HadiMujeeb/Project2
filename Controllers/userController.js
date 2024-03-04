@@ -8,6 +8,10 @@ const randomstrings = require("randomstring");
 const { default: mongoose } = require("mongoose");
 const Order = require("../Models/OrderModel");
 require("dotenv").config();
+const fs = require('fs')
+const path = require('path')
+const ejs = require("ejs");
+const puppeteer = require("puppeteer")
 
 const generateReferralCode = (length) => {
   const characters =
@@ -683,6 +687,45 @@ const EditAddress = async (req, res) => {
 //   console.log(error.messages);
 // }
 // }
+
+
+
+
+const downloadInvoice = async (req, res) => {
+  try {
+   const orderId = req.query.orderId
+   console.log(orderId);
+   const order = await Order.findOne({ _id: orderId }).populate(
+    "items.product_id"
+  );
+   
+   const date = new Date()
+   const data = {
+    order:order,
+    date,
+   }
+
+   const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
+   const html = fs.readFileSync(filepathName).toString();
+   const ejsData = ejs.render(html, data);
+   const browser = await puppeteer.launch({ headless: "new"});
+   const page = await browser.newPage();
+   await page.setContent(ejsData, { waitUntil: "networkidle0" });
+   const pdfBytes = await page.pdf({ format: "Letter" });
+   await browser.close();
+   res.setHeader("Content-Type", "application/pdf");
+   res.setHeader(
+     "Content-Disposition",
+     "attachment; filename= orderInvoice_Skyzon .pdf"
+   );
+   res.send(pdfBytes);
+
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Error generating invoice');
+  }
+}
 module.exports = {
   Homepage,
   RegisterPage,
@@ -709,5 +752,6 @@ module.exports = {
   EditAddress,
   shopFilter,
   searchFilter,
+  downloadInvoice
   // rest_pass_profile
 };

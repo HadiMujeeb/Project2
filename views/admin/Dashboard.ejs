@@ -95,7 +95,7 @@
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                <form class="searchform">
+                <!-- <form class="searchform">
                     <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
                         <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
@@ -106,13 +106,13 @@
                         <option value="Apple iphone"></option>
                         <option value="Ahmed Hassan"></option>
                     </datalist>
-                </form>
+                </form> -->
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
-                        class="material-icons md-apps"></i></button>
+                <!-- <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i
+                        class="material-icons md-apps"></i></button> -->
                 <ul class="nav">
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link btn-icon" href="#">
                             <i class="material-icons md-notifications animation-shake"></i>
                             <span class="badge rounded-pill">3</span>
@@ -125,8 +125,8 @@
                     <li class="nav-item">
                         <a href="#" class="requestfullscreen nav-link btn-icon"><i
                                 class="material-icons md-cast"></i></a>
-                    </li>
-                    <li class="dropdown nav-item">
+                    </li> -->
+                    <!-- <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
                             aria-expanded="false"><i class="material-icons md-public"></i></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
@@ -139,13 +139,13 @@
                             <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png"
                                     alt="Français" />中国人</a>
                         </div>
-                    </li>
+                    </li> -->
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
                             aria-expanded="false"> <img class="img-xs rounded-circle"
-                                src="assets/imgs/people/avatar-2.png" alt="User" /></a>
+                           src="/imgs/people/avatar-4.png" alt="" class="avatar" /></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
+                            <!-- <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
                                 Profile</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
                                 Settings</a>
@@ -153,9 +153,9 @@
                                     class="material-icons md-account_balance_wallet"></i>Wallet</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
-                                center</a>
+                                center</a> -->
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i
+                            <a class="dropdown-item text-danger" href="/AdminLogout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
@@ -492,6 +492,7 @@
                                             <div class="card-body">
                                                 <div class="table-responsive">
                                                     <div class="table-responsive">
+                                                        <h2>Ledger Book </h2>
                                                         <table class="table align-middle table-nowrap mb-0">
                                                             <thead class="table-light">
                                                                 <tr>
@@ -526,17 +527,17 @@
                                                                         </td>
                                                                         <td><%= new Date(id.date).toLocaleDateString() %></td>
 
-                                                                        <td style="color: red;">
+                                                                        <td style="color: red;" style="font-weight: 600;">
                                                                             - <%= id.debit%>
                                                                         </td>
                                                                         <td>
-                                                                            <span
-                                                                                class="" style="color: greenyellow;">
-                                                                                + <%= id.credit%>
+                                                                            <span class="" style="color: greenyellow; font-weight: 600;">
+                                                                                + <%= id.credit %>
                                                                             </span>
+                                                                            
                                                                         </td>
                                                                         <td><i
-                                                                                class="">
+                                                                                class=""style="color: black; font-weight: 1000;" >
                                                                                 <%= id.balance%>
                                                                             </i>
                                                                         </td>

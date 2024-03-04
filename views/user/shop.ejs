@@ -243,10 +243,13 @@
                                 </ul>
                             </div>
                         </aside> -->
-
+                        <!-- <div class="col-lg-12">
+                            <a class="btn_1" href="/shop"> clear</a>
+                        </div> -->
 
                     </div>
                 </div>
+                
                 <div class="col-lg-9">
                     <div class="row">
                         <div class="col-lg-12">
@@ -258,7 +261,7 @@
                                     <h5>short by : </h5>
 
                                     <select onchange="redirectToCategory(this)">
-                                        <option ><a href="/shop">All</a></option>
+                                        <option ><a href="/">All</a></option>
                                         <% for(let i=0; i< Categories.length; i++) { %>
                                             <option value="<%= Categories[i].id %>">
                                                 <%= Categories[i].name %>

@@ -347,7 +347,7 @@ const logout = async (req, res) => {
 
 const loadUser = async (req, res) => {
   try {
-    const userData = await User.find({ is_admin: 0, is_Verified: 1 });
+    const userData = await User.find({ is_admin: 0, is_Verified: 1 }).sort({_id:-1});
 
     res.render("User", { users: userData });
   } catch (error) {
@@ -391,7 +391,7 @@ const unblockUser = async (req, res) => {
 
 const LoadCategory = async (req, res) => {
   try {
-    const Data = await Categories.find({}).populate("Offer");
+    const Data = await Categories.find({}).populate("Offer").sort({_id:-1});
 
     const offerId = await Offer.find({
       startingDate: { $lte: new Date() },

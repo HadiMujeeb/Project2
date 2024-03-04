@@ -484,6 +484,10 @@
                                                                     <a class="genric-btn danger-border circle" href="#"
                                                                         onclick="OrderReturn('<%= order[i]._id %>')">RETURN</a>
                                                                 </td>
+                                                                <td>
+                                                                    <a class="genric-btn danger-border circle"
+                                                                       href="/invoice?orderId=<%=order[i]._id%>">invoice</a>
+                                                                </td> 
 
                                                                 <% } else if (order[i].status==="Pending" ){ %>
                                                                     <td>
@@ -495,6 +499,10 @@
                                                                         <td>
                                                                             <a class="genric-btn danger-border circle"
                                                                                href="/shop">shop</a>
+                                                                        </td> 
+                                                                        <td>
+                                                                            <a class="genric-btn danger-border circle"
+                                                                               href="/invoice?orderId=<%=order[i]._id%>">invoice</a>
                                                                         </td> 
                                                                 <%    } %>
                                                                         <% num++ %>
