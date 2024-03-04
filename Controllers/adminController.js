@@ -67,7 +67,8 @@ const verifyLogin = async (req, res) => {
 const loadDashboard = async (req, res) => {
   try {
     const orders = await Order.find({ status: "Delivered" });
-    let ledge = await Ledgerbook.find({});
+    let ledge = await Ledgerbook.find({}).sort({ _id: -1 });
+
     for (const order of orders) {
       let ledger = await Ledgerbook.findOne({ Order_id: order._id });
       if (!ledger) {
@@ -76,14 +77,12 @@ const loadDashboard = async (req, res) => {
           transactions: order.payment,
           balance: order.total_amount,
           debit: 0,
+          date:new Date,
           credit: order.total_amount,
         });
         await ledger.save();
       }
-      // } else {
-      //     ledger.balance += order.total_amount;
-      //     ledger.credit += order.total_amount;
-      // }
+      
     }
 
     const totalOrders = await Order.countDocuments({});
@@ -214,7 +213,7 @@ const loadDashboard = async (req, res) => {
       {
         $match: {
           createdAt: { $gte: new Date(currentYear, currentMonth - 1, 1) },
-          status: { $ne: "pending" },
+        
         },
       },
       {
@@ -224,6 +223,7 @@ const loadDashboard = async (req, res) => {
         },
       },
     ]);
+
     const updatedMonthlyTotalOrders = defaultMonthlyValues.map(
       (defaultMonth) => {
         const foundMonth = monthlyTotalOrders.find(
@@ -249,25 +249,25 @@ const loadDashboard = async (req, res) => {
         $group: {
           _id: { $year: "$createdAt" },
           totalOrders: { $sum: 1 },
-          totalSales: { $sum: "$total_amount" } // Calculate total sales amount
+          totalSales: { $sum: "$total_amount" }, // Calculate total sales amount
         },
       },
     ]);
-    
-    // Update yearly values based on retrieved data
+    // console.log("hello", yearlySalesData);
+   
     const updatedYearlyValues = defaultYearlyValues.map((defaultYear) => {
       const foundYear = yearlySalesData.find(
-        (yearData) => yearData.year === defaultYear.year
+        (yearData) => yearData._id === defaultYear.year
       );
       return foundYear || defaultYear;
     });
 
-    console.log("asa",updatedYearlyValues)
+    // console.log("asdfwewwqqw", updatedYearlyValues);
     const yearlyTotalOrders = await Order.aggregate([
       {
         $match: {
-          status: "Delivered",
-          createdAt: { $gte: new Date(currentYear- yearsToInclude, 0, 1) },
+          
+          createdAt: { $gte: new Date(currentYear - yearsToInclude, 0, 1) },
         },
       },
       {
@@ -277,8 +277,7 @@ const loadDashboard = async (req, res) => {
         },
       },
     ]);
-    
-
+console.log(yearlyTotalOrders,"hello");
     // Update yearly total orders based on retrieved data
     const updatedYearlyTotalOrders = defaultYearlyValues.map((defaultYear) => {
       const foundYear = yearlyTotalOrders.find(
@@ -289,7 +288,7 @@ const loadDashboard = async (req, res) => {
         totalOrders: foundYear ? foundYear.totalOrders : 0,
       };
     });
-
+console.log(updatedYearlyTotalOrders,"hello2");
     const yearlyTotalUsers = await User.aggregate([
       {
         $match: {
@@ -303,16 +302,19 @@ const loadDashboard = async (req, res) => {
         },
       },
     ]);
-    
+
     // Update yearly total users based on retrieved data
     const updatedYearlyTotalUsers = defaultYearlyValues.map((defaultYear) => {
       const foundYear = yearlyTotalUsers.find(
         (yearData) => yearData._id === defaultYear.year
       );
-      return { year: defaultYear.year, totalUsers: foundYear ? foundYear.totalUsers : 0 };
+      return {
+        year: defaultYear.year,
+        totalUsers: foundYear ? foundYear.totalUsers : 0,
+      };
     });
-    
-console.log(updatedYearlyTotalOrders)
+
+    // console.log(updatedYearlyTotalOrders);
     res.render("Dashboard", {
       updatedMonthlyValues,
       updatedMonthlyTotalUsers,

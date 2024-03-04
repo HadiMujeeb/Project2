@@ -40,6 +40,13 @@ user_router.get("/logout", userController.userLogout);
 
 user_router.get("/shop", userController.loadShop);
 
+user_router.post("/shopFilter", userController.shopFilter);
+
+user_router.post("/searchFilter", userController.searchFilter);
+
+
+
+
 user_router.get("/single", userController.SingleProduct);
 
 user_router.get("/forget", userController.ForgetLoad);

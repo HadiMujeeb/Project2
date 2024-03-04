@@ -388,80 +388,80 @@
                                 </ul>
                                 <% var ShippingCharge=50; %>
 
-                                <ul class="list list_2">
-                                    <li>
-                                        <a href="#">Subtotal
-                                            <span>$<%=TotalPrice.toFixed(2) %></span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Shipping
-                                           
-                                            <span>Flat rate: $<%= ShippingCharge%></span>
-                                        </a>
-                                    </li>
-                                    <% if(product.couponDiscount==null){ %>
+                                    <ul class="list list_2">
                                         <li>
-                                            <a href="#">Total
-                                                <% var DiscountAmount=TotalPrice %>
-                                                    <span>$<%=(DiscountAmount+ShippingCharge).toFixed(2) %></span>
+                                            <a href="#">Subtotal
+                                                <span>$<%=TotalPrice.toFixed(2) %></span>
                                             </a>
                                         </li>
+                                        <li>
+                                            <a href="#">Shipping
 
-
-                                        <%}else{%>
+                                                <span>Flat rate: $<%= ShippingCharge%></span>
+                                            </a>
+                                        </li>
+                                        <% if(product.couponDiscount==null){ %>
                                             <li>
                                                 <a href="#">Total
-                                                    <span>$ <del>
-                                                            <%=TotalPrice.toFixed(2) %>
-                                                        </del></span>
-
+                                                    <% var DiscountAmount=TotalPrice %>
+                                                        <span>$<%=(DiscountAmount+ShippingCharge).toFixed(2) %></span>
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="#">
-                                                    DISCOUNT AMOUNT
-                                                    <% var DiscountAmount=TotalPrice -
-                                                        product.couponDiscount.discountAmount %>
-                                                        <span>$<%= DiscountAmount.toFixed(2) %></span>
 
-                                                </a>
-                                            </li>
-                                            <%}%>
-                                </ul>
-                                <input type="hidden" id="id" value="<%=id%>">
-                                <div class="payment_item">
-                                    <div class="radion_btn">
-                                        <input type="radio" id="cash-on-delivery" name="payment-selector"
-                                            value="Cash-on-Delivery" onclick="handlePaymentSelection(this)" />
-                                        <label for="cash-on-delivery">Cash on Delivery</label>
-                                        <div class="check"></div>
+
+                                            <%}else{%>
+                                                <li>
+                                                    <a href="#">Total
+                                                        <span>$ <del>
+                                                                <%=TotalPrice.toFixed(2) %>
+                                                            </del></span>
+
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        DISCOUNT AMOUNT
+                                                        <% var DiscountAmount=TotalPrice -
+                                                            product.couponDiscount.discountAmount %>
+                                                            <span>$<%= DiscountAmount.toFixed(2) %></span>
+
+                                                    </a>
+                                                </li>
+                                                <%}%>
+                                    </ul>
+                                    <input type="hidden" id="id" value="<%=id%>">
+                                    <div class="payment_item">
+                                        <div class="radion_btn">
+                                            <input type="radio" id="cash-on-delivery" name="payment-selector"
+                                                value="Cash-on-Delivery" onclick="handlePaymentSelection(this)" />
+                                            <label for="cash-on-delivery">Cash on Delivery</label>
+                                            <div class="check"></div>
+                                        </div>
+                                        <div class="radion_btn">
+                                            <input type="radio" id="cash-on-online" name="payment-selector"
+                                                value="Cash-on-online" onclick="handlePaymentSelectionOnline(this)" />
+                                            <label for="cash-on-online">Payment on Online</label>
+                                            <div class="check"></div>
+                                        </div>
+                                        <div class="radion_btn">
+                                            <input type="radio" id="cash-on-Wallet" name="payment-selector"
+                                                value="Cash-on-wallet" onclick="handlePaymentSelectionWallet(this)" />
+                                            <label for="cash-on-Wallet">Wallet</label>
+
+                                            <div class="check"></div>
+                                        </div>
+
+                                        <a class="btn_3" href="#" onclick="validatePaymentSelection(event)"
+                                            id="checkoutButton">Proceed to
+                                            Pay</a>
+
+                                        <p id="payment-error" style="display: none; color: red;">Please select Cash on
+                                            Delivery option</p>
+
                                     </div>
-                                    <div class="radion_btn">
-                                        <input type="radio" id="cash-on-online" name="payment-selector"
-                                            value="Cash-on-online" onclick="handlePaymentSelectionOnline(this)" />
-                                        <label for="cash-on-online">Payment on Online</label>
-                                        <div class="check"></div>
-                                    </div>
-                                    <div class="radion_btn">
-                                        <input type="radio" id="cash-on-Wallet" name="payment-selector"
-                                            value="Cash-on-wallet" onclick="handlePaymentSelectionWallet(this)" />
-                                        <label for="cash-on-Wallet">Wallet</label>
+                                    <!-- <div class="checkout_btn_inner float-right"> -->
 
-                                        <div class="check"></div>
-                                    </div>
-
-                                    <a class="btn_3" href="#" onclick="validatePaymentSelection(event)"
-                                        id="checkoutButton">Proceed to
-                                        Pay</a>
-
-                                    <p id="payment-error" style="display: none; color: red;">Please select Cash on
-                                        Delivery option</p>
-
-                                </div>
-                                <!-- <div class="checkout_btn_inner float-right"> -->
-
-                                <!-- </div> -->
+                                    <!-- </div> -->
                         </div>
                     </div>
                 </div>
@@ -606,8 +606,8 @@
                                             razorpaypayment(response.orders);
                                         } else {
                                             swal.fire({
-                                                title: 'Wallet Amount',
-                                                text: 'Your wallet amount is currently 0.',
+                                                title: 'Insufficient Wallet Balance',
+                                                text: 'You currently do not have enough funds in your wallet to purchase this product.',
                                                 icon: 'info'
                                             });
                                         }
@@ -676,7 +676,7 @@
                             if (response.success) {
                                 let orderId = response.order
                                 console.log("the order id may her for the razo pay and ::", orderId)
-                                
+
                                 window.location.href = '/confirm?orderId=' + orderId;
 
                             } else if (response.onlineSuccess) {

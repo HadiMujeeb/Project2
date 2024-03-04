@@ -306,8 +306,10 @@
                     confirmButtonColor: "#d33",
                     cancelButtonColor: "#3085d6",
                     confirmButtonText: "Yes, delete it!",
+                    
                 }).then((result) => {
-                    $.ajax({
+                    if(result.isConfirmed){
+                        $.ajax({
                         url: '/deleteOffer',
                         method: "POST",
                         data: { categoryId: categoryId },
@@ -319,6 +321,10 @@
                             Swal.fire("Error", "An error occurred while deleting the offer.", "error");
                         }
                     })
+                    }else{
+                        
+                    }
+                   
                 })
             }
         </script>

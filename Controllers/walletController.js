@@ -1,6 +1,7 @@
 const User = require("../Models/userModel");
 const Order = require("../Models/OrderModel");
 const Product = require("../Models/productModel");
+const LedgerBook = require("../Models/legdeModel");
 
 const returnProduct = async (req, res) => {
   try {
@@ -35,6 +36,16 @@ const returnProduct = async (req, res) => {
         await Order.findByIdAndUpdate(orderId, {
           $set: { status: "Refunded" },
         });
+
+        const ledgerBook = LedgerBook.findOne({ Order_id: orderId });
+        if (ledgerBook) {
+          const updatedDocument = await LedgerBook.findOneAndUpdate(
+            { Order_id: orderId },
+            { $set: { debit: order.total_amount }, credit: 0,balance:0 },
+            { new: true }
+        );
+        }
+
         res.json({ success: true });
       } else {
         res.json({ success: false });

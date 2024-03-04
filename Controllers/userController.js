@@ -54,23 +54,27 @@ const insertUser = async (req, res) => {
         let walletAmount;
         const referralCode = generateReferralCode(8);
         const spassword = await securePassword(req.body.password);
-        if (req.body.referralCode !== null||req.body.referralCode !== undefined) {
+        if (
+          req.body.referralCode !== null ||
+          req.body.referralCode !== undefined
+        ) {
           const result = 50;
-          const user = await User.findOne({ referalcode: req.body.referralCode });
+          const user = await User.findOne({
+            referalcode: req.body.referralCode,
+          });
           if (user) {
             await User.findOneAndUpdate(
               { referalcode: req.body.referralCode },
               { $inc: { wallet: result.toFixed(0) } }
             );
-            walletAmount=result
+            walletAmount = result;
           } else {
             console.log(" there is no user based this referral");
-            walletAmount=0;
+            walletAmount = 0;
           }
-          
         } else {
           console.log("there is no referral");
-          walletAmount=0
+          walletAmount = 0;
         }
 
         const user = new User({
@@ -80,7 +84,7 @@ const insertUser = async (req, res) => {
           is_admin: 0,
           mobile: req.body.mobile,
           referalcode: referralCode,
-          wallet:walletAmount,
+          wallet: walletAmount,
         });
         req.session.email = req.body.email;
         const userData = await user.save().then((result) => {
@@ -293,9 +297,10 @@ const loadShop = async (req, res) => {
     const categId = req.query.categid;
 
     let products = [];
-
+    let category;
     if (categId) {
       const CategoryId = new mongoose.Types.ObjectId(categId);
+      category = await Categories.findOne({ _id: CategoryId });
       products = await Product.find({ category: CategoryId })
         .populate({ path: "category", populate: { path: "Offer" } })
         .populate("Offer");
@@ -308,6 +313,7 @@ const loadShop = async (req, res) => {
 
     const Categdata = await Categories.find({});
     const listedCategory = Categdata.filter((categ) => categ.isListed === true);
+    console.log(listedCategory);
 
     const listProduct = products.filter((product) => {
       const isProductListed = product.is_Listed == true;
@@ -325,9 +331,52 @@ const loadShop = async (req, res) => {
       Categories: listedCategory,
       products: listProduct,
       user,
+      category,
     });
   } catch (error) {
     console.log(error.message);
+  }
+};
+const shopFilter = async (req, res) => {
+  try {
+    const { categoryId } = req.body;
+    console.log(categoryId, "working");
+  
+    const Categdata = await Categories.find({});
+    const listedCategory = Categdata.filter((categ) => categ.isListed === true);
+  
+  
+
+    if(categoryId!=null || categoryId!=undefined){
+    products = await Product.find({ category: categoryId })
+      .populate({ path: "category", populate: { path: "Offer" } })
+      .populate("Offer");
+    console.log("linkproduct", products);
+  }else{
+    products = await Product.find({})
+      .populate({ path: "category", populate: { path: "Offer" } })
+      .populate("Offer");
+    console.log("linkproduct", products);
+  }
+    res.json({ success: true, products });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const searchFilter = async (req, res) => {
+  try {
+    const { searchTerm } = req.body;
+    console.log("hello",searchTerm);
+    const products = await Product.find({});
+    const regexPattern = new RegExp(searchTerm, "i");
+    const filteredProducts = products.filter((product) =>
+      regexPattern.test(product.name)
+    );
+    res.json({ products: filteredProducts });
+  } catch (error) {
+    console.error("Error:", error);
   }
 };
 
@@ -340,7 +389,7 @@ const SingleProduct = async (req, res) => {
       .populate({ path: "category", populate: { path: "Offer" } })
       .populate("Offer");
     // if (user) {
-      res.render("SingleProduct", { product, user });
+    res.render("SingleProduct", { product, user });
     // } else {
     //   res.redirect("/login");
     // }
@@ -658,5 +707,7 @@ module.exports = {
   DeleteAddress,
   LoadEditAddress,
   EditAddress,
+  shopFilter,
+  searchFilter,
   // rest_pass_profile
 };

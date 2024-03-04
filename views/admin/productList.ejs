@@ -365,21 +365,26 @@
                 confirmButtonColor: "#d33",
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel",
             }).then((result) => {
-                $.ajax({
-                    url: '/deleteOfferProduct',
-                    method: "POST",
-                    data: { productId: productId },
-                    success: function (response) {
-                        Swal.fire("Deleted!", response.message, "success");
-                        window.location = '/product'
-                    },
-                    error: function (error) {
-                        Swal.fire("Error", "An error occurred while deleting the offer.", "error");
-                    }
-                })
-            })
+                if (result.isConfirmed) {
+                    // User clicked the "Delete" button
+                    $.ajax({
+                        url: '/deleteOfferProduct',
+                        method: "POST",
+                        data: { productId: productId },
+                        success: function (response) {
+                            Swal.fire("Deleted!", response.message, "success");
+                            window.location = '/product'
+                        },
+                        error: function (error) {
+                            Swal.fire("Error", "An error occurred while deleting the offer.", "error");
+                        }
+                    });
+                } 
+            });
         }
+
     </script>
     <script> function showModal(productId) {
             console.log("hii", productId)

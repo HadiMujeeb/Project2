@@ -269,7 +269,7 @@
             //     alert("Please fill in all fields");
             //     return false;
             // }
-            if (productName.trim().length === 0 || productName.endsWith(' ')) {
+            if (productName.trim().length === 0|| productName.length > 20  || productName.endsWith(' ')) {
                 document.getElementById('nameError').innerHTML = 'Name should not end with a space';
                 document.getElementById('nameError').style.color = "red";
                 return false;

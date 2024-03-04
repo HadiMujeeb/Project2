@@ -189,7 +189,7 @@
                                                     <div class="text">
 
                                                         <h6 class="mb-1 card-title">Revenue</h6>
-                                                        <span>$<%= totalAmountSum%></span>
+                                                        <span>Rs<%=(totalAmountSum).toFixed(2)%></span>
                                                         <!-- <span class="text-sm"> Shipping fees are not included </span> -->
 
                                                     </div>
@@ -310,7 +310,7 @@
                                             <input type="hidden" value="<%= updatedMonthlyTotalOrders[1].totalOrders %>"
                                                 id="FEB" />
                                             <input type="hidden" value="<%= updatedMonthlyTotalOrders[2].totalOrders %>"
-                                                id="MAr" />
+                                                id="MAR" />
                                             <input type="hidden" value="<%= updatedMonthlyTotalOrders[3].totalOrders %>"
                                                 id="APR" />
                                             <input type="hidden" value="<%= updatedMonthlyTotalOrders[4].totalOrders %>"
@@ -345,7 +345,7 @@
                                                 id="2022" />
                                             <input type="hidden" value="<%= updatedYearlyValues[5].total %>"
                                                 id="2023" />
-                                            <input type="hidden" value="<%= updatedYearlyValues[6].total %>"
+                                            <input type="hidden" value="<%= updatedYearlyValues[6].totalOrders %>"
                                                 id="2024" />
 
 
@@ -506,7 +506,7 @@
                                                                     <th class="align-middle" scope="col">Date</th>
                                                                     <th class="align-middle" scope="col">debit</th>
                                                                     <th class="align-middle" scope="col">Credit</th>
-                                                                    <th class="align-middle" scope="col">Balance</th>
+                                                                    <th class="align-middle" scope="col">Total Balance=<%=(totalAmountSum).toFixed(2)%></th>
 
                                                                 </tr>
                                                             </thead>
@@ -524,18 +524,19 @@
                                                                         <td>
                                                                             <%= id.transactions %>
                                                                         </td>
-                                                                        <td>07 Oct, 2021</td>
-                                                                        <td>
-                                                                            <%= id.debit%>
+                                                                        <td><%= new Date(id.date).toLocaleDateString() %></td>
+
+                                                                        <td style="color: red;">
+                                                                            - <%= id.debit%>
                                                                         </td>
                                                                         <td>
                                                                             <span
-                                                                                class="badge badge-pill badge-soft-success">
-                                                                                <%= id.credit%>
+                                                                                class="" style="color: greenyellow;">
+                                                                                + <%= id.credit%>
                                                                             </span>
                                                                         </td>
                                                                         <td><i
-                                                                                class="material-icons md-payment font-xxl text-muted mr-5">
+                                                                                class="">
                                                                                 <%= id.balance%>
                                                                             </i>
                                                                         </td>

@@ -363,7 +363,7 @@
             //     alert("Please fill in all fields");
             //     return false;
             // }
-            if (productName.trim().length === 0 || productName.endsWith(' ')) {
+            if (productName.trim().length === 0 ||productName.length > 35|| productName.endsWith(' ')) {
                 document.getElementById('nameError').innerHTML = 'Name should start with an alphabet then only contain alphabets and numbers (no Spaces)';
                 document.getElementById('nameError').style.color = "red";
                 return false;

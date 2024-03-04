@@ -33,7 +33,7 @@
 
     let JanOrders = document.getElementById("JAN").value;
     let FebOrders = document.getElementById("FEB").value;
-    let MarOrders = document.getElementById("Mar").value;
+    let MarOrders = document.getElementById("MAR").value;
     let AprOrders = document.getElementById("APR").value;
     let MayOrders = document.getElementById("MAY").value;
     let JunOrders = document.getElementById("JUN").value;
@@ -52,6 +52,7 @@
     let year2022 = document.getElementById('2022').value;
     let year2023 = document.getElementById('2023').value;
     let year2024 = document.getElementById('2024').value;
+    
 
     let order2018 = document.getElementById('order2018').value;
     let order2019 = document.getElementById('order2019').value;
@@ -60,7 +61,7 @@
     let order2022 = document.getElementById('order2022').value;
     let order2023 = document.getElementById('order2023').value;
     let order2024 = document.getElementById('order2024').value;
-
+    console.log(order2024,"daa")
     
     let users2018 = document.getElementById('users2018').value;
     let users2019 = document.getElementById('users2019').value;
@@ -130,10 +131,9 @@
     var monthlyData = [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec];
     var yearlyData = [year2018, year2019, year2020, year2021, year2022, year2023, year2024];
 
-  
-
     var monthlyUserData = [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec];
     var yearlyUserData = [users2018, users2019, users2020, users2021, users2022, users2023, users2024]
+
     var monthlyOrderData = [JanOrders,FebOrders,MarOrders,AprOrders,MayOrders,JunOrders,JulOrders,AugOrders,SepOrders,OctOrders,NovOrders,DecOrders];
     var yearlyOrderData = [order2018, order2019, order2020, order2021, order2022, order2023 ,order2024 ];
     // Click event for elements with the class "toggle-chart"
@@ -150,10 +150,10 @@
         var newUsersData = chartType === 'monthly' ? monthlyUserData : yearlyUserData;
         var newOrderData = chartType === 'monthly' ? monthlyOrderData : yearlyOrderData;
         // Update dataset values for both Sales and Orders
-        chart1.data.datasets[0].data = newData; // Sales data
-        chart1.data.datasets[2].data = newOrderData; // Orders data
+        chart1.data.datasets[2].data = newOrderData; // Sales data
+        chart1.data.datasets[0].data = newData ; // Orders data
         chart1.data.datasets[1].data = newUsersData; // Orders data
-
+       
         // Update labels for the dataset
         chart1.data.labels = labels1;
 

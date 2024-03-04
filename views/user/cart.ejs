@@ -48,6 +48,7 @@
     <div class="container" id="reloadDiv">
       <div class="cart_inner">
         <div class="table-responsive">
+          <%if(cartDetails && cartDetails.items){ %>
           <table class="table">
             <thead>
               <tr>
@@ -65,7 +66,7 @@
               </tr>
             </thead>
             <tbody>
-              <%if(cartDetails && cartDetails.items){ %>
+            
 
 
                 <% let totalQuantity=0; let totalProductPrice=0; %>
@@ -223,11 +224,12 @@
         </div>
       </div>
       <% } else { %>
-        <div style="  height: 200px;">
-          <h3>CART IS EMPTY</h3>
+        <div class="text-center" style="height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <i class="fas fa-shopping-cart fa-5x mb-3"></i>
+            <h3>CART IS EMPTY</h3>
+            <p>Your shopping cart is currently empty. Start adding items to your cart by browsing our shop.</p>
         </div>
-        <% } %>
-
+    <% } %>
     </div>
 
   </section>

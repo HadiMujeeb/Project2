@@ -141,6 +141,7 @@
         <div class="container">
             <div class="cart_inner">
                 <div class="table-responsive">
+                    <% if (wishlistItem && wishlistItem.product.length> 0) { %>
                     <table class="table">
                         <thead>
                             <tr>
@@ -150,9 +151,10 @@
                                 <th scope="col">Remove</th>
                             </tr>
                         </thead>
+                     
+                            <% wishlistItem.product.forEach((item)=> { %>
                         <tbody>
-                            <% if (wishlistItem && wishlistItem.product.length> 0) { %>
-                                <% wishlistItem.product.forEach((item)=> { %>
+                           
                                     <tr>
                                         <td>
                                             <div class="media">
@@ -184,13 +186,16 @@
                                         </td>
                                     </tr>
                                     <% }); %>
-                                        <% } else { %>
-                                            <tr>
-                                                <td colspan="4">
-                                                    <h2>There is no item in the wishlist</h2>
-                                                </td>
-                                            </tr>
-                                            <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <div class="alert alert-warning" role="alert" style="height: 150px;">
+                                                    <h4 class="alert-heading" style="margin-bottom: 20px;"><i class="fas fa-exclamation-triangle"></i> No items in the wishlist</h4>
+                                                    <p><i class="fas fa-shopping-cart"></i> There are currently no items in your wishlist. Start adding items by browsing our shop.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
                                             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                                 <script>
 

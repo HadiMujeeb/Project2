@@ -256,20 +256,66 @@
                                 </div>
                                 <div class="single_product_menu d-flex">
                                     <h5>short by : </h5>
+
                                     <select onchange="redirectToCategory(this)">
-                                        <!-- <option value="">All</option> -->
+                                        <option ><a href="/shop">All</a></option>
                                         <% for(let i=0; i< Categories.length; i++) { %>
                                             <option value="<%= Categories[i].id %>">
                                                 <%= Categories[i].name %>
                                             </option>
-                                        <% } %>
+                                            <% } %>
                                     </select>
                                     <script>
                                         function redirectToCategory(select) {
                                             const categoryId = select.value;
-                                            window.location.href = `/shop?categid=${categoryId}`;
+
+                                            $.ajax({
+                                                url: "/shopFilter",
+                                                method: "POST",
+                                                data: { categoryId: categoryId },
+                                                success: function (response) {
+                                                    const products = response.products;
+
+
+                                                    $('#product-list').empty(); // Clear existing products
+                                                    products.forEach(product => {
+                                                        $('#product-list').append(`
+    <div class="col-lg-4 col-sm-6">
+        <div class="single_product_item">
+            <a >
+                <img src="SharpImage/${product.image[1]}" alt="img">
+            </a>
+            <div class="single_product_text">
+                <h4>${product.name}</h4>
+                ${product.Offer ? `
+                        <h7>
+                            <h3>₹${(product.price - (product.price * product.Offer.percentage / 100)).toFixed(2)}</h3>
+                            <del>₹${product.price}</del>
+                        </h7>
+                    ` : product.category.Offer ? `
+                        <h3>₹${(product.price - (product.price * product.category.Offer.percentage / 100)).toFixed(2)}</h3>
+                        <del>₹${product.price}</del>
+                    ` : `
+                        <h3>₹${product.price}</h3>
+                    `
+                                                            }
+                <!-- Add to Cart button -->
+                <a href="#" class="add_cart" onclick="addToCart('${product._id}','${product.name}','${product.price}','${product.category.name}','${product.brand}')">+ Add to Cart</a>
+                <a href="#" class="add_wishlist" onclick="addToWishlist('${product._id}')">Add to Wishlist</a>
+            </div>
+        </div>
+    </div>
+`);
+                                                    });
+                                                },
+                                                error: function (error) {
+                                                    console.error('Error:', error);
+                                                }
+                                            });
                                         }
+
                                     </script>
+
                                 </div>
                                 <div class="single_product_menu d-flex">
                                     <h5>show :</h5>
@@ -283,13 +329,15 @@
                                 </div>
                                 <div class="single_product_menu d-flex">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="search"
-                                            aria-describedby="inputGroupPrepend">
+                                        <input type="text" class="form-control" id="searchInput" placeholder="search"
+                                            aria-describedby="inputGroupPrepend" oninput="search()">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputGroupPrepend"><i
                                                     class="ti-search"></i></span>
                                         </div>
                                     </div>
+                                    <div id="searchResults"></div>
+
                                 </div>
                             </div>
                         </div>
@@ -298,7 +346,60 @@
 
                         <!-- <p>Home <span>-</span> Shop Category</p> -->
                     </div>
-                    <div class="row align-items-center latest_product_inner">
+                    <script>
+                        function search() {
+                            const searchTerm = $('#searchInput').val().trim();
+
+
+                            $.ajax({
+                                url: "/searchFilter", // Update the URL to your server-side search endpoint
+                                method: "POST",
+                                data: { searchTerm: searchTerm },
+                                success: function (response) {
+                                    const products = response.products;
+
+
+                                    $('#product-list').empty(); // Clear existing products
+                                    products.forEach(product => {
+                                        $('#product-list').append(`
+    <div class="col-lg-4 col-sm-6">
+        <div class="single_product_item">
+            <a >
+                <img src="SharpImage/${product.image[1]}" alt="img">
+            </a>
+            <div class="single_product_text">
+                <h4>${product.name}</h4>
+                ${product.Offer ? `
+                        <h7>
+                            <h3>₹${(product.price - (product.price * product.Offer.percentage / 100)).toFixed(2)}</h3>
+                            <del>₹${product.price}</del>
+                        </h7>
+                    ` : product.category.Offer ? `
+                        <h3>₹${(product.price - (product.price * product.category.Offer.percentage / 100)).toFixed(2)}</h3>
+                        <del>₹${product.price}</del>
+                    ` : `
+                        <h3>₹${product.price}</h3>
+                    `
+                                            }
+                <!-- Add to Cart button -->
+                <a href="#" class="add_cart" onclick="addToCart('${product._id}','${product.name}','${product.price}','${product.category.name}','${product.brand}')">+ Add to Cart</a>
+                <a href="#" class="add_wishlist" onclick="addToWishlist('${product._id}')">Add to Wishlist</a>
+            </div>
+        </div>
+    </div>
+`);
+
+                                    });
+                                },
+                                error: function (error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        }
+
+                    </script>
+                    
+                    <div class="row align-items-center latest_product_inner" id="product-list">
 
                         <% if(products.length> 0) { %>
                             <% for(let i=0; i < products.length; i++) { %>
@@ -354,10 +455,32 @@
                                 </div>
                                 <% } %>
                                     <% } else { %>
-                                        <div>
-                                            <h1>There are no products</h1>
+                                        <div class="no-products">
+                                            <h1><i class="fas fa-exclamation-circle"></i> There are no products</h1>
                                         </div>
                                         <% } %>
+                                            <style>
+                                                .no-products {
+                                                    text-align: center;
+                                                    margin-top: 50px;
+                                                    padding: 20px;
+                                                    border: 1px solid #ccc;
+                                                    border-radius: 5px;
+                                                    background-color: #f9f9f9;
+                                                }
+
+                                                .no-products h1 {
+                                                    color: #333;
+                                                    font-size: 24px;
+                                                    font-weight: bold;
+                                                }
+
+                                                .no-products i {
+                                                    color: #f44336;
+                                                    /* Icon color */
+                                                    margin-right: 5px;
+                                                }
+                                            </style>
 
 
                     </div>
@@ -536,9 +659,9 @@
     </script>
     <script>
 
-        function addToCart(productId, productName, productPrice ,category,brand) {
+        function addToCart(productId, productName, productPrice, category, brand) {
             let user = document.getElementById("user").value;
-   
+
             if (!user) {
 
                 Swal.fire({
@@ -578,7 +701,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            productId, productName, productPrice, quantity,category,brand
+                            productId, productName, productPrice, quantity, category, brand
                         }),
                     })
                         .then(response => response.json())

@@ -19,6 +19,10 @@ const ledgerBookSchema = new Schema({
         type: Number,
         default: 0
     },
+    date: {
+        type: String,
+        required: true,
+      },
     credit: {
         type: Number,
         default: 0
@@ -26,7 +30,11 @@ const ledgerBookSchema = new Schema({
     created_at: {
         type: Date,
         default: Date.now
-    }
+    },
+     TotalBalance: {
+        type: Number,
+        default: 0
+    },
 });
 
 const Ledgerbook = mongoose.model('LedgerBook', ledgerBookSchema);
