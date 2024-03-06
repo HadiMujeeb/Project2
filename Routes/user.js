@@ -105,6 +105,8 @@ user_router.get("/orderview", cartController.OrderView);
 
 user_router.get("/OrderCancel", cartController.OrderCancel);
 
+user_router.post("/itemCancel", cartController.itemsCancel );
+
 
 
 user_router.get("/wishlistLoad", WishlistController.WishlistLoad);

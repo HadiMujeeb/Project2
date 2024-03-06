@@ -383,6 +383,25 @@ const unblockUser = async (req, res) => {
   }
 };
 
+
+// const toggleuser = async(req,res)=>{
+//   try {
+//     const userId= req.query.id;
+//     const user= await User.findOne({_id:userId})
+//   user.isBlocked=!user.isBlocked
+//   await user.save()
+    
+
+
+//   } catch (error) {
+//     console.log(error.message)
+//   }
+// }
+
+
+
+
+
 // block and unblock end
 
 // ----------------------------------------------------

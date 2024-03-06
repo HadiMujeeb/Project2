@@ -16,7 +16,7 @@
         </div>
     </section>
     <!-- breadcrumb start-->
-    <div >
+    <div>
         <a class="dropdown-item" href="#" onclick="downloadPDF('printThisDiv')"
             style="color: green; font-weight: 600;">Download as PDF</a>
         <!-- <a class="dropdown-item" href="#" onclick="downloadExcel('printThisDiv')"
@@ -24,7 +24,7 @@
     </div>
     <!--================ confirmation part start =================-->
     <section class="confirmation_part padding_top" id='printThisDiv'>
-       
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -53,38 +53,39 @@
                         </ul>
                     </div>
                 </div>
-              <div class="col-lg-6 col-lx-4">
+                <div class="col-lg-6 col-lx-4">
                     <div class="single_confirmation_details">
                         <h4>Billing Address</h4>
                         <ul>
-                            <% if (typeof  address!=="undefined"){%>
-                            <li>
-                                <p>Name</p><span>:<%= address.name%></span>
-                            </li>
-                            <li>
-                                <p>State</p><span>: <%= address.state%></span>
-                            </li>
-                            <li>
-                                <p>City</p><span>:<%= address.city%></span>
-                            </li>
-                            <li>
-                                <p>Address</p><span>: <%= address.address%></span>
-                            </li>
-                            <li>
-                                <p>Mobile</p><span>: <%= address.mobile%></span>
-                            </li>
-                            <li>
-                                <p>LandMark</p><span>:<%= address.landmark%></span>
-                            </li>
-                            <li>
-                                <p>PinCode</p><span>:<%= address.pincode%></span>
-                            </li>
-                           <%}else{%>
-                            <p>address no founded</p>
-                            <%}%>
+                            <% if (typeof address!=="undefined" ){%>
+                                <li>
+                                    <p>Name</p><span>:<%= address.name%></span>
+                                </li>
+                                <li>
+                                    <p>State</p><span>: <%= address.state%></span>
+                                </li>
+                                <li>
+                                    <p>City</p><span>:<%= address.city%></span>
+                                </li>
+                                <li>
+                                    <p>Address</p><span>: <%= address.address%></span>
+                                </li>
+                                <li>
+                                    <p>Mobile</p><span>: <%= address.mobile%></span>
+                                </li>
+                                <li>
+                                    <p>LandMark</p><span>:<%= address.landmark%></span>
+                                </li>
+                                <li>
+                                    <p>PinCode</p><span>:<%= address.pincode%></span>
+                                </li>
+                                <%}else{%>
+                                    <p>address no founded</p>
+                                    <%}%>
                         </ul>
                     </div>
-                </div> 
+                          
+                </div> 
                 <div class="col-lg-6 col-lx-4">
                     <!-- <div class="single_confirmation_details">
             <h4>shipping Address</h4>
@@ -112,23 +113,32 @@
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
-                                    <th scope="col" ></th>
+                                    <th scope="col"></th>
                                     <th scope="col" colspan="2">Product</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Total</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
 
                                 <% order.items.forEach((item)=>{ %>
                                     <tr>
-                                        <th> <img src="/SharpImage/<%= item.product_id.image[0] %>" width="40" height="40" class="img-xs" alt="Item" /></th>
+                                        <th> <img src="/SharpImage/<%= item.product_id.image[0] %>" width="40"
+                                                height="40" class="img-xs" alt="Item" /></th>
                                         <th colspan="2"><span>
                                                 <%=item.productName %>
                                             </span></th>
                                         <th>x0<%= item.quantity%>
                                         </th>
                                         <th> <span>$<%= item.total_price%></span></th>
+                                        <% if(item.ordered_status==="Cancelled" ){ %>
+                                         <th><span style="color: red;" >Cancelled</span></th>
+                                            <%}else{%>
+                                                <th><button
+                                                        onclick="CancelOrder('<%= item._id%>','<%= order._id%>')">cancel</button>
+                                                </th>
+                                                <%}%>
                                     </tr>
                                     <% })%>
                                         <tr>
@@ -153,14 +163,51 @@
             </div>
         </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+
+
+        function CancelOrder(CancelId, orderId) {
+            // Display a confirmation dialog using SweetAlert
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to cancel this order!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                // If user confirms the cancellation
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/itemCancel",
+                        method: "POST",
+                        data: { CancelId, orderId },
+                    }).then((response) => {
+                        if (response.success) {
+
+                            Swal.fire('Success!', 'Order canceled successfully!', 'success');
+                            setTimeout(()=>{
+                            location.reload()
+                            },50)
+                        } else {
+
+                            Swal.fire('Error!', 'Failed to cancel order!', 'error');
+                        }
+
+                    });
+                }
+            });
+        }
+
         function downloadPDF(divName) {
-           const printContents = document.getElementById(divName).innerHTML;
-           const originalContents = document.body.innerHTML;
-           document.body.innerHTML = printContents;
-           window.print();
-           document.body.innerHTML = originalContents;
-       }
-   </script>
+            const printContents = document.getElementById(divName).innerHTML;
+            const originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
     <!--================ confirmation part end =================-->
     <%- include('../user/layouts/footer') %>

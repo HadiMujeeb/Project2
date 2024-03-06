@@ -269,7 +269,7 @@
             //     alert("Please fill in all fields");
             //     return false;
             // }
-            if (productName.trim().length === 0|| productName.length > 20  || productName.endsWith(' ')) {
+            if (productName.trim().length === 0 || productName.length > 20 || productName.endsWith(' ')) {
                 document.getElementById('nameError').innerHTML = 'Name should not end with a space';
                 document.getElementById('nameError').style.color = "red";
                 return false;
@@ -277,7 +277,7 @@
             else {
                 document.getElementById("nameError").innerHTML = '';
             }
-            if (description.trim().length === 0|| description.endsWith(' ') ) {
+            if (description.trim().length === 0 || description.endsWith(' ')) {
                 document.getElementById("descriptionError").innerHTML = 'Description cannot be empty';
                 document.getElementById("descriptionError").style.color = "red";
                 return false;
@@ -303,8 +303,17 @@
                 document.getElementById("priceError").innerHTML = '';
             }
             if (imageInput.files.length < 4) {
-                alert(`image must be  4 it only ${imageInput.files.length}`);
+                alert(`You must select 4 images. You selected only ${imageInput.files.length}.`);
                 return false;
+            }
+
+            var allowedTypes = ["image/avif","image/avif", "image/avif" ,"image/avif"];
+            for (var i = 0; i < imageInput.files.length; i++) {
+                var file = imageInput.files[i];
+                if (!allowedTypes.includes(file.type)) {    
+                    alert(`Please select valid image files (JPEG, PNG, GIF) for image ${i + 1}.`);
+                    return false;
+                }
             }
             return true;
         }

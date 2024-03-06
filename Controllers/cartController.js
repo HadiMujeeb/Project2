@@ -517,7 +517,7 @@ const Checkout = async (req, res) => {
                 { $inc: { stockQuantity: -Data.quantity } }
               );
             }
-
+            await Cart.deleteMany({});
             res.json({ success: true, order: order._id });
           }
         }
@@ -721,6 +721,36 @@ const OrderView = async (req, res) => {
   }
 };
 
+const itemsCancel = async (req, res) => {
+  try {
+    const { CancelId, orderId } = req.body;
+    const order = await Order.findOne({ _id: orderId });
+    if (order) {
+      const updatedItems = order.items.filter(
+        (item) => item._id.toString() === CancelId.toString()
+      );
+
+      const newTotalAmount = order.total_amount - updatedItems[0].total_price 
+      console.log("hello",updatedItems[0].total_price )
+      await Order.updateOne(
+        { _id: orderId, "items._id": CancelId },
+        {
+          $set: {
+            "items.$.ordered_status": "Cancelled",
+            total_amount:newTotalAmount,
+          },
+        }
+      );
+
+      res.json({ success: true });
+    } else {
+      res.json({ success: false });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 const OrderCancel = async (req, res) => {
   try {
     const id = req.query.CancelId;
@@ -794,4 +824,5 @@ module.exports = {
   CheckADDaddress,
   Verifypayment,
   PendingPay,
+  itemsCancel,
 };
