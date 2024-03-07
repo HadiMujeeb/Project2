@@ -9,7 +9,7 @@ const Coupon = require("../Models/CouponModel");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { generate } = require("randomstring");
-const { Console } = require("console");
+const { Console, log } = require("console");
 const LedgerBook = require("../Models/legdeModel");
 var instance = new Razorpay({
   key_id: "rzp_test_Zdu4uWOEbGyw30",
@@ -63,6 +63,7 @@ const AddToCart = async (req, res) => {
       productName,
       category,
       brand,
+      categoryId,
     } = req.body;
     console.log(req.body);
 
@@ -133,6 +134,8 @@ const AddToCart = async (req, res) => {
                   total_price: quantity * productPrice,
                   category: category,
                   brand: brand,
+                  Offer: product.Offer,
+                  CategoryId: categoryId,
                 },
               },
             }
@@ -156,6 +159,8 @@ const AddToCart = async (req, res) => {
               total_price: quantity * product.price,
               category: category,
               brand: brand,
+              Offer: product.Offer,
+              CategoryId: categoryId,
             },
           ],
         });
@@ -172,17 +177,17 @@ const AddToCart = async (req, res) => {
 
 const UpdateQuantity = async (req, res) => {
   try {
-    console.log("body:", req.body);
+    // console.log("body:", req.body);
 
     let user;
-    console.log("cart session", req.session.user_id);
+    // console.log("cart session", req.session.user_id);
     if (req.session.user_id) {
       const id = req.session.user_id;
       user = await User.findOne({ _id: id });
     }
 
     const productId = req.body.productId;
-    console.log(productId);
+    // console.log(productId);
     const count = req.body.count;
 
     const cart = await Cart.findOne({ user_id: req.session.user_id });
@@ -375,11 +380,16 @@ const Checkout = async (req, res) => {
 
       const id = req.session.user_id;
       const user = await User.findOne({ _id: id });
-
-      const cart = await Cart.findOne({ user_id: user }).populate(
-        "items.product_id"
-      );
-
+      const cart = await Cart.findOne({ user_id: user })
+        .populate("items.product_id")
+        .populate("items.Offer")
+        .populate({
+          path: "items.CategoryId",
+          populate: {
+            path: "Offer",
+          },
+        })
+       console.log("helllll");
       for (const cartItem of cart.items) {
         const product = cartItem.product_id;
         const requestedQuantity = cartItem.quantity;
@@ -396,17 +406,35 @@ const Checkout = async (req, res) => {
       }
 
       if (cart) {
-        const orderItems = cart.items.map((item) => ({
-          product_id: item.product_id,
-          productName: item.productName,
-          quantity: item.quantity,
-          price: item.price,
-          total_price: item.total_price,
-          ordered_status: "none",
-          cancellationReason: "none",
-          category: item.category,
-          brand: item.brand,
-        }));
+        const orderItems = cart.items.map((item) => {
+          let totalPrice = item.total_price;
+          let Price = item.price;
+          if (item.Offer) {
+            totalPrice =
+              (item.total_price * (100 - item.Offer.percentage)) / 100;
+            Price = (item.price * (100 - item.Offer.percentage)) / 100;
+          } else if (item.CategoryId && item.CategoryId.Offer) {
+            console.log("heklsdjsncdskjn");
+            totalPrice =
+              (item.total_price * (100 - item.CategoryId.Offer.percentage)) /
+              100;
+            Price =
+              (item.price * (100 - item.CategoryId.Offer.percentage)) / 100;
+          }
+          return {
+            product_id: item.product_id,
+            productName: item.productName,
+            quantity: item.quantity,
+            price: Price,
+            total_price: totalPrice,
+            ordered_status: "Placed",
+            cancellationReason: "none",
+            category: item.category,
+            brand: item.brand,
+          };
+        });
+        console.log("ddadewq", orderItems);
+
         console.log("product", orderItems.ProductName);
         const order = new Order({
           user_id: user._id,
@@ -431,21 +459,21 @@ const Checkout = async (req, res) => {
             await Order.findByIdAndUpdate(order._id, {
               $set: { status: "Placed" },
             });
-            if (referralCode !== null) {
-              const percentage = 5;
-              const result = (percentage / 100) * totalPrice;
-              const user = await User.findOne({ referalcode: referralCode });
-              if (user) {
-                await User.findOneAndUpdate(
-                  { referalcode: referralCode },
-                  { $inc: { wallet: result.toFixed(0) } }
-                );
-              } else {
-                console.log(" there is no user based this referral");
-              }
-            } else {
-              console.log("there is no referral");
-            }
+            // if (referralCode !== null) {
+            //   const percentage = 5;
+            //   const result = (percentage / 100) * totalPrice;
+            //   const user = await User.findOne({ referalcode: referralCode });
+            //   if (user) {
+            //     await User.findOneAndUpdate(
+            //       { referalcode: referralCode },
+            //       { $inc: { wallet: result.toFixed(0) } }
+            //     );
+            //   } else {
+            //     console.log(" there is no user based this referral");
+            //   }
+            // } else {
+            //   console.log("there is no referral");
+            // }
 
             const cart = await Cart.findOne({ user_id: req.session.user_id });
 
@@ -493,21 +521,21 @@ const Checkout = async (req, res) => {
                 },
               }
             );
-            if (referralCode !== null) {
-              const percentage = 5;
-              const result = (percentage / 100) * totalPrice;
-              const user = await User.findOne({ referalcode: referralCode });
-              if (user) {
-                await User.findOneAndUpdate(
-                  { referalcode: referralCode },
-                  { $inc: { wallet: result.toFixed(0) } }
-                );
-              } else {
-                console.log(" there is no user based this referral");
-              }
-            } else {
-              console.log("there is no referral");
-            }
+            // if (referralCode !== null) {
+            //   const percentage = 5;
+            //   const result = (percentage / 100) * totalPrice;
+            //   const user = await User.findOne({ referalcode: referralCode });
+            //   if (user) {
+            //     await User.findOneAndUpdate(
+            //       { referalcode: referralCode },
+            //       { $inc: { wallet: result.toFixed(0) } }
+            //     );
+            //   } else {
+            //     console.log(" there is no user based this referral");
+            //   }
+            // } else {
+            //   console.log("there is no referral");
+            // }
 
             const cart = await Cart.findOne({ user_id: req.session.user_id });
 
@@ -730,17 +758,33 @@ const itemsCancel = async (req, res) => {
         (item) => item._id.toString() === CancelId.toString()
       );
 
-      const newTotalAmount = order.total_amount - updatedItems[0].total_price 
-      console.log("hello",updatedItems[0].total_price )
+      const newTotalAmount = order.total_amount - updatedItems[0].total_price;
+      console.log("hello", updatedItems[0].total_price);
       await Order.updateOne(
         { _id: orderId, "items._id": CancelId },
         {
           $set: {
             "items.$.ordered_status": "Cancelled",
-            total_amount:newTotalAmount,
+            total_amount: newTotalAmount,
           },
         }
       );
+      let orderID = await Order.findOne({ _id: orderId });
+
+      const hasPlacedItems = orderID.items.some(
+        (item) => item.ordered_status === "Placed"
+      );
+      if (!hasPlacedItems) {
+        await Order.updateOne(
+          { _id: orderID },
+          {
+            $set: {
+              status: "Cancelled",
+              total_amount: 0,
+            },
+          }
+        );
+      }
 
       res.json({ success: true });
     } else {

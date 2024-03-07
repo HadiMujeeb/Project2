@@ -46,6 +46,14 @@ const CartModel = new mongoose.Schema({
         type: String,
         default: "none",
       },
+      Offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"offer",
+      },
+      CategoryId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category",
+      },
     },
   ],
   couponDiscount: {
