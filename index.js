@@ -35,7 +35,8 @@ app.use("/", user_router);
 const admin_router = require("./Routes/admin");
 app.use("/", admin_router);
 
-const PORT = 11000;
+const PORT = process.env.PORT||8000;
+console.log(PORT);
 app.listen(PORT, () => {
   console.log(` server is running  on http://localhost:${PORT}`);
   console.log(` server is running  on http://localhost:${PORT}/admin`);
