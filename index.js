@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 require("dotenv").config();
-mongoose.connect(process.env.MONGO_URL);
+
 
 const path = require("path");
 const nocache = require("nocache");
@@ -9,7 +9,8 @@ const express = require("express");
 const app = express();
 const flash = require("express-flash");
 const session = require("express-session");
-
+const connectDB = require("./database/connection");
+connectDB();
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
