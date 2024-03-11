@@ -393,7 +393,7 @@ const SingleProduct = async (req, res) => {
       .populate({ path: "category", populate: { path: "Offer" } })
       .populate("Offer");
     // if (user) {
-    res.render("SingleProduct", { product, user });
+    res.render("singleproduct", { product, user });
     // } else {
     //   res.redirect("/login");
     // }
