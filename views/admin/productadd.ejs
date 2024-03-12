@@ -199,6 +199,7 @@
 
                                 </div>
                                 <div class="card mb-4">
+                                    <span id="imageError" class="error"></span>
                                     <div class="card-header">
                                         <h4>Media</h4>
                                     </div>
@@ -207,7 +208,7 @@
                                             <input class="form-control" type="file" name="image" id="productImage"
                                                 multiple required />
                                         </div>
-                                        <!-- Add an element for image preview -->
+                                    
                                         <div id="imagePreview"></div>
                                     </div>
 
@@ -220,18 +221,18 @@
                             </form>
                         </div>
                     </div>
-                    <!-- card end// -->
+                 
             </div>
             <div class="col-lg-3">
 
 
             </div>
 
-            <!-- card end// -->
+            
             </div>
             </div>
         </section>
-        <!-- content-main end// -->
+     
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
@@ -303,15 +304,18 @@
                 document.getElementById("priceError").innerHTML = '';
             }
             if (imageInput.files.length < 4) {
-                alert(`You must select 4 images. You selected only ${imageInput.files.length}.`);
+                document.getElementById("imageError").innerHTML = `You must select 4 images. You selected only ${imageInput.files.length}.`;
+                document.getElementById('imageError').style.color = "red";
                 return false;
             }
 
-            var allowedTypes = ["image/avif","image/avif", "image/avif" ,"image/avif"];
+            var allowedTypes = ["image/avif", "image/avif", "image/avif", "image/avif"];
             for (var i = 0; i < imageInput.files.length; i++) {
                 var file = imageInput.files[i];
-                if (!allowedTypes.includes(file.type)) {    
-                    alert(`Please select valid image files (JPEG, PNG, GIF) for image ${i + 1}.`);
+                if (!allowedTypes.includes(file.type)) {
+                   
+                    document.getElementById("imageError").innerHTML = `Please select valid image files (JPEG, PNG, GIF) for image ${i + 1}.`;
+                    document.getElementById('imageError').style.color = "red";
                     return false;
                 }
             }

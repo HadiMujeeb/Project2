@@ -8,10 +8,10 @@ const randomstrings = require("randomstring");
 const { default: mongoose } = require("mongoose");
 const Order = require("../Models/OrderModel");
 require("dotenv").config();
-const fs = require('fs')
-const path = require('path')
+const fs = require("fs");
+const path = require("path");
 const ejs = require("ejs");
-const puppeteer = require("puppeteer")
+const puppeteer = require("puppeteer");
 
 const generateReferralCode = (length) => {
   const characters =
@@ -177,8 +177,9 @@ const verifyOtp = async (req, res) => {
 
     console.log("otp:", otp);
     const user = await UserOTPVerification.findOne({ email: sessions });
+    
 
-    if (!user || user.expiresAt < Date.now()) {
+    if (!user ) {
       // console.log("user:", user);
 
       res.render("verifyOTP", {
@@ -203,8 +204,10 @@ const verifyOtp = async (req, res) => {
         { _id: userData._id },
         { $set: { is_Verified: 1 } }
       );
-      await UserOTPVerification.deleteOne({ email: sessions });
-
+     
+      await UserOTPVerification.deleteMany({ email: sessions });
+      const userId = await User.findOne({email:sessions,is_Verified:1})
+      req.session.user_id = userId._id;
       res.redirect("/home");
     } else {
       res.render("verifyOTP", { message: "OTP is incorrect", sessions });
@@ -345,23 +348,21 @@ const shopFilter = async (req, res) => {
   try {
     const { categoryId } = req.body;
     console.log(categoryId, "working");
-  
+
     const Categdata = await Categories.find({});
     const listedCategory = Categdata.filter((categ) => categ.isListed === true);
-  
-  
 
-    if(categoryId!=null || categoryId!=undefined){
-    products = await Product.find({ category: categoryId })
-      .populate({ path: "category", populate: { path: "Offer" } })
-      .populate("Offer");
-    console.log("linkproduct", products);
-  }else{
-    products = await Product.find({})
-      .populate({ path: "category", populate: { path: "Offer" } })
-      .populate("Offer");
-    console.log("linkproduct", products);
-  }
+    if (categoryId != null || categoryId != undefined) {
+      products = await Product.find({ category: categoryId })
+        .populate({ path: "category", populate: { path: "Offer" } })
+        .populate("Offer");
+      console.log("linkproduct", products);
+    } else {
+      products = await Product.find({})
+        .populate({ path: "category", populate: { path: "Offer" } })
+        .populate("Offer");
+      console.log("linkproduct", products);
+    }
     res.json({ success: true, products });
   } catch (error) {
     console.log(error.message);
@@ -371,25 +372,24 @@ const shopFilter = async (req, res) => {
 
 const searchFilter = async (req, res) => {
   try {
-    let { searchTerm ,categoryId} = req.body;
-    console.log("searchTerm",searchTerm);
-   console.log("categoryId",categoryId);
+    let { searchTerm, categoryId } = req.body;
+    console.log("searchTerm", searchTerm);
+    console.log("categoryId", categoryId);
     let products = await Product.find({});
-    if(categoryId && categoryId!=undefined){
-      const products = await Product.find({category:categoryId});
+    if (categoryId && categoryId != undefined) {
+      const products = await Product.find({ category: categoryId });
       const regexPattern = new RegExp(searchTerm, "i");
-    const filteredProducts = products.filter((product) =>
-      regexPattern.test(product.name)
-    );
-    res.json({ products: filteredProducts });
-    }else{
+      const filteredProducts = products.filter((product) =>
+        regexPattern.test(product.name)
+      );
+      res.json({ products: filteredProducts });
+    } else {
       const regexPattern = new RegExp(searchTerm, "i");
       const filteredProducts = products.filter((product) =>
         regexPattern.test(product.name)
       );
       res.json({ products: filteredProducts });
     }
-   
   } catch (error) {
     console.error("Error:", error);
   }
@@ -699,44 +699,39 @@ const EditAddress = async (req, res) => {
 // }
 // }
 
-
-
-
 const downloadInvoice = async (req, res) => {
   try {
-   const orderId = req.query.orderId
-   console.log(orderId);
-   const order = await Order.findOne({ _id: orderId }).populate(
-    "items.product_id"
-  );
-   
-   const date = new Date()
-   const data = {
-    order:order,
-    date,
-   }
+    const orderId = req.query.orderId;
+    console.log(orderId);
+    const order = await Order.findOne({ _id: orderId }).populate(
+      "items.product_id"
+    );
 
-   const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
-   const html = fs.readFileSync(filepathName).toString();
-   const ejsData = ejs.render(html, data);
-   const browser = await puppeteer.launch({ headless: "new"});
-   const page = await browser.newPage();
-   await page.setContent(ejsData, { waitUntil: "networkidle0" });
-   const pdfBytes = await page.pdf({ format: "Letter" });
-   await browser.close();
-   res.setHeader("Content-Type", "application/pdf");
-   res.setHeader(
-     "Content-Disposition",
-     "attachment; filename= orderInvoice_Skyzon .pdf"
-   );
-   res.send(pdfBytes);
+    const date = new Date();
+    const data = {
+      order: order,
+      date,
+    };
 
-
+    const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data);
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
+    const pdfBytes = await page.pdf({ format: "Letter" });
+    await browser.close();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename= orderInvoice_Skyzon .pdf"
+    );
+    res.send(pdfBytes);
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Error generating invoice');
+    res.status(500).send("Error generating invoice");
   }
-}
+};
 module.exports = {
   Homepage,
   RegisterPage,
@@ -763,6 +758,6 @@ module.exports = {
   EditAddress,
   shopFilter,
   searchFilter,
-  downloadInvoice
+  downloadInvoice,
   // rest_pass_profile
 };
