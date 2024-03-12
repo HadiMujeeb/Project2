@@ -314,6 +314,101 @@ console.log(updatedYearlyTotalOrders,"hello2");
       };
     });
 
+
+    const EveryMonthlySalesData = await Order.aggregate([
+      {
+        $match: {
+          status: "Delivered",
+          createdAt: { $gte: new Date(currentYear, 0, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          total: { $sum: "$total_amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          total: "$total",
+          count: "$count",
+        },
+      },
+    ]);
+
+    const EveryMonthlySales = defaultMonthlyValues.map((defaultMonth) => {
+      const foundMonth =EveryMonthlySalesData.find(
+        (monthData) => monthData.month === defaultMonth.month
+      );
+      return foundMonth || defaultMonth;
+    });
+   
+
+    const EveryMonthlyUserData = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: new Date(currentYear, 0, 1) },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalUsers: { $sum: 1 },
+        },
+      },
+    ]);
+    const EveryMonthlyTotalUsers = defaultMonthlyValues.map(
+      (defaultMonth) => {
+        const foundMonth =EveryMonthlyUserData.find(
+          (monthData) => monthData._id === defaultMonth.month
+        );
+        return {
+          month: defaultMonth.month,
+          totalUsers: foundMonth ? foundMonth.totalUsers : 0,
+        };
+      }
+    );
+    console.log(EveryMonthlyTotalUsers,"hekko")
+
+    const EveryMonthlyTotalOrders = await Order.aggregate([
+      {
+        $unwind: "$items",
+      },
+      {
+        $match: {
+          createdAt: { $gte: new Date(currentYear, 0, 1) },
+        
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+    ]);
+
+
+    const EveryMonthlyOrders = defaultMonthlyValues.map(
+      (defaultMonth) => {
+        const foundMonth =  EveryMonthlyTotalOrders.find(
+          (monthData) => monthData._id === defaultMonth.month
+        );
+        return {
+          month: defaultMonth.month,
+          totalOrders: foundMonth ? foundMonth.totalOrders : 0,
+        };
+      }
+    );
+
+
+    console.log(EveryMonthlyOrders ,"hello")
     // console.log(updatedYearlyTotalOrders);
     res.render("Dashboard", {
       updatedMonthlyValues,
@@ -328,6 +423,10 @@ console.log(updatedYearlyTotalOrders,"hello2");
       orders,
       totalOrders,
       ledge,
+      EveryMonthlySales,
+      EveryMonthlyTotalUsers,
+      EveryMonthlyOrders,
+
     });
   } catch (error) {
     console.log(error.message);

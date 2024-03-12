@@ -260,7 +260,7 @@
                                 <div class="single_product_menu d-flex">
                                     <h5>short by : </h5>
 
-                                    <select onchange="redirectToCategory(this)">
+                                    <select id="categorySelect" onchange="redirectToCategory(this)">
                                         <option ><a href="/">All</a></option>
                                         <% for(let i=0; i< Categories.length; i++) { %>
                                             <option value="<%= Categories[i].id %>">
@@ -269,9 +269,10 @@
                                             <% } %>
                                     </select>
                                     <script>
-                                        let  categoryId;
+                                      
                                         function redirectToCategory(select) {
                                             const categoryId = select.value;
+                                            $('#searchInput').val(categoryId); 
 
                                             $.ajax({
                                                 url: "/shopFilter",
@@ -353,12 +354,12 @@
                     <script>
                         function search() {
                             const searchTerm = $('#searchInput').val().trim();
-                              
-
+                            const categoryId = $('#categorySelect').val(); 
+                             
                             $.ajax({
                                 url: "/searchFilter", // Update the URL to your server-side search endpoint
                                 method: "POST",
-                                data: { searchTerm: searchTerm },
+                                data: { searchTerm: searchTerm ,categoryId:categoryId},
                                 success: function (response) {
                                     const products = response.products;
 

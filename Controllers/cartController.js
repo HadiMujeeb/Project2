@@ -388,8 +388,8 @@ const Checkout = async (req, res) => {
           populate: {
             path: "Offer",
           },
-        })
-       console.log("helllll");
+        });
+      console.log("helllll");
       for (const cartItem of cart.items) {
         const product = cartItem.product_id;
         const requestedQuantity = cartItem.quantity;
@@ -752,14 +752,14 @@ const OrderView = async (req, res) => {
 const itemsCancel = async (req, res) => {
   try {
     const { CancelId, orderId } = req.body;
-    const order = await Order.findOne({ _id: orderId });
+    let order = await Order.findOne({ _id: orderId });
     if (order) {
-      const updatedItems = order.items.filter(
+      let updatedItems = order.items.filter(
         (item) => item._id.toString() === CancelId.toString()
       );
 
       const newTotalAmount = order.total_amount - updatedItems[0].total_price;
-      console.log("hello", updatedItems[0].total_price);
+      // console.log("hello", updatedItems[0].total_price);
       await Order.updateOne(
         { _id: orderId, "items._id": CancelId },
         {
@@ -769,6 +769,23 @@ const itemsCancel = async (req, res) => {
           },
         }
       );
+
+      if (
+        (order && order.payment === "Cash-on-online") ||
+        order.payment === "Cash-on-wallet"
+      ) {
+        console.log("quantty", updatedItems[0].quantity);
+
+        const product = await Product.findByIdAndUpdate(
+          { _id: updatedItems[0].product_id },
+          { $inc: { stockQuantity: updatedItems[0].quantity } }
+        );
+      } else {
+        const product = await Product.findByIdAndUpdate(
+          { _id: updatedItems[0].product_id },
+          { $inc: { stockQuantity: updatedItems[0].quantity } }
+        );
+        }
       let orderID = await Order.findOne({ _id: orderId });
 
       const hasPlacedItems = orderID.items.some(

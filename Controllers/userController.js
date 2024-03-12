@@ -371,14 +371,25 @@ const shopFilter = async (req, res) => {
 
 const searchFilter = async (req, res) => {
   try {
-    const { searchTerm } = req.body;
-    console.log("hello",searchTerm);
-    const products = await Product.find({});
-    const regexPattern = new RegExp(searchTerm, "i");
+    let { searchTerm ,categoryId} = req.body;
+    console.log("searchTerm",searchTerm);
+   console.log("categoryId",categoryId);
+    let products = await Product.find({});
+    if(categoryId && categoryId!=undefined){
+      const products = await Product.find({category:categoryId});
+      const regexPattern = new RegExp(searchTerm, "i");
     const filteredProducts = products.filter((product) =>
       regexPattern.test(product.name)
     );
     res.json({ products: filteredProducts });
+    }else{
+      const regexPattern = new RegExp(searchTerm, "i");
+      const filteredProducts = products.filter((product) =>
+        regexPattern.test(product.name)
+      );
+      res.json({ products: filteredProducts });
+    }
+   
   } catch (error) {
     console.error("Error:", error);
   }
