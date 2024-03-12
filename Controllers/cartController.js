@@ -645,7 +645,7 @@ const Verifypayment = async (req, res) => {
 
 const LoadCheckADDaddress = async (req, res) => {
   try {
-    res.render("checkaddress");
+    res.render("checkAddress");
   } catch (error) {
     console.log(error, message);
   }
