@@ -11,7 +11,7 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const ejs = require("ejs");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 
 const generateReferralCode = (length) => {
   const characters =
@@ -723,7 +723,7 @@ const downloadInvoice = async (req, res) => {
     const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
     const html = fs.readFileSync(filepathName).toString();
     const ejsData = ejs.render(html, data);
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({ headless: "new",executablePath:'/snap/bin/chromium' });
     const page = await browser.newPage();
     await page.setContent(ejsData, { waitUntil: "networkidle0" });
     const pdfBytes = await page.pdf({ format: "Letter" });
