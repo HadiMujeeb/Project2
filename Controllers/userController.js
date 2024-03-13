@@ -109,6 +109,7 @@ const insertUser = async (req, res) => {
 
 const sendOTPVerificationEmail = async ({ email }, res) => {
   try {
+    
     let transporter = nodemailer.createTransport({
       service: "gmail",
       // host: 'smtp.gmail.com',
@@ -147,6 +148,12 @@ const sendOTPVerificationEmail = async ({ email }, res) => {
     await transporter.sendMail(mailOptions);
 
     res.redirect(`/verifyOTP?email=${email}`);
+    const expiresIn = 1 * 60 * 1000;
+    setTimeout(async () => {
+      await UserOTPVerification.deleteOne({ email: email });
+      console.log("Expired OTP deleted.");
+  }, expiresIn);
+
   } catch (error) {
     console.log(error.message);
   }

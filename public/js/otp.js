@@ -90,7 +90,7 @@ function resendOTP() {
 
     // Update the countdown display
     countdownElement.textContent = `OTP expires in ${seconds} seconds`;
-    expirationMessageElement.textContent = `You Can Resend OTP after The Expiration...!`;
+    // expirationMessageElement.textContent = `You Can Resend OTP after The Expiration...!`;
 
     // Check if the countdown has reached 0
     if (seconds <= 0) {
