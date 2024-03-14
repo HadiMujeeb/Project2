@@ -261,7 +261,7 @@
                                     <h5>short by : </h5>
 
                                     <select id="categorySelect" onchange="redirectToCategory(this)">
-                                        <option ><a href="/">All</a></option>
+                                        <option value="">All</option>
                                         <% for(let i=0; i< Categories.length; i++) { %>
                                             <option value="<%= Categories[i].id %>">
                                                 <%= Categories[i].name %>
@@ -272,7 +272,7 @@
                                       
                                         function redirectToCategory(select) {
                                             const categoryId = select.value;
-                                            $('#searchInput').val(categoryId); 
+                                            $('#searchInput').val(); 
 
                                             $.ajax({
                                                 url: "/shopFilter",

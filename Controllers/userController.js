@@ -354,12 +354,12 @@ const loadShop = async (req, res) => {
 const shopFilter = async (req, res) => {
   try {
     const { categoryId } = req.body;
-    console.log(categoryId, "working");
+    // console.log(categoryId, "working");
 
     const Categdata = await Categories.find({});
     const listedCategory = Categdata.filter((categ) => categ.isListed === true);
 
-    if (categoryId != null || categoryId != undefined) {
+    if (categoryId && categoryId !== "") {
       products = await Product.find({ category: categoryId })
         .populate({ path: "category", populate: { path: "Offer" } })
         .populate("Offer");
