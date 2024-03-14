@@ -129,7 +129,7 @@ user_router.post("/ReturnOrder",walletController.returnProduct)
 
 user_router.post("/pendingpay",cartController.PendingPay)
 
-user_router.get("/invoice", userController.downloadInvoice);
+// user_router.get("/invoice", userController.downloadInvoice);
 
 
 
