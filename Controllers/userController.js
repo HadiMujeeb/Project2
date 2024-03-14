@@ -706,39 +706,39 @@ const EditAddress = async (req, res) => {
 // }
 // }
 
-// const downloadInvoice = async (req, res) => {
-//   try {
-//     const orderId = req.query.orderId;
-//     console.log(orderId);
-//     const order = await Order.findOne({ _id: orderId }).populate(
-//       "items.product_id"
-//     );
+const downloadInvoice = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    console.log(orderId);
+    const order = await Order.findOne({ _id: orderId }).populate(
+      "items.product_id"
+    );
 
-//     const date = new Date();
-//     const data = {
-//       order: order,
-//       date,
-//     };
+    const date = new Date();
+    const data = {
+      order: order,
+      date,
+    };
 
-//     const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
-//     const html = fs.readFileSync(filepathName).toString();
-//     const ejsData = ejs.render(html, data);
-//     const browser = await puppeteer.launch({ headless: "new",executablePath:'/snap/bin/chromium' });
-//     const page = await browser.newPage();
-//     await page.setContent(ejsData, { waitUntil: "networkidle0" });
-//     const pdfBytes = await page.pdf({ format: "Letter" });
-//     await browser.close();
-//     res.setHeader("Content-Type", "application/pdf");
-//     res.setHeader(
-//       "Content-Disposition",
-//       "attachment; filename= orderInvoice_Skyzon .pdf"
-//     );
-//     res.send(pdfBytes);
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Error generating invoice");
-//   }
-// };
+    const filepathName = path.resolve(__dirname, "../views/user/invoice.ejs");
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data);
+    const browser = await puppeteer.launch({ headless: "new",executablePath:'/snap/bin/chromium' });
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
+    const pdfBytes = await page.pdf({ format: "Letter" });
+    await browser.close();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename= orderInvoice_Skyzon .pdf"
+    );
+    res.send(pdfBytes);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Error generating invoice");
+  }
+};
 module.exports = {
   Homepage,
   RegisterPage,
@@ -765,6 +765,6 @@ module.exports = {
   EditAddress,
   shopFilter,
   searchFilter,
-  // downloadInvoice,
+  downloadInvoice,
   // rest_pass_profile
 };
