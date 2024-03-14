@@ -11,7 +11,7 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const ejs = require("ejs");
-// const puppeteer = require("puppeteer-core");
+const puppeteer = require("puppeteer-core");
 
 const generateReferralCode = (length) => {
   const characters =
